@@ -35,7 +35,7 @@ namespace Notebook.Application.Services.Implementation.Services
             await _repositoryManager.SaveAsync();
         }
 
-        public Task GetAddressAsync(Guid personId)
+        public Task<Address> GetAddressAsync(Guid personId)
         {
             return _repositoryManager.Address.GetAddressAsync(personId);
         }

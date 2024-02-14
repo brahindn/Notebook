@@ -12,9 +12,9 @@ namespace Notebook.Repositories.Implementation.Repositories
         {
         }
 
-        public async Task<Contact> GetContactAsync(string firstName, string lastName)
+        public async Task<Contact> GetContactAsync(Guid id)
         {
-            return await FindByCondition(c => c.FirstName == firstName || c.LastName == lastName).SingleOrDefaultAsync();
+            return await FindByCondition(c => c.Id == id).SingleOrDefaultAsync();
         }
     }
 }

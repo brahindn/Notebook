@@ -5,6 +5,7 @@ namespace Notebook.Application.Services.Contracts.Services
     public interface IContactService
     {
         Task CreateContactAsync(string firstName, string lastName, string phoneNumber, string email, DateTime dataOfBirth);
-        Task<Contact> GetContactAsync(string firstName, string lastName);
+        Task<Contact> GetContactAsync(Guid id);
+        IQueryable<Contact> GetAllContacts();
     }
 }

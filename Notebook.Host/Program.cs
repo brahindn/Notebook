@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Notebook.DataAccess;
+using Notebook.WebApi;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration
@@ -10,7 +11,9 @@ builder.Services.AddDbContext<RepositoryContext>(options => options.UseSqlServer
 
 var app = builder.Build();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddApplicationPart(typeof(AssemblyReference).Assembly);
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

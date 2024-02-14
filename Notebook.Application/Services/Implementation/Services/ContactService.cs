@@ -15,7 +15,7 @@ namespace Notebook.Application.Services.Implementation.Services
 
         public async Task CreateContactAsync(string firstName, string lastName, string phoneNumber, string email, DateTime dataOfBirth)
         {
-            if(string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName) || string.IsNullOrWhiteSpace(phoneNumber))
+            if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName) || string.IsNullOrWhiteSpace(phoneNumber))
             {
                 return;
             }
@@ -33,9 +33,16 @@ namespace Notebook.Application.Services.Implementation.Services
             await _repositoryManager.SaveAsync();
         }
 
-        public Task<Contact> GetContactAsync(string firstName, string lastName)
+        public Task<Contact> GetContactAsync(Guid id)
         {
-            return _repositoryManager.Contact.GetContactAsync(firstName, lastName);
+            return _repositoryManager.Contact.GetContactAsync(id);
+        }
+
+        public IQueryable<Contact> GetAllContacts()
+        {
+            var companies = _repositoryManager.Contact.GetAll();
+
+            return companies;
         }
     }
 }

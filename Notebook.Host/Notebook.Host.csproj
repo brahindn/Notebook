@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Notebook.DataAccess\Notebook.DataAccess.csproj" />
+    <ProjectReference Include="..\Notebook.WebApi\Notebook.WebApi.csproj" />
   </ItemGroup>
 
 </Project>
