@@ -14,7 +14,7 @@ namespace Notebook.WebApi.Controllers
             _serviceManager = serviceManager;
         }
 
-        [HttpGet]
+        [HttpGet("AllContacts")]
         public IActionResult GetContacts()
         {
             try
@@ -23,42 +23,42 @@ namespace Notebook.WebApi.Controllers
 
                 return Ok(companies);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return StatusCode(500, $"GetContacts error: {ex.Message}");
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("Contact")]
         public async Task<IActionResult> GetContact(Guid id)
         {
             try
             {
                 var company = await _serviceManager.ContactService.GetContactAsync(id);
 
-                if(company == null)
+                if (company == null)
                 {
                     return NotFound();
                 }
 
                 return Ok(company);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return StatusCode(500, $"GetContact error: {ex.Message}");
             }
         }
 
-        [HttpPost]
+        [HttpPost("NewContact")]
         public async Task<IActionResult> CreateContact(string firstName, string lastName, string phoneNumber, string email, DateTime dataOfBirth)
         {
             try
             {
                 await _serviceManager.ContactService.CreateContactAsync(firstName, lastName, phoneNumber, email, dataOfBirth);
 
-                return CreatedAtRoute("CreateContact", firstName, phoneNumber);
+                return Ok();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return StatusCode(500, $"CreateContact error: {ex.Message}");
             }

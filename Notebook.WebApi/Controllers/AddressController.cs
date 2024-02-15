@@ -1,11 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Notebook.Application.Services.Contracts;
 using Notebook.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Notebook.WebApi.Controllers
 {
@@ -19,7 +14,7 @@ namespace Notebook.WebApi.Controllers
             _serviceManager = serviceManager;
         }
 
-        [HttpGet("{personId}")]
+        [HttpGet("Address")]
         public async Task<IActionResult> GetAddress(Guid personId)
         {
             try
@@ -39,14 +34,14 @@ namespace Notebook.WebApi.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("NewAddress")]
         public async Task<IActionResult> CreateAddress(AddressType addressType, string country, string region, string city, string street, int buildingNumber)
         {
             try
             {
                 await _serviceManager.AddressService.CreateAddressAsync(addressType, country, region, city, street, buildingNumber);
 
-                return CreatedAtRoute("CreateContact", street, buildingNumber);
+                return Ok();
             }
             catch (Exception ex)
             {

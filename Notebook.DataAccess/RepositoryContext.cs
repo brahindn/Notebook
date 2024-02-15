@@ -12,7 +12,7 @@ namespace Notebook.DataAccess
         }
 
         public DbSet<Contact> Contacts {  get; set; }
-        public DbSet<Address> Address { get; set; }
+        public DbSet<Address> Addresses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
