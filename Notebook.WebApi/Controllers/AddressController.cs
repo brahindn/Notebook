@@ -35,11 +35,11 @@ namespace Notebook.WebApi.Controllers
         }
 
         [HttpPost("NewAddress")]
-        public async Task<IActionResult> CreateAddress(AddressType addressType, string country, string region, string city, string street, int buildingNumber)
+        public async Task<IActionResult> CreateAddress(AddressType addressType, string country, string region, string city, string street, int buildingNumber, Guid contactId)
         {
             try
             {
-                await _serviceManager.AddressService.CreateAddressAsync(addressType, country, region, city, street, buildingNumber);
+                await _serviceManager.AddressService.CreateAddressAsync(addressType, country, region, city, street, buildingNumber, contactId);
 
                 return Ok();
             }

@@ -62,7 +62,7 @@ namespace Notebook.DataAccess.Migrations
                     b.HasIndex("PersonId")
                         .IsUnique();
 
-                    b.ToTable("Address");
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("Notebook.Domain.Entities.Contact", b =>

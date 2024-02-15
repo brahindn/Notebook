@@ -14,15 +14,18 @@ namespace Notebook.Application.Services.Implementation.Services
             _repositoryManager = repositoryManager;
         }
 
-        public async Task CreateAddressAsync(AddressType addressType, string country, string region, string city, string street, int buildingNumber)
+        public async Task CreateAddressAsync(AddressType addressType, string country, string region, string city, string street, int buildingNumber, Guid contactId)
         {
-            if(!addressType.Equals("Personal") || !addressType.Equals("Business") || string.IsNullOrWhiteSpace(country) || string.IsNullOrWhiteSpace(city) || string.IsNullOrWhiteSpace(street))
+            if (!(addressType.Equals(AddressType.Personal) || addressType.Equals(AddressType.Business)) || string.IsNullOrWhiteSpace(country) || string.IsNullOrWhiteSpace(city) || string.IsNullOrWhiteSpace(street) || contactId==Guid.Empty)
             {
-                return;
+                throw new ArgumentException("AddressType, Country, City, Street and PersonId cannot be null or empty");
             }
+
+            var contact = await _repositoryManager.Contact.GetContactAsync(contactId) ?? throw new ArgumentException("Person cannot be null or empty");
 
             var address = new Address
             {
+                Person = contact,
                 AddressType = addressType,
                 Country = country,
                 Region = region,
