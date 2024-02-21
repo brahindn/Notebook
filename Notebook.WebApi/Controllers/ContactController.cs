@@ -17,8 +17,62 @@ namespace Notebook.WebApi.Controllers
             _loggerManager = loggerManager;
         }
 
-        [HttpGet("AllContacts")]
-        public IActionResult GetContacts()
+        [HttpPost]
+        public async Task<IActionResult> AddContact(string firstName, string lastName, string phoneNumber, string email, DateTime dataOfBirth)
+        {
+            try
+            {
+                await _serviceManager.ContactService.CreateContactAsync(firstName, lastName, phoneNumber, email, dataOfBirth);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"CreateContact error: {ex.Message}");
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateContact(Guid id, string newFirstName, string newLastName, string newPhoneNumber, string newEmail, DateTime newDataOfBirth)
+        {
+            var existContact = await _serviceManager.ContactService.GetContactAsync(id);
+
+            if (existContact == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                await _serviceManager.ContactService.UpdateContactAsync(id, newFirstName, newLastName, newPhoneNumber, newEmail, newDataOfBirth);
+            }
+            catch
+            {
+                throw new ArgumentException("Id can't be null");
+            }
+
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteContact(Guid id)
+        {
+            var existContact = await _serviceManager.ContactService.GetContactAsync(id) ?? throw new ArgumentException($"Contact with id: {id} not found.");
+
+            try
+            {
+                await _serviceManager.ContactService.DeleteContactAsync(existContact);
+            }
+            catch
+            {
+                throw new ArgumentException("Id can't be null");
+            }
+
+            return Ok();
+        }
+
+        [HttpGet]
+        public IActionResult GetAllContacts()
         {
             try
             {
@@ -32,58 +86,27 @@ namespace Notebook.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                _loggerManager.LogError($"GetContact error: {ex.Message}");
-
                 return StatusCode(500, $"GetContacts error: {ex.Message}");
             }
         }
 
-        [HttpGet("Contact")]
-        public async Task<IActionResult> GetContact(Guid id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetContactById(Guid id)
         {
             try
             {
-                _loggerManager.LogInfo($"Getting contact for id: {id}");
-
                 var company = await _serviceManager.ContactService.GetContactAsync(id);
 
                 if (company == null)
                 {
-                    _loggerManager.LogError($"Contact for id: {id} not found");
-
                     return NotFound();
                 }
-
-                _loggerManager.LogInfo($"Getting contact for id is successfully.");
 
                 return Ok(company);
             }
             catch (Exception ex)
             {
-                _loggerManager.LogError($"GetContact error: {ex.Message}");
-
                 return StatusCode(500, $"GetContact error: {ex.Message}");
-            }
-        }
-
-        [HttpPost("NewContact")]
-        public async Task<IActionResult> CreateContact(string firstName, string lastName, string phoneNumber, string email, DateTime dataOfBirth)
-        {
-            try
-            {
-                _loggerManager.LogInfo($"Creating a new contact");
-
-                await _serviceManager.ContactService.CreateContactAsync(firstName, lastName, phoneNumber, email, dataOfBirth);
-
-                _loggerManager.LogInfo($"New contact has created successfully.");
-
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                _loggerManager.LogError($"CreateContact error: {ex.Message}");
-
-                return StatusCode(500, $"CreateContact error: {ex.Message}");
             }
         }
     }

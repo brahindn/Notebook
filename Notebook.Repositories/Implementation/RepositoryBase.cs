@@ -18,6 +18,16 @@ namespace Notebook.Repositories.Implementation
             RepositoryContext.Set<T>().Add(entity);
         }
 
+        public void Update(T entity)
+        {
+            RepositoryContext.Set<T>().Update(entity);
+        }
+
+        public void Delete(T entity)
+        {
+            RepositoryContext.Set<T>().Remove(entity);
+        }
+
         public IQueryable<T> GetAll()
         {
             return RepositoryContext.Set<T>();

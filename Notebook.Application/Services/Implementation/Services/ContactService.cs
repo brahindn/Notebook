@@ -4,7 +4,7 @@ using Notebook.Repositories.Contracts;
 
 namespace Notebook.Application.Services.Implementation.Services
 {
-    internal class ContactService : IContactService
+    public class ContactService : IContactService
     {
         private readonly IRepositoryManager _repositoryManager;
 
@@ -43,6 +43,31 @@ namespace Notebook.Application.Services.Implementation.Services
             var companies = _repositoryManager.Contact.GetAll();
 
             return companies;
+        }
+
+        public async Task UpdateContactAsync(Guid id, string newFirstName, string newLastName, string newPhoneNumber, string newEmail, DateTime newDataOfBirth)
+        {
+            var existContact = await _repositoryManager.Contact.GetContactAsync(id) ?? throw new ArgumentNullException(nameof(id));
+
+            existContact.FirstName = newFirstName;
+            existContact.LastName = newLastName;
+            existContact.PhoneNumber = newPhoneNumber;
+            existContact.Email = newEmail;
+            existContact.DateOfBirth = newDataOfBirth;
+
+            _repositoryManager.Contact.Update(existContact);
+            await _repositoryManager.SaveAsync();
+        }
+
+        public async Task DeleteContactAsync(Contact contact )
+        {
+            if(contact == null)
+            {
+                throw new ArgumentNullException(nameof(contact));
+            }
+
+            _repositoryManager.Contact.Delete(contact);
+            await _repositoryManager.SaveAsync();
         }
     }
 }

@@ -7,5 +7,8 @@ namespace Notebook.Application.Services.Contracts.Services
         Task CreateContactAsync(string firstName, string lastName, string phoneNumber, string email, DateTime dataOfBirth);
         Task<Contact> GetContactAsync(Guid id);
         IQueryable<Contact> GetAllContacts();
+        Task UpdateContactAsync(Guid id, string newFirstName, string newLastName, string newPhoneNumber, string newEmail, DateTime newDataOfBirth);
+        Task DeleteContactAsync(Contact contact);
     }
 }
+    
