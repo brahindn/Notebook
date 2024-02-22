@@ -9,59 +9,99 @@ namespace Notebook.WebApi.Controllers
     {
         private readonly IServiceManager _serviceManager;
         private readonly ILoggerManager _loggerManager;
-        
+
         public AddressController(IServiceManager serviceManager, ILoggerManager loggerManager)
         {
             _serviceManager = serviceManager;
             _loggerManager = loggerManager;
         }
 
-        [HttpGet("Address")]
-        public async Task<IActionResult> GetAddress(Guid personId)
+        [HttpPost]
+        public async Task<IActionResult> AddAddress(AddressType addressType, string country, string region, string city, string street, int buildingNumber, Guid contactId)
         {
             try
             {
-                _loggerManager.LogInfo($"Getting address for personId: {personId}");
-
-                var address = await _serviceManager.AddressService.GetAddressAsync(personId);
-
-                if(address == null)
-                {
-                    _loggerManager.LogError($"Address for personId: {personId} not found.");
-
-                    return NotFound();
-                }
-
-                _loggerManager.LogInfo($"Address for personId: {personId} retrieved successfully.");
-
-                return Ok(address);
-            }
-            catch (Exception ex)
-            {
-                _loggerManager.LogError($"GetAddress error: {ex.Message}");
-
-                return StatusCode(500, $"GetAddress error: {ex.Message}");
-            }
-        }
-
-        [HttpPost("NewAddress")]
-        public async Task<IActionResult> CreateAddress(AddressType addressType, string country, string region, string city, string street, int buildingNumber, Guid contactId)
-        {
-            try
-            {
-                _loggerManager.LogInfo($"Creating a new address for contactId: {contactId}");
-
                 await _serviceManager.AddressService.CreateAddressAsync(addressType, country, region, city, street, buildingNumber, contactId);
-
-                _loggerManager.LogInfo($"New address for {contactId} created successfully.");
 
                 return Ok();
             }
             catch (Exception ex)
             {
-                _loggerManager.LogError($"CreateAddress error: {ex.Message}");
+                return StatusCode(500, $"CreateContact error: {ex.Message}");
+            }
+        }
 
-                return StatusCode(500, $"CreateAddress error: {ex.Message}");
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAddress(Guid id, AddressType newAddressType, string newCountry, string newRegion, string newCity, string newStreet, int newBuildingNumber)
+        {
+            var existAddress = await _serviceManager.AddressService.GetAddressAsync(id);
+
+            if(existAddress == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                await _serviceManager.AddressService.UpdateAddressAsync(id, newAddressType, newCountry, newRegion, newCity, newStreet, newBuildingNumber);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, $"UpdateAddress error: {ex.Message}");
+            }
+
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAddress(Guid id)
+        {
+            var existAddress = await _serviceManager.AddressService.GetAddressAsync(id) ?? throw new ArgumentException($"Address with id: {id} not found.");
+
+            try
+            {
+                await _serviceManager.AddressService.DeleteAddressAsync(existAddress);
+            }
+            catch
+            {
+                throw new ArgumentException("Id can't be null");
+            }
+
+            return Ok();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAddressById(Guid personId)
+        {
+            try
+            {
+                var address = await _serviceManager.AddressService.GetAddressAsync(personId);
+
+                if(address == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(address);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"GetAddress error: {ex.Message}");
+            }
+        }
+
+        [HttpGet]
+        public IActionResult GetAllAddress()
+        {
+            try
+            {
+                var addresses = _serviceManager.AddressService.GetAllAddressesAsync();
+
+                return Ok(addresses);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"GetAddresses error: {ex.Message}");
             }
         }
     }

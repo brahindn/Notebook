@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Notebook.Application.Services.Contracts;
-using Notebook.Domain.Entities;
 
 namespace Notebook.WebApi.Controllers
 {
@@ -71,25 +70,6 @@ namespace Notebook.WebApi.Controllers
             return Ok();
         }
 
-        [HttpGet]
-        public IActionResult GetAllContacts()
-        {
-            try
-            {
-                _loggerManager.LogInfo($"Getting all contacts.");
-
-                var companies = _serviceManager.ContactService.GetAllContacts();
-
-                _loggerManager.LogInfo($"All contacts are retrieved successfully");
-
-                return Ok(companies);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"GetContacts error: {ex.Message}");
-            }
-        }
-
         [HttpGet("{id}")]
         public async Task<IActionResult> GetContactById(Guid id)
         {
@@ -107,6 +87,21 @@ namespace Notebook.WebApi.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, $"GetContact error: {ex.Message}");
+            }
+        }
+
+        [HttpGet]
+        public IActionResult GetAllContacts()
+        {
+            try
+            {
+                var companies = _serviceManager.ContactService.GetAllContacts();
+
+                return Ok(companies);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"GetContacts error: {ex.Message}");
             }
         }
     }
