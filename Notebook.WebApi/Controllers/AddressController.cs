@@ -62,9 +62,9 @@ namespace Notebook.WebApi.Controllers
             {
                 await _serviceManager.AddressService.DeleteAddressAsync(existAddress);
             }
-            catch
+            catch(Exception ex)
             {
-                throw new ArgumentException("Id can't be null");
+                return StatusCode(500, $"UpdateContact error: {ex.Message}");
             }
 
             return Ok();

@@ -45,9 +45,9 @@ namespace Notebook.WebApi.Controllers
             {
                 await _serviceManager.ContactService.UpdateContactAsync(id, newFirstName, newLastName, newPhoneNumber, newEmail, newDataOfBirth);
             }
-            catch
+            catch(Exception ex)
             {
-                throw new ArgumentException("Id can't be null");
+                return StatusCode(500, $"UpdateContact error: {ex.Message}");
             }
 
             return Ok();
@@ -62,9 +62,9 @@ namespace Notebook.WebApi.Controllers
             {
                 await _serviceManager.ContactService.DeleteContactAsync(existContact);
             }
-            catch
+            catch(Exception ex)
             {
-                throw new ArgumentException("Id can't be null");
+                return StatusCode(500, $"DeleteContact error: {ex.Message}");
             }
 
             return Ok();
