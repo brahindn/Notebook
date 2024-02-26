@@ -8,12 +8,12 @@ namespace Notebook.WebApi.Controllers
     public class ContactController : ControllerBase
     {
         private readonly IServiceManager _serviceManager;
-        private readonly ILoggerManager _loggerManager;
+        private readonly Serilog.ILogger _logger;
 
-        public ContactController(IServiceManager serviceManager, ILoggerManager loggerManager)
+        public ContactController(IServiceManager serviceManager, Serilog.ILogger logger)
         {
             _serviceManager = serviceManager;
-            _loggerManager = loggerManager;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -23,16 +23,46 @@ namespace Notebook.WebApi.Controllers
             {
                 await _serviceManager.ContactService.CreateContactAsync(firstName, lastName, phoneNumber, email, dataOfBirth);
 
+                _logger.Information($"New contact {firstName} {lastName} has been added successfully");
+
                 return Ok();
             }
             catch (Exception ex)
             {
+                _logger.Error(ex.InnerException.Message);
+
                 return StatusCode(500, $"CreateContact error: {ex.Message}");
             }
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateContact(Guid id, string newFirstName, string newLastName, string newPhoneNumber, string newEmail, DateTime newDataOfBirth)
+        {
+            try
+            {
+                var existContact = await _serviceManager.ContactService.GetContactAsync(id);
+
+                if (existContact == null)
+                { 
+                    return NotFound();
+                }
+
+                await _serviceManager.ContactService.UpdateContactAsync(id, newFirstName, newLastName, newPhoneNumber, newEmail, newDataOfBirth);
+
+                _logger.Information($"Contact {id} has been updated successfully!");
+            }
+            catch(Exception ex)
+            {
+                _logger.Error(ex.InnerException.Message);
+
+                return StatusCode(500, $"UpdateContact error: {ex.Message}");
+            }
+
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteContact(Guid id)
         {
             var existContact = await _serviceManager.ContactService.GetContactAsync(id);
 
@@ -43,27 +73,14 @@ namespace Notebook.WebApi.Controllers
 
             try
             {
-                await _serviceManager.ContactService.UpdateContactAsync(id, newFirstName, newLastName, newPhoneNumber, newEmail, newDataOfBirth);
-            }
-            catch(Exception ex)
-            {
-                return StatusCode(500, $"UpdateContact error: {ex.Message}");
-            }
-
-            return Ok();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteContact(Guid id)
-        {
-            var existContact = await _serviceManager.ContactService.GetContactAsync(id) ?? throw new ArgumentException($"Contact with id: {id} not found.");
-
-            try
-            {
                 await _serviceManager.ContactService.DeleteContactAsync(existContact);
+
+                _logger.Information($"Contact deleted: {existContact.Id}");
             }
             catch(Exception ex)
             {
+                _logger.Error(ex.InnerException.Message);
+
                 return StatusCode(500, $"DeleteContact error: {ex.Message}");
             }
 
@@ -75,17 +92,21 @@ namespace Notebook.WebApi.Controllers
         {
             try
             {
-                var company = await _serviceManager.ContactService.GetContactAsync(id);
+                var contact = await _serviceManager.ContactService.GetContactAsync(id);
 
-                if (company == null)
+                if (contact == null)
                 {
                     return NotFound();
                 }
 
-                return Ok(company);
+                _logger.Information($"Contact {contact.Id} has been got");
+
+                return Ok(contact);
             }
             catch (Exception ex)
             {
+                _logger.Error(ex.InnerException.Message);
+
                 return StatusCode(500, $"GetContact error: {ex.Message}");
             }
         }
@@ -95,12 +116,16 @@ namespace Notebook.WebApi.Controllers
         {
             try
             {
-                var companies = _serviceManager.ContactService.GetAllContacts();
+                var allContacts = _serviceManager.ContactService.GetAllContacts();
 
-                return Ok(companies);
+                _logger.Information("All contacts have been got");
+
+                return Ok(allContacts);
             }
             catch (Exception ex)
             {
+                _logger.Error(ex.InnerException.Message);
+
                 return StatusCode(500, $"GetContacts error: {ex.Message}");
             }
         }

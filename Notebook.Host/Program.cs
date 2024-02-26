@@ -6,17 +6,23 @@ using Notebook.DataAccess;
 using Notebook.Repositories.Contracts;
 using Notebook.Repositories.Implementation;
 using Notebook.WebApi;
+using Serilog;
+using ILogger = Serilog.ILogger;
+
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration
     .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
     .AddJsonFile("appsettings.json");
 
-LogManager.Setup().LoadConfigurationFromFile(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
+var logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .WriteTo.MongoDB(databaseUrl: "mongodb://localhost:27017/NotebookLogDB", collectionName: "AppLogs")
+    .CreateLogger();
 
 builder.Services.AddDbContext<RepositoryContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("sqlConnection")));
 
-builder.Services.AddSingleton<ILoggerManager, LoggerManager>();
+builder.Services.AddSingleton<ILogger>(logger);
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddScoped<IServiceManager, ServiceManager>();
 

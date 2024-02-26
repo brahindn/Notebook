@@ -8,12 +8,10 @@ namespace Notebook.WebApi.Controllers
     public class AddressController : ControllerBase
     {
         private readonly IServiceManager _serviceManager;
-        private readonly ILoggerManager _loggerManager;
 
-        public AddressController(IServiceManager serviceManager, ILoggerManager loggerManager)
+        public AddressController(IServiceManager serviceManager)
         {
             _serviceManager = serviceManager;
-            _loggerManager = loggerManager;
         }
 
         [HttpPost]
