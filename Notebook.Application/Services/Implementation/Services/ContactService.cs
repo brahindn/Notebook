@@ -33,9 +33,9 @@ namespace Notebook.Application.Services.Implementation.Services
             await _repositoryManager.SaveAsync();
         }
 
-        public async Task UpdateContactAsync(Guid id, string newFirstName, string newLastName, string newPhoneNumber, string newEmail, DateTime newDataOfBirth)
+        public async Task UpdateContactAsync(Guid contactId, string newFirstName, string newLastName, string newPhoneNumber, string newEmail, DateTime newDataOfBirth)
         {
-            var existContact = await _repositoryManager.Contact.GetContactAsync(id) ?? throw new ArgumentNullException(nameof(id));
+            var existContact = await _repositoryManager.Contact.GetContactAsync(contactId) ?? throw new ArgumentNullException(nameof(contactId));
 
             existContact.FirstName = newFirstName;
             existContact.LastName = newLastName;
@@ -58,9 +58,9 @@ namespace Notebook.Application.Services.Implementation.Services
             await _repositoryManager.SaveAsync();
         }
 
-        public Task<Contact> GetContactAsync(Guid id)
+        public Task<Contact> GetContactAsync(Guid contactId)
         {
-            return _repositoryManager.Contact.GetContactAsync(id);
+            return _repositoryManager.Contact.GetContactAsync(contactId);
         }
 
         public IQueryable<Contact> GetAllContacts()

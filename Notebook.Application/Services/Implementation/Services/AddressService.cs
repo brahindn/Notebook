@@ -38,9 +38,9 @@ namespace Notebook.Application.Services.Implementation.Services
             await _repositoryManager.SaveAsync();
         }
 
-        public async Task UpdateAddressAsync(Guid id, AddressType newAddressType, string newCountry, string newRegion, string newCity, string newStreet, int newBuildingNumber)
+        public async Task UpdateAddressAsync(Guid addressId, AddressType newAddressType, string newCountry, string newRegion, string newCity, string newStreet, int newBuildingNumber)
         {
-            var existAddress = await _repositoryManager.Address.GetAddressAsync(id) ?? throw new ArgumentException(nameof(id));
+            var existAddress = await _repositoryManager.Address.GetAddressAsync(addressId) ?? throw new ArgumentException(nameof(addressId));
 
             existAddress.AddressType = newAddressType;
             existAddress.Country = newCountry;
@@ -64,9 +64,9 @@ namespace Notebook.Application.Services.Implementation.Services
             await _repositoryManager.SaveAsync();
         }
 
-        public Task<Address> GetAddressAsync(Guid id)
+        public Task<Address> GetAddressAsync(Guid addressId)
         {
-            return _repositoryManager.Address.GetAddressAsync(id);
+            return _repositoryManager.Address.GetAddressAsync(addressId);
         }
 
         public IQueryable<Address> GetAllAddressesAsync()

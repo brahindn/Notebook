@@ -35,21 +35,23 @@ namespace Notebook.WebApi.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateContact(Guid id, string newFirstName, string newLastName, string newPhoneNumber, string newEmail, DateTime newDataOfBirth)
+        [HttpPut("{contactId}")]
+        public async Task<IActionResult> UpdateContact(Guid contactId, string newFirstName, string newLastName, string newPhoneNumber, string newEmail, DateTime newDataOfBirth)
         {
             try
             {
-                var existContact = await _serviceManager.ContactService.GetContactAsync(id);
+                var existContact = await _serviceManager.ContactService.GetContactAsync(contactId);
 
                 if (existContact == null)
                 { 
                     return NotFound();
                 }
 
-                await _serviceManager.ContactService.UpdateContactAsync(id, newFirstName, newLastName, newPhoneNumber, newEmail, newDataOfBirth);
+                await _serviceManager.ContactService.UpdateContactAsync(contactId, newFirstName, newLastName, newPhoneNumber, newEmail, newDataOfBirth);
 
-                _logger.Information($"Contact {id} has been updated successfully!");
+                _logger.Information($"Contact {contactId} has been updated successfully!");
+
+                return Ok();
             }
             catch(Exception ex)
             {
@@ -57,14 +59,12 @@ namespace Notebook.WebApi.Controllers
 
                 return StatusCode(500, $"UpdateContact error: {ex.Message}");
             }
-
-            return Ok();
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteContact(Guid id)
+        [HttpDelete("{contactId}")]
+        public async Task<IActionResult> DeleteContact(Guid contactId)
         {
-            var existContact = await _serviceManager.ContactService.GetContactAsync(id);
+            var existContact = await _serviceManager.ContactService.GetContactAsync(contactId);
 
             if (existContact == null)
             {
@@ -76,6 +76,8 @@ namespace Notebook.WebApi.Controllers
                 await _serviceManager.ContactService.DeleteContactAsync(existContact);
 
                 _logger.Information($"Contact deleted: {existContact.Id}");
+
+                return Ok();
             }
             catch(Exception ex)
             {
@@ -83,16 +85,14 @@ namespace Notebook.WebApi.Controllers
 
                 return StatusCode(500, $"DeleteContact error: {ex.Message}");
             }
-
-            return Ok();
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetContactById(Guid id)
+        [HttpGet("{contactId}")]
+        public async Task<IActionResult> GetContactById(Guid contactId)
         {
             try
             {
-                var contact = await _serviceManager.ContactService.GetContactAsync(id);
+                var contact = await _serviceManager.ContactService.GetContactAsync(contactId);
 
                 if (contact == null)
                 {
