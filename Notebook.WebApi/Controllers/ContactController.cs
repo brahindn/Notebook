@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Notebook.Application.Services.Contracts;
+using Notebook.WebApi.Requests;
+using Notebook.WebApi.Responses;
 
 namespace Notebook.WebApi.Controllers
 {
@@ -17,13 +19,18 @@ namespace Notebook.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddContact(string firstName, string lastName, string phoneNumber, string email, DateTime dataOfBirth)
+        public async Task<IActionResult> AddContact([FromBody] ContactForCreateUpdateDTO contact)
         {
+            if(contact == null)
+            {
+                return BadRequest("ContactForCreateUpdateDTO object is null");
+            }
+
             try
             {
-                await _serviceManager.ContactService.CreateContactAsync(firstName, lastName, phoneNumber, email, dataOfBirth);
+                await _serviceManager.ContactService.CreateContactAsync(contact.FirstName, contact.LastName, contact.PhoneNumber, contact.Email, contact.DateOfBirth);
 
-                _logger.Information($"New contact {firstName} {lastName} has been added successfully");
+                _logger.Information($"New contact {contact.FirstName} {contact.LastName} has been added successfully");
 
                 return Ok();
             }
@@ -36,8 +43,13 @@ namespace Notebook.WebApi.Controllers
         }
 
         [HttpPut("{contactId}")]
-        public async Task<IActionResult> UpdateContact(Guid contactId, string newFirstName, string newLastName, string newPhoneNumber, string newEmail, DateTime newDataOfBirth)
+        public async Task<IActionResult> UpdateContact(Guid contactId, [FromBody] ContactForCreateUpdateDTO contact)
         {
+            if(contact == null)
+            {
+                return BadRequest("ContactForCreateUpdateDTO object is null");
+            }
+
             try
             {
                 var existContact = await _serviceManager.ContactService.GetContactAsync(contactId);
@@ -47,7 +59,7 @@ namespace Notebook.WebApi.Controllers
                     return NotFound();
                 }
 
-                await _serviceManager.ContactService.UpdateContactAsync(contactId, newFirstName, newLastName, newPhoneNumber, newEmail, newDataOfBirth);
+                await _serviceManager.ContactService.UpdateContactAsync(contactId, contact.FirstName, contact.LastName, contact.PhoneNumber, contact.Email, contact.DateOfBirth);
 
                 _logger.Information($"Contact {contactId} has been updated successfully!");
 
@@ -99,9 +111,11 @@ namespace Notebook.WebApi.Controllers
                     return NotFound();
                 }
 
-                _logger.Information($"Contact {contact.Id} has been got");
+                var contactDTO = contact;
 
-                return Ok(contact);
+                _logger.Information($"Contact {contactDTO.Id} has been got");
+
+                return Ok(contactDTO);
             }
             catch (Exception ex)
             {
@@ -118,9 +132,19 @@ namespace Notebook.WebApi.Controllers
             {
                 var allContacts = _serviceManager.ContactService.GetAllContacts();
 
+                var contactDTO = allContacts.Select(c => new ContactResponseDTO
+                {
+                    Id = c.Id,
+                    FirstName = c.FirstName,
+                    LastName = c.LastName,
+                    PhoneNumber = c.PhoneNumber,
+                    Email = c.Email,
+                    DateOfBirth = (DateTime)c.DateOfBirth
+                }).ToList();
+
                 _logger.Information("All contacts have been got");
 
-                return Ok(allContacts);
+                return Ok(contactDTO);
             }
             catch (Exception ex)
             {

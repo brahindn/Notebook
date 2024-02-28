@@ -13,7 +13,7 @@ namespace Notebook.Application.Services.Implementation.Services
             _repositoryManager = repositoryManager;
         }
 
-        public async Task CreateContactAsync(string firstName, string lastName, string phoneNumber, string email, DateTime dataOfBirth)
+        public async Task CreateContactAsync(string firstName, string lastName, string phoneNumber, string? email, DateTime? dataOfBirth)
         {
             if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName) || string.IsNullOrWhiteSpace(phoneNumber))
             {
@@ -33,7 +33,7 @@ namespace Notebook.Application.Services.Implementation.Services
             await _repositoryManager.SaveAsync();
         }
 
-        public async Task UpdateContactAsync(Guid contactId, string newFirstName, string newLastName, string newPhoneNumber, string newEmail, DateTime newDataOfBirth)
+        public async Task UpdateContactAsync(Guid contactId, string? newFirstName, string? newLastName, string? newPhoneNumber, string? newEmail, DateTime? newDataOfBirth)
         {
             var existContact = await _repositoryManager.Contact.GetContactAsync(contactId) ?? throw new ArgumentNullException(nameof(contactId));
 
