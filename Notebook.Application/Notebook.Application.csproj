@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="NLog.Extensions.Logging" Version="5.3.8" />
+    <PackageReference Include="Serilog.Sinks.MongoDB" Version="5.4.1" />
   </ItemGroup>
 
   <ItemGroup>

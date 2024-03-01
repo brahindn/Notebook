@@ -74,7 +74,7 @@ namespace Notebook.WebApi.Controllers
         }
 
         [HttpDelete("{contactId}")]
-        public async Task<IActionResult> DeleteContact(Guid contactId)
+        public async Task<IActionResult> DeleteContact([FromQuery] Guid contactId)
         {
             var existContact = await _serviceManager.ContactService.GetContactAsync(contactId);
 

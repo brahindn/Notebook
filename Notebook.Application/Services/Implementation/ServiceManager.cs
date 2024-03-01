@@ -9,14 +9,17 @@ namespace Notebook.Application.Services.Implementation
     {
         private readonly Lazy<IContactService> _contactService;
         private readonly Lazy<IAddressService> _addressService;
+        private readonly Lazy<IMongoService> _mongoService;
 
         public ServiceManager(IRepositoryManager repositoryManager)
         {
             _contactService = new Lazy<IContactService>(() => new ContactService(repositoryManager));
             _addressService = new Lazy<IAddressService>(() => new AddressService(repositoryManager));
+            _mongoService = new Lazy<IMongoService>();
         }
         
         public IContactService ContactService => _contactService.Value;
         public IAddressService AddressService => _addressService.Value;
+        public IMongoService MongoService => _mongoService.Value;
     }
 }

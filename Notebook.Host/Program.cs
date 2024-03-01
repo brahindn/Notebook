@@ -17,7 +17,7 @@ builder.Configuration
 
 var logger = new LoggerConfiguration()
     .MinimumLevel.Information()
-    .WriteTo.MongoDB(databaseUrl: "mongodb://localhost:27017/NotebookLogDB", collectionName: "AppLogs")
+    .WriteTo.MongoDB(databaseUrl: builder.Configuration.GetConnectionString("MongoDBconnection"), collectionName: "AppLogs")
     .CreateLogger();
 
 builder.Services.AddDbContext<RepositoryContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("sqlConnection")));

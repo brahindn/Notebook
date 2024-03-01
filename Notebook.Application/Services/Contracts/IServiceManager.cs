@@ -6,5 +6,6 @@ namespace Notebook.Application.Services.Contracts
     {
         IContactService ContactService { get; }
         IAddressService AddressService { get; }
+        IMongoService MongoService { get; }
     }
 }
