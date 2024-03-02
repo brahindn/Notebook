@@ -15,7 +15,7 @@ namespace Notebook.Application.Services.Implementation
         {
             _contactService = new Lazy<IContactService>(() => new ContactService(repositoryManager));
             _addressService = new Lazy<IAddressService>(() => new AddressService(repositoryManager));
-            _mongoService = new Lazy<IMongoService>();
+            _mongoService = new Lazy<IMongoService>(() => new MongoService());
         }
         
         public IContactService ContactService => _contactService.Value;

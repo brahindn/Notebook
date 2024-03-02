@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Notebook.Application.Services.Contracts;
+using Notebook.WebApi.Responses;
 
 namespace Notebook.WebApi.Controllers
 {
@@ -22,9 +23,17 @@ namespace Notebook.WebApi.Controllers
             {
                 var logsCollection = await _serviceManager.MongoService.GetDataFromMongoDB();
 
+                var logsColleectionDTO = logsCollection.Select(logs => new LogsResponseDTO
+                {
+                    Id = logs["_id"]?.AsObjectId.ToString(),
+                    Level = logs["Level"]?.AsString,
+                    UtcTimesTamp = logs["UtcTimestamp"]?.AsString,
+                    Message = logs["MessageTemplate"]?.AsString
+                }).ToList();
+
                 _logger.Information("All logs have been got.");
 
-                return Ok(logsCollection);
+                return Ok(logsColleectionDTO);
             }
             catch (Exception ex)
             {
@@ -32,7 +41,6 @@ namespace Notebook.WebApi.Controllers
 
                 return StatusCode(500, $"GetAllLogs error: {ex.Message}");
             }
-            
         }
     }
 }
