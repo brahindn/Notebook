@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using NLog;
 using Notebook.Application.Services.Contracts;
 using Notebook.Application.Services.Implementation;
 using Notebook.DataAccess;
@@ -20,8 +19,8 @@ var logger = new LoggerConfiguration()
     .WriteTo.MongoDB(databaseUrl: builder.Configuration.GetConnectionString("MongoDBconnection"), collectionName: "AppLogs")
     .CreateLogger();
 
-builder.Services.AddDbContext<RepositoryContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("sqlConnection")));
 
+builder.Services.AddDbContext<RepositoryContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("sqlConnection")));
 builder.Services.AddSingleton<ILogger>(logger);
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddScoped<IServiceManager, ServiceManager>();

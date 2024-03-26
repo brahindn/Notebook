@@ -16,5 +16,14 @@ namespace Notebook.Repositories.Implementation.Repositories
         {
             return await FindByCondition(c => c.Id == contactId).SingleOrDefaultAsync();
         }
+
+        public async Task<Contact> GetContactByFieldsAsync(string newFirstName, string newLastName, string newPhoneNumber)
+        {
+            return await FindByCondition(c =>
+            c.FirstName == newFirstName &&
+            c.LastName == newLastName && 
+            c.PhoneNumber == newPhoneNumber).
+            SingleOrDefaultAsync();
+        }
     }
 }

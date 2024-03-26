@@ -1,7 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Notebook.Application.Services.Contracts;
+using Notebook.WebApi.Customers;
 using Notebook.WebApi.Requests;
 using Notebook.WebApi.Responses;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
+using System.Text;
 
 namespace Notebook.WebApi.Controllers
 {
@@ -15,22 +20,62 @@ namespace Notebook.WebApi.Controllers
         public ContactController(IServiceManager serviceManager, Serilog.ILogger logger)
         {
             _serviceManager = serviceManager;
-            _logger = logger;
         }
 
-        [HttpPost]
+        [HttpPost("add")]
         public async Task<IActionResult> AddContact([FromBody] ContactForCreateUpdateDTO contact)
         {
-            if(contact == null)
+            if (contact == null)
             {
                 return BadRequest("ContactForCreateUpdateDTO object is null");
             }
 
             try
             {
-                await _serviceManager.ContactService.CreateContactAsync(contact.FirstName, contact.LastName, contact.PhoneNumber, contact.Email, contact.DateOfBirth);
+                SendTaskIntoAddQueue(contact);
 
-                _logger.Information($"New contact {contact.FirstName} {contact.LastName} has been added successfully");
+                //_logger.Information($"New contact {contact.FirstName} {contact.LastName} has been added successfully");
+
+                //ReaderMessages();
+
+                var factory = new ConnectionFactory() { HostName = "localhost" };
+
+                using (var connection = factory.CreateConnection())
+                {
+                    using (var channel = connection.CreateModel())
+                    {
+                        channel.QueueDeclare(
+                            queue: "ForAdding",
+                            durable: false,
+                            exclusive: false,
+                            autoDelete: false,
+                            arguments: null);
+
+                        var consumer = new EventingBasicConsumer(channel);
+
+                        consumer.Received += async (sender, e) =>
+                        {
+                            try
+                            {
+                                var body = e.Body;
+                                var message = Encoding.UTF8.GetString(body.ToArray());
+
+                                contact = JsonConvert.DeserializeObject<ContactForCreateUpdateDTO>(message);
+
+                                await _serviceManager.ContactService.CreateContactAsync(contact.FirstName, contact.LastName, contact.PhoneNumber, contact.Email, contact.DateOfBirth);
+                            }
+                            catch (Exception ex)
+                            {
+                                throw ex.InnerException;
+                            }
+                        };
+
+                        channel.BasicConsume(
+                            queue: "ForAdding",
+                            autoAck: true,
+                            consumer: consumer);
+                    }
+                }
 
                 return Ok();
             }
@@ -42,30 +87,34 @@ namespace Notebook.WebApi.Controllers
             }
         }
 
-        [HttpPut("{contactId}")]
+        [HttpPut("{update}")]
         public async Task<IActionResult> UpdateContact(Guid contactId, [FromBody] ContactForCreateUpdateDTO contact)
         {
-            if(contact == null)
+            if (contact == null)
             {
                 return BadRequest("ContactForCreateUpdateDTO object is null");
             }
+
+            string routingKey = "UpdateContactKey";
 
             try
             {
                 var existContact = await _serviceManager.ContactService.GetContactAsync(contactId);
 
                 if (existContact == null)
-                { 
+                {
                     return NotFound();
                 }
 
-                await _serviceManager.ContactService.UpdateContactAsync(contactId, contact.FirstName, contact.LastName, contact.PhoneNumber, contact.Email, contact.DateOfBirth);
+                SendTaskIntoAddQueue(contact);
+
+                /*await _serviceManager.ContactService.UpdateContactAsync(contactId, contact.FirstName, contact.LastName, contact.PhoneNumber, contact.Email, contact.DateOfBirth);*/
 
                 _logger.Information($"Contact {contactId} has been updated successfully!");
 
                 return Ok();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.Error(ex.InnerException.Message);
 
@@ -73,7 +122,7 @@ namespace Notebook.WebApi.Controllers
             }
         }
 
-        [HttpDelete("{contactId}")]
+        [HttpDelete("{delete}")]
         public async Task<IActionResult> DeleteContact([FromQuery] Guid contactId)
         {
             var existContact = await _serviceManager.ContactService.GetContactAsync(contactId);
@@ -91,7 +140,7 @@ namespace Notebook.WebApi.Controllers
 
                 return Ok();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.Error(ex.InnerException.Message);
 
@@ -99,7 +148,7 @@ namespace Notebook.WebApi.Controllers
             }
         }
 
-        [HttpGet("{contactId}")]
+        [HttpGet("{getById}")]
         public async Task<IActionResult> GetContactById(Guid contactId)
         {
             try
@@ -125,7 +174,7 @@ namespace Notebook.WebApi.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("{getAll}")]
         public IActionResult GetAllContacts()
         {
             try
@@ -136,7 +185,7 @@ namespace Notebook.WebApi.Controllers
                 {
                     Id = c.Id,
                     FirstName = c.FirstName,
-                    LastName = c.LastName,      
+                    LastName = c.LastName,
                     PhoneNumber = c.PhoneNumber,
                     Email = c.Email,
                     DateOfBirth = (DateTime)c.DateOfBirth
@@ -153,5 +202,82 @@ namespace Notebook.WebApi.Controllers
                 return StatusCode(500, $"GetContacts error: {ex.Message}");
             }
         }
+
+        private static void SendTaskIntoAddQueue(ContactForCreateUpdateDTO contact)
+        {
+            var factory = new ConnectionFactory() { HostName = "localhost" };
+
+            using (var connection = factory.CreateConnection())
+            {
+                using (var channel = connection.CreateModel())
+                {
+                    channel.QueueDeclare(
+                        queue: "ForAdding",
+                        durable: false,
+                        exclusive: false,
+                        autoDelete: false,
+                        arguments: null);
+
+                    string message = JsonConvert.SerializeObject(contact);
+
+                    var body = Encoding.UTF8.GetBytes(message);
+
+                    channel.BasicPublish(
+                    exchange: "",
+                    routingKey: "ForAdding",
+                    basicProperties: null,
+                    body: body);
+                }
+            }
+        }
+
+        /*private void ReaderMessages()
+        {
+            var factory = new ConnectionFactory() { HostName = "localhost" };
+
+            using (var connection = factory.CreateConnection())
+            {
+                using (var channel = connection.CreateModel())
+                {
+                    channel.QueueDeclare(
+                            queue: "ForAdding",
+                            durable: false,
+                            exclusive: false,
+                            autoDelete: false,
+                            arguments: null);
+
+                    var consumer = new EventingBasicConsumer(channel);
+                    ContactForCreateUpdateDTO contact;
+
+                    consumer.Received += async (sender, e) =>
+                    {
+                        try
+                        {
+                            var body = e.Body;
+                            var message = Encoding.UTF8.GetString(body.ToArray());
+
+                            contact = JsonConvert.DeserializeObject<ContactForCreateUpdateDTO>(message);
+
+                            await WriteInDB(contact);
+                        }
+                        catch(Exception ex)
+                        {
+                            throw ex.InnerException;
+                        }
+                    };
+
+                    channel.BasicConsume(
+                        queue: "ForAdding",
+                        autoAck: true,
+                        consumer: consumer);
+
+                }
+            }
+        }*/
+
+        /*private async Task WriteInDB(ContactForCreateUpdateDTO contact)
+        {
+            await _serviceManager.ContactService.CreateContactAsync(contact.FirstName, contact.LastName, contact.PhoneNumber, contact.Email, contact.DateOfBirth);
+        }*/
     }
 }

@@ -33,9 +33,9 @@ namespace Notebook.Application.Services.Implementation.Services
             await _repositoryManager.SaveAsync();
         }
 
-        public async Task UpdateContactAsync(Guid contactId, string? newFirstName, string? newLastName, string? newPhoneNumber, string? newEmail, DateTime? newDataOfBirth)
+        public async Task UpdateContactAsync(string? newFirstName, string? newLastName, string? newPhoneNumber, string? newEmail, DateTime? newDataOfBirth)
         {
-            var existContact = await _repositoryManager.Contact.GetContactAsync(contactId) ?? throw new ArgumentNullException(nameof(contactId));
+            var existContact = await _repositoryManager.Contact.GetContactByFieldsAsync(newFirstName, newLastName, newPhoneNumber) ?? throw new ArgumentNullException("That contact was not found.");
 
             existContact.FirstName = newFirstName;
             existContact.LastName = newLastName;
@@ -61,6 +61,11 @@ namespace Notebook.Application.Services.Implementation.Services
         public Task<Contact> GetContactAsync(Guid contactId)
         {
             return _repositoryManager.Contact.GetContactAsync(contactId);
+        }
+
+        public Task<Contact> GetContactAsyncByFields(string? newFirstName, string? newLastName, string? newPhoneNumber)
+        {
+            return _repositoryManager.Contact.GetContactByFieldsAsync(newFirstName, newLastName, newPhoneNumber);
         }
 
         public IQueryable<Contact> GetAllContacts()
