@@ -3,16 +3,16 @@
   "WorkspaceRootPath": "C:\\Projects\\.NET 6.0\\Notebook\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{9A8A5016-E8F1-4D98-B434-CE10266F9E67}|Notebook.WebApi\\Notebook.WebApi.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.webapi\\controllers\\contactcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9A8A5016-E8F1-4D98-B434-CE10266F9E67}|Notebook.WebApi\\Notebook.WebApi.csproj|solutionrelative:notebook.webapi\\controllers\\contactcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{9A8A5016-E8F1-4D98-B434-CE10266F9E67}|Notebook.WebApi\\Notebook.WebApi.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.webapi\\customers\\addcustomer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9A8A5016-E8F1-4D98-B434-CE10266F9E67}|Notebook.WebApi\\Notebook.WebApi.csproj|solutionrelative:notebook.webapi\\customers\\addcustomer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{4E2A5832-C3AE-4D69-86E5-633E6C1A75C0}|Notebook.Repositories\\Notebook.Repositories.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.repositories\\implementation\\repositorybase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{4E2A5832-C3AE-4D69-86E5-633E6C1A75C0}|Notebook.Repositories\\Notebook.Repositories.csproj|solutionrelative:notebook.repositories\\implementation\\repositorybase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9A8A5016-E8F1-4D98-B434-CE10266F9E67}|Notebook.WebApi\\Notebook.WebApi.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.webapi\\controllers\\contactcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9A8A5016-E8F1-4D98-B434-CE10266F9E67}|Notebook.WebApi\\Notebook.WebApi.csproj|solutionrelative:notebook.webapi\\controllers\\contactcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2F935B6-23AC-4EB2-B704-74731EB6206E}|Notebook.Host\\Notebook.Host.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.host\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -26,7 +26,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 8,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
@@ -54,39 +54,39 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "AddCustomer.cs",
               "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.WebApi\\Customers\\AddCustomer.cs",
               "RelativeDocumentMoniker": "Notebook.WebApi\\Customers\\AddCustomer.cs",
               "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.WebApi\\Customers\\AddCustomer.cs",
               "RelativeToolTip": "Notebook.WebApi\\Customers\\AddCustomer.cs",
-              "ViewState": "AQIAACwAAAAAAAAAAAAAAEEAAAANAAAA",
+              "ViewState": "AQIAACcAAAAAAAAAAAAtwDgAAAA4AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-03-26T21:56:59.389Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "RepositoryBase.cs",
               "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Repositories\\Implementation\\RepositoryBase.cs",
               "RelativeDocumentMoniker": "Notebook.Repositories\\Implementation\\RepositoryBase.cs",
               "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Repositories\\Implementation\\RepositoryBase.cs",
               "RelativeToolTip": "Notebook.Repositories\\Implementation\\RepositoryBase.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAAIAAAA",
+              "ViewState": "AQIAAAQAAAAAAAAAAAAtwBEAAAAMAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-03-26T21:12:54.017Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "ContactController.cs",
               "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.WebApi\\Controllers\\ContactController.cs",
               "RelativeDocumentMoniker": "Notebook.WebApi\\Controllers\\ContactController.cs",
               "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.WebApi\\Controllers\\ContactController.cs",
               "RelativeToolTip": "Notebook.WebApi\\Controllers\\ContactController.cs",
-              "ViewState": "AQIAABgAAAAAAAAAAAAgwCsAAAARAAAA",
+              "ViewState": "AQIAABEAAAAAAAAAAAAqwCIAAAAuAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-03-19T20:38:08.404Z",
               "EditorCaption": ""
@@ -101,8 +101,7 @@
               "RelativeToolTip": "Notebook.Host\\Program.cs",
               "ViewState": "AQIAAAwAAAAAAAAAAAAAABAAAAAmAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-11T14:36:38.091Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-03-11T14:36:38.091Z"
             }
           ]
         },

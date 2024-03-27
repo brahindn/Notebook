@@ -38,46 +38,10 @@ namespace Notebook.WebApi.Controllers
 
                 //ReaderMessages();
 
-                var factory = new ConnectionFactory() { HostName = "localhost" };
+                var instance = new AddCustomer(_serviceManager);
+                instance.Add();
 
-                using (var connection = factory.CreateConnection())
-                {
-                    using (var channel = connection.CreateModel())
-                    {
-                        channel.QueueDeclare(
-                            queue: "ForAdding",
-                            durable: false,
-                            exclusive: false,
-                            autoDelete: false,
-                            arguments: null);
-
-                        var consumer = new EventingBasicConsumer(channel);
-
-                        consumer.Received += async (sender, e) =>
-                        {
-                            try
-                            {
-                                var body = e.Body;
-                                var message = Encoding.UTF8.GetString(body.ToArray());
-
-                                contact = JsonConvert.DeserializeObject<ContactForCreateUpdateDTO>(message);
-
-                                await _serviceManager.ContactService.CreateContactAsync(contact.FirstName, contact.LastName, contact.PhoneNumber, contact.Email, contact.DateOfBirth);
-                            }
-                            catch (Exception ex)
-                            {
-                                throw ex.InnerException;
-                            }
-                        };
-
-                        channel.BasicConsume(
-                            queue: "ForAdding",
-                            autoAck: true,
-                            consumer: consumer);
-                    }
-                }
-
-                return Ok();
+                return Ok(); 
             }
             catch (Exception ex)
             {
