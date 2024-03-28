@@ -20,6 +20,7 @@ namespace Notebook.WebApi.Controllers
         public ContactController(IServiceManager serviceManager, Serilog.ILogger logger)
         {
             _serviceManager = serviceManager;
+            _logger = logger;
         }
 
         [HttpPost("add")]
@@ -34,12 +35,7 @@ namespace Notebook.WebApi.Controllers
             {
                 SendTaskIntoAddQueue(contact);
 
-                //_logger.Information($"New contact {contact.FirstName} {contact.LastName} has been added successfully");
-
-                //ReaderMessages();
-
-                var instance = new AddCustomer(_serviceManager);
-                instance.Add();
+                _logger.Information($"New contact {contact.FirstName} {contact.LastName} has been added successfully");
 
                 return Ok(); 
             }
@@ -194,54 +190,5 @@ namespace Notebook.WebApi.Controllers
                 }
             }
         }
-
-        /*private void ReaderMessages()
-        {
-            var factory = new ConnectionFactory() { HostName = "localhost" };
-
-            using (var connection = factory.CreateConnection())
-            {
-                using (var channel = connection.CreateModel())
-                {
-                    channel.QueueDeclare(
-                            queue: "ForAdding",
-                            durable: false,
-                            exclusive: false,
-                            autoDelete: false,
-                            arguments: null);
-
-                    var consumer = new EventingBasicConsumer(channel);
-                    ContactForCreateUpdateDTO contact;
-
-                    consumer.Received += async (sender, e) =>
-                    {
-                        try
-                        {
-                            var body = e.Body;
-                            var message = Encoding.UTF8.GetString(body.ToArray());
-
-                            contact = JsonConvert.DeserializeObject<ContactForCreateUpdateDTO>(message);
-
-                            await WriteInDB(contact);
-                        }
-                        catch(Exception ex)
-                        {
-                            throw ex.InnerException;
-                        }
-                    };
-
-                    channel.BasicConsume(
-                        queue: "ForAdding",
-                        autoAck: true,
-                        consumer: consumer);
-
-                }
-            }
-        }*/
-
-        /*private async Task WriteInDB(ContactForCreateUpdateDTO contact)
-        {
-            await _serviceManager.ContactService.CreateContactAsync(contact.FirstName, contact.LastName, contact.PhoneNumber, contact.Email, contact.DateOfBirth);
-        }*/
     }
 }
