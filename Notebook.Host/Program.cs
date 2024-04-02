@@ -5,7 +5,9 @@ using Notebook.DataAccess;
 using Notebook.Repositories.Contracts;
 using Notebook.Repositories.Implementation;
 using Notebook.WebApi;
-using Notebook.WebApi.Customers;
+using Notebook.WebApi.RabbitMQ;
+using Notebook.WebApi.RabbitMQ.Connection;
+using RabbitMQ.Client.Events;
 using Serilog;
 using ILogger = Serilog.ILogger;
 
@@ -25,7 +27,8 @@ builder.Services.AddDbContext<RepositoryContext>(options => options.UseSqlServer
 builder.Services.AddSingleton<ILogger>(logger);
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddScoped<IServiceManager, ServiceManager>();
-builder.Services.AddHostedService<CustomerHostedService>();
+builder.Services.AddSingleton<IRabbitMQConnection>(new RabbitMQConnection());
+builder.Services.AddScoped<IMessageProducer, MessageProducer>();
 
 builder.Services.AddControllers()
     .AddApplicationPart(typeof(AssemblyReference).Assembly);

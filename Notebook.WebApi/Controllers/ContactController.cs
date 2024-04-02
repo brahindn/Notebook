@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Notebook.Application.Services.Contracts;
-using Notebook.WebApi.Customers;
+using Notebook.WebApi.RabbitMQ;
 using Notebook.WebApi.Requests;
 using Notebook.WebApi.Responses;
 using RabbitMQ.Client;
@@ -16,11 +16,13 @@ namespace Notebook.WebApi.Controllers
     {
         private readonly IServiceManager _serviceManager;
         private readonly Serilog.ILogger _logger;
+        private readonly IMessageProducer _messageProducer;
 
-        public ContactController(IServiceManager serviceManager, Serilog.ILogger logger)
+        public ContactController(IServiceManager serviceManager, Serilog.ILogger logger, IMessageProducer messageProducer)
         {
             _serviceManager = serviceManager;
             _logger = logger;
+            _messageProducer = messageProducer;
         }
 
         [HttpPost("add")]
@@ -33,7 +35,7 @@ namespace Notebook.WebApi.Controllers
 
             try
             {
-                SendTaskIntoAddQueue(contact);
+                _messageProducer.SendMessage(contact);
 
                 _logger.Information($"New contact {contact.FirstName} {contact.LastName} has been added successfully");
 
@@ -55,8 +57,6 @@ namespace Notebook.WebApi.Controllers
                 return BadRequest("ContactForCreateUpdateDTO object is null");
             }
 
-            string routingKey = "UpdateContactKey";
-
             try
             {
                 var existContact = await _serviceManager.ContactService.GetContactAsync(contactId);
@@ -65,10 +65,6 @@ namespace Notebook.WebApi.Controllers
                 {
                     return NotFound();
                 }
-
-                SendTaskIntoAddQueue(contact);
-
-                /*await _serviceManager.ContactService.UpdateContactAsync(contactId, contact.FirstName, contact.LastName, contact.PhoneNumber, contact.Email, contact.DateOfBirth);*/
 
                 _logger.Information($"Contact {contactId} has been updated successfully!");
 
@@ -160,34 +156,6 @@ namespace Notebook.WebApi.Controllers
                 _logger.Error(ex.InnerException.Message);
 
                 return StatusCode(500, $"GetContacts error: {ex.Message}");
-            }
-        }
-
-        private static void SendTaskIntoAddQueue(ContactForCreateUpdateDTO contact)
-        {
-            var factory = new ConnectionFactory() { HostName = "localhost" };
-
-            using (var connection = factory.CreateConnection())
-            {
-                using (var channel = connection.CreateModel())
-                {
-                    channel.QueueDeclare(
-                        queue: "ForAdding",
-                        durable: false,
-                        exclusive: false,
-                        autoDelete: false,
-                        arguments: null);
-
-                    string message = JsonConvert.SerializeObject(contact);
-
-                    var body = Encoding.UTF8.GetBytes(message);
-
-                    channel.BasicPublish(
-                    exchange: "",
-                    routingKey: "ForAdding",
-                    basicProperties: null,
-                    body: body);
-                }
             }
         }
     }
