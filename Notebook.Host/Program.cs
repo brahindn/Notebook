@@ -7,6 +7,7 @@ using Notebook.Repositories.Implementation;
 using Notebook.WebApi;
 using Notebook.WebApi.RabbitMQ;
 using Notebook.WebApi.RabbitMQ.Connection;
+using Notebook.WebApi.RabbitMQ.Consumers;
 using RabbitMQ.Client.Events;
 using Serilog;
 using ILogger = Serilog.ILogger;
@@ -29,6 +30,7 @@ builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddScoped<IServiceManager, ServiceManager>();
 builder.Services.AddSingleton<IRabbitMQConnection>(new RabbitMQConnection());
 builder.Services.AddScoped<IMessageProducer, MessageProducer>();
+builder.Services.AddSingleton<Consumer>(); //без этой строки проект запускается, но не активируется слушание очереди...
 
 builder.Services.AddControllers()
     .AddApplicationPart(typeof(AssemblyReference).Assembly);
