@@ -6,7 +6,7 @@ namespace Notebook.Repositories.Implementation
 {
     public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
     {
-        private RepositoryContext _repositoryContext;
+        private readonly RepositoryContext _repositoryContext;
 
         public RepositoryBase(RepositoryContext repositoryContext)
         {

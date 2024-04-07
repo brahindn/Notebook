@@ -16,9 +16,9 @@ namespace Notebook.WebApi.Controllers
     {
         private readonly IServiceManager _serviceManager;
         private readonly Serilog.ILogger _logger;
-        private readonly IMessageProducer _messageProducer;
+        private readonly MessageProducer _messageProducer;
 
-        public ContactController(IServiceManager serviceManager, Serilog.ILogger logger, IMessageProducer messageProducer)
+        public ContactController(IServiceManager serviceManager, Serilog.ILogger logger, MessageProducer messageProducer)
         {
             _serviceManager = serviceManager;
             _logger = logger;

@@ -6,11 +6,13 @@ using Notebook.Repositories.Contracts;
 using Notebook.Repositories.Implementation;
 using Notebook.WebApi;
 using Notebook.WebApi.RabbitMQ;
-using Notebook.WebApi.RabbitMQ.Connection;
-using Notebook.WebApi.RabbitMQ.Consumers;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client;
 using Serilog;
 using ILogger = Serilog.ILogger;
+using System.Text;
+using Notebook.WebApi.Requests;
+using System.Text.Json;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,14 +25,12 @@ var logger = new LoggerConfiguration()
     .WriteTo.MongoDB(databaseUrl: builder.Configuration.GetConnectionString("MongoDBconnection"), collectionName: "AppLogs")
     .CreateLogger();
 
-
 builder.Services.AddDbContext<RepositoryContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("sqlConnection")));
 builder.Services.AddSingleton<ILogger>(logger);
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddScoped<IServiceManager, ServiceManager>();
-builder.Services.AddSingleton<IRabbitMQConnection>(new RabbitMQConnection());
-builder.Services.AddScoped<IMessageProducer, MessageProducer>();
-builder.Services.AddSingleton<Consumer>(); //без этой строки проект запускается, но не активируется слушание очереди...
+builder.Services.AddScoped<MessageProducer>();
+
 
 builder.Services.AddControllers()
     .AddApplicationPart(typeof(AssemblyReference).Assembly);
@@ -56,4 +56,47 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+RabbitMQConsumer();
+
 app.Run();
+
+void RabbitMQConsumer()
+{
+    var factory = new ConnectionFactory { HostName = "localhost" };
+    using var connection = factory.CreateConnection();
+    using var channel = connection.CreateModel();
+
+    channel.QueueDeclare(queue: "ForAdding",
+                         durable: false,
+                         exclusive: false,
+                         autoDelete: false,
+                         arguments: null);
+
+    var consumer = new EventingBasicConsumer(channel);
+
+    consumer.Received += async (model, ea) =>
+    {
+        var body = ea.Body.ToArray();
+        var message = Encoding.UTF8.GetString(body);
+
+        Console.WriteLine(message.ToString());
+
+        var contact = JsonSerializer.Deserialize<ContactForCreateUpdateDTO>(message);
+
+        using var scope = app.Services.CreateScope();
+        var serviceManager = scope.ServiceProvider.GetService<IServiceManager>();
+
+        try
+        {
+            await serviceManager.ContactService.CreateContactAsync(contact.FirstName, contact.LastName, contact.PhoneNumber, contact.Email, contact.DateOfBirth);
+        }
+        catch(Exception ex)
+        {
+            throw new Exception(ex.InnerException.Message);
+        } 
+    };
+
+    channel.BasicConsume(queue: "ForAdding",
+                         autoAck: true,
+                         consumer: consumer);
+}
