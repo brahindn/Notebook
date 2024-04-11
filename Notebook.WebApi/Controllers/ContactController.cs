@@ -1,12 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Notebook.Application.Services.Contracts;
 using Notebook.WebApi.RabbitMQ;
 using Notebook.WebApi.Requests;
 using Notebook.WebApi.Responses;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
-using System.Text;
 
 namespace Notebook.WebApi.Controllers
 {

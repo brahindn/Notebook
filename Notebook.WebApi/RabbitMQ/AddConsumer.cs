@@ -7,32 +7,41 @@ using System.Text;
 using Notebook.Application.Services.Contracts;
 using System.Text.Json;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using System.Threading.Channels;
+using Microsoft.Extensions.DependencyInjection;
+using Notebook.Application.Services.Implementation;
 
 namespace Notebook.WebApi.RabbitMQ
 {
-    public class AddConsumer : BackgroundService
+    public class AddConsumer : IHostedService, IDisposable
     {
-        private readonly IServiceManager _serviceManager;
-        public AddConsumer(IServiceManager serviceManager)
-        {
-            _serviceManager = serviceManager;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
+        private IConnection _connection;
+        private IModel _channel;
 
-            //GetMessage();
+        public AddConsumer(IServiceScopeFactory serviceScopeFactory)
+        {
+            _serviceScopeFactory = serviceScopeFactory;
+            InitRabbitMQ();
         }
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        private void InitRabbitMQ()
         {
             var factory = new ConnectionFactory { HostName = "localhost" };
-            using var connection = factory.CreateConnection();
-            using var channel = connection.CreateModel();
+            _connection = factory.CreateConnection();
+            _channel = _connection.CreateModel();
 
-            channel.QueueDeclare(queue: "ForAdding",
+            _channel.QueueDeclare(queue: "ForAdding",
                                  durable: false,
                                  exclusive: false,
                                  autoDelete: false,
                                  arguments: null);
+        }
 
-            var consumer = new EventingBasicConsumer(channel);
+        public Task StartAsync(CancellationToken cancellationToken)
+        {
+            var consumer = new EventingBasicConsumer(_channel);
 
             consumer.Received += async (model, ea) =>
             {
@@ -40,18 +49,33 @@ namespace Notebook.WebApi.RabbitMQ
                 var message = Encoding.UTF8.GetString(body);
                 var contact = JsonSerializer.Deserialize<ContactForCreateUpdateDTO>(message);
 
-                await _serviceManager.ContactService.CreateContactAsync(contact.FirstName, contact.LastName, contact.PhoneNumber, contact.Email, contact.DateOfBirth);
+                using (var scope = _serviceScopeFactory.CreateScope())
+                {
+                    var serviceManager = scope.ServiceProvider.GetRequiredService<IServiceManager>();
+
+                    await serviceManager.ContactService.CreateContactAsync(contact.FirstName, contact.LastName, contact.PhoneNumber, contact.Email, contact.DateOfBirth);
+                }
             };
-            channel.BasicConsume(queue: "ForAdding",
+
+            _channel.BasicConsume(queue: "ForAdding",
                                  autoAck: true,
                                  consumer: consumer);
 
             return Task.CompletedTask;
         }
 
-        private void GetMessage()
+        public Task StopAsync(CancellationToken stoppingToken)
         {
-            
+            _channel.Close();
+            _connection.Close();
+
+            return Task.CompletedTask;
+        }
+
+        public void Dispose()
+        {
+            _channel?.Dispose();
+            _connection?.Dispose();
         }
     }
 }
