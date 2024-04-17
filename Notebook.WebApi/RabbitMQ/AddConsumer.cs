@@ -1,16 +1,11 @@
-﻿using Notebook.Domain.Entities;
-using Notebook.WebApi.Requests;
-using RabbitMQ.Client.Events;
-using RabbitMQ.Client;
-using System;
-using System.Text;
-using Notebook.Application.Services.Contracts;
-using System.Text.Json;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System.Threading.Channels;
-using Microsoft.Extensions.DependencyInjection;
-using Notebook.Application.Services.Implementation;
+using Notebook.Application.Services.Contracts;
+using Notebook.WebApi.Requests;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
+using System.Text;
+using System.Text.Json;
 
 namespace Notebook.WebApi.RabbitMQ
 {
@@ -19,6 +14,7 @@ namespace Notebook.WebApi.RabbitMQ
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private IConnection _connection;
         private IModel _channel;
+        private string _queueName;
 
         public AddConsumer(IServiceScopeFactory serviceScopeFactory)
         {
@@ -32,11 +28,13 @@ namespace Notebook.WebApi.RabbitMQ
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
 
-            _channel.QueueDeclare(queue: "ForAdding",
-                                 durable: false,
-                                 exclusive: false,
-                                 autoDelete: false,
-                                 arguments: null);
+            _channel.ExchangeDeclare(exchange: "direct_actions", type: ExchangeType.Direct);
+
+            _queueName = _channel.QueueDeclare().QueueName;
+
+            _channel.QueueBind(queue: _queueName,
+                               exchange: "direct_actions",
+                               routingKey: "AddKey");
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -57,14 +55,14 @@ namespace Notebook.WebApi.RabbitMQ
                 }
             };
 
-            _channel.BasicConsume(queue: "ForAdding",
+            _channel.BasicConsume(queue: _queueName,
                                  autoAck: true,
                                  consumer: consumer);
 
             return Task.CompletedTask;
         }
 
-        public Task StopAsync(CancellationToken stoppingToken)
+        public Task StopAsync(CancellationToken cancellationToken)
         {
             _channel.Close();
             _connection.Close();

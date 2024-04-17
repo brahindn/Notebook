@@ -31,7 +31,9 @@ namespace Notebook.WebApi.Controllers
 
             try
             {
-                _messageProducer.SendMessage(contact);
+                var routingKey = "AddKey";
+
+                _messageProducer.SendMessage(contact, routingKey);
 
                 _logger.Information($"New contact {contact.FirstName} {contact.LastName} has been added successfully");
 
@@ -62,6 +64,10 @@ namespace Notebook.WebApi.Controllers
                     return NotFound();
                 }
 
+                var routingKey = "UpdateKey";
+
+                _messageProducer.SendMessage(contact, routingKey);
+
                 _logger.Information($"Contact {contactId} has been updated successfully!");
 
                 return Ok();
@@ -86,7 +92,9 @@ namespace Notebook.WebApi.Controllers
 
             try
             {
-                await _serviceManager.ContactService.DeleteContactAsync(existContact);
+                var routingKey = "DeleteKey";
+
+                _messageProducer.SendMessage(existContact, routingKey);
 
                 _logger.Information($"Contact deleted: {existContact.Id}");
 

@@ -21,6 +21,9 @@ var logger = new LoggerConfiguration()
     .CreateLogger();
 
 builder.Services.AddHostedService<AddConsumer>();
+builder.Services.AddHostedService<UpdateConsumer>();
+builder.Services.AddHostedService<DeleteConsumer>();
+
 builder.Services.AddDbContext<RepositoryContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("sqlConnection")));
 builder.Services.AddSingleton<ILogger>(logger);
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
