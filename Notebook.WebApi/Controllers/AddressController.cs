@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Notebook.Application.Services.Contracts;
+using Notebook.WebApi.RabbitMQ;
 using Notebook.WebApi.Requests;
 using Notebook.WebApi.Responses;
 
@@ -10,11 +11,13 @@ namespace Notebook.WebApi.Controllers
     {
         private readonly IServiceManager _serviceManager;
         private readonly Serilog.ILogger _logger;
+        private readonly MessageProducer _messageProducer;
 
-        public AddressController(IServiceManager serviceManager, Serilog.ILogger logger)
+        public AddressController(IServiceManager serviceManager, Serilog.ILogger logger, MessageProducer messageProducer)
         {
             _serviceManager = serviceManager;
             _logger = logger;
+            _messageProducer = messageProducer;
         }
 
         [HttpPost]
@@ -27,7 +30,9 @@ namespace Notebook.WebApi.Controllers
 
             try
             {
-                await _serviceManager.AddressService.CreateAddressAsync(address.AddressType, address.Country, address.Region, address.City, address.Street, address.BuildingNumber, address.ContactId);
+                var routingKey = "AddKey";
+
+                _messageProducer.SendMessage(address, routingKey);
 
                 _logger.Information($"New address for contact {address.ContactId} has been added successfully");
 
@@ -42,7 +47,7 @@ namespace Notebook.WebApi.Controllers
         }
 
         [HttpPut("{addressId}")]
-        public async Task<IActionResult> UpdateAddress(Guid addressId, AddressForUpdateDTO address)
+        public async Task<IActionResult> UpdateAddress([FromBody] AddressForUpdateDTO address)
         {
             if (address == null)
             {
@@ -51,16 +56,11 @@ namespace Notebook.WebApi.Controllers
 
             try
             {
-                var existAddress = await _serviceManager.AddressService.GetAddressAsync(addressId);
+                var routingKey = "UpdateKey";
 
-                if (existAddress == null)
-                {
-                    return NotFound();
-                }
+                _messageProducer.SendMessage(address, routingKey);
 
-                await _serviceManager.AddressService.UpdateAddressAsync(addressId, address.AddressType, address.Country, address.Region, address.City, address.Street, address.BuildingNumber);
-
-                _logger.Information($"Updated address: {addressId}");
+                _logger.Information($"Updated address: {address.Id}");
 
                 return Ok();
             }
@@ -84,9 +84,11 @@ namespace Notebook.WebApi.Controllers
 
             try
             {
-                await _serviceManager.AddressService.DeleteAddressAsync(existAddress);
+                var routingKey = "DeleteKey";
 
-                _logger.Information($"Contact deleted: {existAddress.Id}");
+                _messageProducer.SendMessage(existAddress, routingKey);
+
+                _logger.Information($"Deleted address: {existAddress.Id}");
 
                 return Ok();
             }
@@ -94,7 +96,7 @@ namespace Notebook.WebApi.Controllers
             {
                 _logger.Error(ex.InnerException.Message);
 
-                return StatusCode(500, $"UpdateContact error: {ex.Message}");
+                return StatusCode(500, $"DeleteAddress error: {ex.Message}");
             }
         }
 

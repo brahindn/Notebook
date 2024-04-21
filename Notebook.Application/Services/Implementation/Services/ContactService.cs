@@ -63,11 +63,6 @@ namespace Notebook.Application.Services.Implementation.Services
             return _repositoryManager.Contact.GetContactAsync(contactId);
         }
 
-        public Task<Contact> GetContactAsyncByFields(string? newFirstName, string? newLastName, string? newPhoneNumber)
-        {
-            return _repositoryManager.Contact.GetContactByFieldsAsync(newFirstName, newLastName, newPhoneNumber);
-        }
-
         public IQueryable<Contact> GetAllContacts()
         {
             var companies = _repositoryManager.Contact.GetAll();

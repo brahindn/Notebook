@@ -38,16 +38,16 @@ namespace Notebook.Application.Services.Implementation.Services
             await _repositoryManager.SaveAsync();
         }
 
-        public async Task UpdateAddressAsync(Guid addressId, AddressType newAddressType, string newCountry, string newRegion, string newCity, string newStreet, int newBuildingNumber)
+        public async Task UpdateAddressAsync(Guid addressId, AddressType? newAddressType, string? newCountry, string? newRegion, string? newCity, string? newStreet, int? newBuildingNumber)
         {
-            var existAddress = await _repositoryManager.Address.GetAddressAsync(addressId) ?? throw new ArgumentException(nameof(addressId));
+            var existAddress = await _repositoryManager.Address.GetAddressAsync(addressId) ?? throw new ArgumentNullException($"That address {addressId} was not found.");
 
-            existAddress.AddressType = newAddressType;
-            existAddress.Country = newCountry;
-            existAddress.Region = newRegion;
-            existAddress.City = newCity;
-            existAddress.Street = newStreet;
-            existAddress.BuildingNumber = newBuildingNumber;
+            existAddress.AddressType = newAddressType ?? existAddress.AddressType;
+            existAddress.Country = newCountry ?? existAddress.Country;
+            existAddress.Region = newRegion ?? existAddress.Region;
+            existAddress.City = newCity ?? existAddress.Country;
+            existAddress.Street = newStreet ?? existAddress.Street;
+            existAddress.BuildingNumber = newBuildingNumber ?? existAddress.BuildingNumber;
 
             _repositoryManager.Address.Update(existAddress);
             await _repositoryManager.SaveAsync();

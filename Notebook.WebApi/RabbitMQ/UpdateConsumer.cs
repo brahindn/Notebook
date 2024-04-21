@@ -45,13 +45,22 @@ namespace Notebook.WebApi.RabbitMQ
             {
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
+
                 var contact = JsonSerializer.Deserialize<ContactForUpdateDTO>(message);
+                var address = JsonSerializer.Deserialize<AddressForUpdateDTO>(message);
 
                 using (var scope = _serviceScopeFactory.CreateScope())
                 {
                     var serviceManager = scope.ServiceProvider.GetRequiredService<IServiceManager>();
 
-                    await serviceManager.ContactService.UpdateContactAsync(contact.Id, contact.FirstName, contact.LastName, contact.PhoneNumber, contact.Email, contact.DateOfBirth);
+                    if(contact.FirstName != null)
+                    {
+                        await serviceManager.ContactService.UpdateContactAsync(contact.Id, contact.FirstName, contact.LastName, contact.PhoneNumber, contact.Email, contact.DateOfBirth);
+                    }
+                    else
+                    {
+                        await serviceManager.AddressService.UpdateAddressAsync(address.Id, address.AddressType, address.Country, address.Region, address.City, address.Street, address.BuildingNumber);
+                    }
                 }
             };
 

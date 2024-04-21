@@ -1,7 +1,7 @@
 ﻿
 namespace Notebook.WebApi.Requests
 {
-    public class ContactForUpdateDTO
+    public record ContactForUpdateDTO
     {
         public Guid Id { get; set; }
         public string? FirstName { get; set; }

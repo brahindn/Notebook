@@ -1,17 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using System.Text.Json;
-using Notebook.WebApi.Requests;
 using Notebook.Application.Services.Contracts;
 using Notebook.Domain.Entities;
-using Notebook.Application.Services.Implementation;
 
 namespace Notebook.WebApi.RabbitMQ
 {
@@ -51,13 +45,22 @@ namespace Notebook.WebApi.RabbitMQ
             {
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
+
                 var contact = JsonSerializer.Deserialize<Contact>(message);
+                var address = JsonSerializer.Deserialize<Address>(message);
 
                 using (var scope = _serviceScopeFactory.CreateScope())
                 {
                     var serviceManager = scope.ServiceProvider.GetRequiredService<IServiceManager>();
 
-                    await serviceManager.ContactService.DeleteContactAsync(contact);
+                    if(contact.FirstName != null)
+                    {
+                        await serviceManager.ContactService.DeleteContactAsync(contact);
+                    }
+                    else
+                    {
+                        await serviceManager.AddressService.DeleteAddressAsync(address);
+                    }   
                 }
             };
 
