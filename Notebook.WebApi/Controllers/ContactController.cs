@@ -22,7 +22,7 @@ namespace Notebook.WebApi.Controllers
         }
 
         [HttpPost("add")]
-        public async Task<IActionResult> AddContact([FromBody] ContactForCreateUpdateDTO contact)
+        public async Task<IActionResult> AddContact([FromBody] ContactForCreateDTO contact)
         {
             if (contact == null)
             {
@@ -48,7 +48,7 @@ namespace Notebook.WebApi.Controllers
         }
 
         [HttpPut("{update}")]
-        public async Task<IActionResult> UpdateContact(Guid contactId, [FromBody] ContactForCreateUpdateDTO contact)
+        public async Task<IActionResult> UpdateContact([FromBody] ContactForUpdateDTO contact)
         {
             if (contact == null)
             {
@@ -57,18 +57,11 @@ namespace Notebook.WebApi.Controllers
 
             try
             {
-                var existContact = await _serviceManager.ContactService.GetContactAsync(contactId);
-
-                if (existContact == null)
-                {
-                    return NotFound();
-                }
-
                 var routingKey = "UpdateKey";
 
                 _messageProducer.SendMessage(contact, routingKey);
 
-                _logger.Information($"Contact {contactId} has been updated successfully!");
+                _logger.Information($"Contact {contact.Id} has been updated successfully!");
 
                 return Ok();
             }

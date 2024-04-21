@@ -6,7 +6,6 @@ using System.Text;
 using System.Text.Json;
 using Notebook.WebApi.Requests;
 using Notebook.Application.Services.Contracts;
-using Notebook.Domain.Entities;
 
 namespace Notebook.WebApi.RabbitMQ
 {
@@ -46,13 +45,13 @@ namespace Notebook.WebApi.RabbitMQ
             {
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
-                var contact = JsonSerializer.Deserialize<ContactForCreateUpdateDTO>(message);
+                var contact = JsonSerializer.Deserialize<ContactForUpdateDTO>(message);
 
                 using (var scope = _serviceScopeFactory.CreateScope())
                 {
                     var serviceManager = scope.ServiceProvider.GetRequiredService<IServiceManager>();
 
-                    await serviceManager.ContactService.UpdateContactAsync(contact.FirstName, contact.LastName, contact.PhoneNumber, contact.Email, contact.DateOfBirth);
+                    await serviceManager.ContactService.UpdateContactAsync(contact.Id, contact.FirstName, contact.LastName, contact.PhoneNumber, contact.Email, contact.DateOfBirth);
                 }
             };
 

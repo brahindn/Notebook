@@ -1,7 +1,6 @@
 ﻿using Notebook.Application.Services.Contracts.Services;
 using Notebook.Domain.Entities;
 using Notebook.Repositories.Contracts;
-using System.Text.Json;
 
 namespace Notebook.Application.Services.Implementation.Services
 {
@@ -34,15 +33,15 @@ namespace Notebook.Application.Services.Implementation.Services
             await _repositoryManager.SaveAsync();
         }
 
-        public async Task UpdateContactAsync(string? newFirstName, string? newLastName, string? newPhoneNumber, string? newEmail, DateTime? newDataOfBirth)
+        public async Task UpdateContactAsync(Guid Id, string? newFirstName, string? newLastName, string? newPhoneNumber, string? newEmail, DateTime? newDataOfBirth)
         {
-            var existContact = await _repositoryManager.Contact.GetContactByFieldsAsync(newFirstName, newLastName, newPhoneNumber) ?? throw new ArgumentNullException("That contact was not found.");
+            var existContact = await _repositoryManager.Contact.GetContactAsync(Id) ?? throw new ArgumentNullException($"That contact {Id} was not found.");
 
-            existContact.FirstName = newFirstName;
-            existContact.LastName = newLastName;
-            existContact.PhoneNumber = newPhoneNumber;
-            existContact.Email = newEmail;
-            existContact.DateOfBirth = newDataOfBirth;
+            existContact.FirstName = newFirstName ?? existContact.FirstName;
+            existContact.LastName = newLastName ?? existContact.LastName;
+            existContact.PhoneNumber = newPhoneNumber ?? existContact.PhoneNumber;
+            existContact.Email = newEmail ?? existContact.Email;
+            existContact.DateOfBirth = newDataOfBirth ?? existContact.DateOfBirth;
 
             _repositoryManager.Contact.Update(existContact);
             await _repositoryManager.SaveAsync();
