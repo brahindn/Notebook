@@ -1,4 +1,5 @@
 ﻿using Notebook.Domain.Entities;
+using Notebook.Shared.RequestFeatures;
 
 namespace Notebook.Application.Services.Contracts.Services
 {
@@ -8,7 +9,7 @@ namespace Notebook.Application.Services.Contracts.Services
         Task UpdateContactAsync(Guid Id, string? newFirstName, string? newLastName, string? newPhoneNumber, string? newEmail, DateTime? newDataOfBirth);
         Task DeleteContactAsync(Contact contact);
         Task<Contact> GetContactAsync(Guid id);
-        IQueryable<Contact> GetAllContacts();
+        Task<IEnumerable<Contact>> GetAllContactsAsync(ContactParameters contactParameters);
     }
 }
     

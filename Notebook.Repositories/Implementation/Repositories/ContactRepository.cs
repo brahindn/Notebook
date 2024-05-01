@@ -2,6 +2,8 @@
 using Notebook.DataAccess;
 using Notebook.Domain.Entities;
 using Notebook.Repositories.Contracts.Repositories;
+using Notebook.Shared.RequestFeatures;
+using System.Globalization;
 
 namespace Notebook.Repositories.Implementation.Repositories
 {
@@ -24,6 +26,11 @@ namespace Notebook.Repositories.Implementation.Repositories
             c.LastName == newLastName && 
             c.PhoneNumber == newPhoneNumber).
             SingleOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<Contact>> GetContactsAsync(ContactParameters contactParameters)
+        {
+            return await GetAll().Skip((contactParameters.PageNumber - 1) * contactParameters.PageSize).Take(contactParameters.PageSize).ToListAsync();
         }
     }
 }

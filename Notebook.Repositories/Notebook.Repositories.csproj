@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Notebook.DataAccess\Notebook.DataAccess.csproj" />
     <ProjectReference Include="..\Notebook.Domain\Notebook.Domain.csproj" />
+    <ProjectReference Include="..\Notebook.Shared\Notebook.Shared.csproj" />
   </ItemGroup>
 
 </Project>

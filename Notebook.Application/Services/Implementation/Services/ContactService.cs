@@ -1,6 +1,7 @@
 ﻿using Notebook.Application.Services.Contracts.Services;
 using Notebook.Domain.Entities;
 using Notebook.Repositories.Contracts;
+using Notebook.Shared.RequestFeatures;
 
 namespace Notebook.Application.Services.Implementation.Services
 {
@@ -63,13 +64,9 @@ namespace Notebook.Application.Services.Implementation.Services
             return _repositoryManager.Contact.GetContactAsync(contactId);
         }
 
-        public IQueryable<Contact> GetAllContacts()
+        public async Task<IEnumerable<Contact>> GetAllContactsAsync(ContactParameters contactParameters)
         {
-            var companies = _repositoryManager.Contact.GetAll();
-
-            return companies;
+            return await _repositoryManager.Contact.GetContactsAsync(contactParameters);
         }
-
-
     }
 }

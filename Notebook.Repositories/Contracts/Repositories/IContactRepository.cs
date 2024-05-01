@@ -1,4 +1,5 @@
 ﻿using Notebook.Domain.Entities;
+using Notebook.Shared.RequestFeatures;
 
 namespace Notebook.Repositories.Contracts.Repositories
 {
@@ -10,5 +11,6 @@ namespace Notebook.Repositories.Contracts.Repositories
         Task<Contact> GetContactAsync(Guid id);
         Task<Contact> GetContactByFieldsAsync(string newFirstName, string newLastName, string newPhoneNumber);
         IQueryable<Contact> GetAll();
+        Task<IEnumerable<Contact>> GetContactsAsync(ContactParameters contactParameters);
     }
 }

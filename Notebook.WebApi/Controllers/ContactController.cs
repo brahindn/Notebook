@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Notebook.Application.Services.Contracts;
+using Notebook.Shared.RequestFeatures;
 using Notebook.WebApi.RabbitMQ;
 using Notebook.WebApi.Requests;
 using Notebook.WebApi.Responses;
@@ -127,26 +128,16 @@ namespace Notebook.WebApi.Controllers
             }
         }
 
-        [HttpGet("{getAll}")]
-        public IActionResult GetAllContacts()
+        [HttpGet]
+        public async Task<IActionResult> GetAllContacts([FromQuery] ContactParameters contactParameters)
         {
             try
             {
-                var allContacts = _serviceManager.ContactService.GetAllContacts();
-
-                var contactDTO = allContacts.Select(c => new ContactResponseDTO
-                {
-                    Id = c.Id,
-                    FirstName = c.FirstName,
-                    LastName = c.LastName,
-                    PhoneNumber = c.PhoneNumber,
-                    Email = c.Email,
-                    DateOfBirth = (DateTime)c.DateOfBirth
-                }).ToList();
+                var allContacts = await _serviceManager.ContactService.GetAllContactsAsync(contactParameters);
 
                 _logger.Information("All contacts have been got");
 
-                return Ok(contactDTO);
+                return Ok(allContacts);
             }
             catch (Exception ex)
             {
