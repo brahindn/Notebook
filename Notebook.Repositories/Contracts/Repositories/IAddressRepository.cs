@@ -1,4 +1,5 @@
 ﻿using Notebook.Domain.Entities;
+using Notebook.Shared.RequestFeatures;
 
 namespace Notebook.Repositories.Contracts.Repositories
 {
@@ -8,6 +9,6 @@ namespace Notebook.Repositories.Contracts.Repositories
         void Update(Address address);
         void Delete(Address address);
         Task<Address> GetAddressAsync(Guid contactId);
-        IQueryable<Address> GetAll();
+        Task <IEnumerable<Address>> GetAddressesAsync(AddressParameters addressParameters);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Notebook.Domain;
 using Notebook.Domain.Entities;
+using Notebook.Shared.RequestFeatures;
 
 namespace Notebook.Application.Services.Contracts.Services
 {
@@ -9,6 +10,6 @@ namespace Notebook.Application.Services.Contracts.Services
         Task UpdateAddressAsync(Guid id, AddressType? addressType, string? country, string? region, string? city, string? street, int? buildingNumber);
         Task DeleteAddressAsync(Address address);
         Task<Address> GetAddressAsync(Guid personId);
-        IQueryable<Address> GetAllAddressesAsync();
+        Task<IEnumerable<Address>> GetAllAddressesAsync(AddressParameters addressParameters);
     }
 }

@@ -33,4 +33,4 @@ namespace Notebook.Repositories.Implementation.Repositories
             return await GetAll().Skip((contactParameters.PageNumber - 1) * contactParameters.PageSize).Take(contactParameters.PageSize).ToListAsync();
         }
     }
-}
+}   

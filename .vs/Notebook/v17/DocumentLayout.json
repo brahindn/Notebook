@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "C:\\Projects\\.NET 6.0\\Notebook\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2F935B6-23AC-4EB2-B704-74731EB6206E}|Notebook.Host\\Notebook.Host.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.host\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2F935B6-23AC-4EB2-B704-74731EB6206E}|Notebook.Host\\Notebook.Host.csproj|solutionrelative:notebook.host\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9A8A5016-E8F1-4D98-B434-CE10266F9E67}|Notebook.WebApi\\Notebook.WebApi.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.webapi\\controllers\\contactcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9A8A5016-E8F1-4D98-B434-CE10266F9E67}|Notebook.WebApi\\Notebook.WebApi.csproj|solutionrelative:notebook.webapi\\controllers\\contactcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -39,14 +39,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Host\\Program.cs",
-              "RelativeDocumentMoniker": "Notebook.Host\\Program.cs",
-              "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Host\\Program.cs",
-              "RelativeToolTip": "Notebook.Host\\Program.cs",
-              "ViewState": "AQIAAAwAAAAAAAAAAAAAACEAAAAhAAAA",
+              "Title": "ContactController.cs",
+              "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.WebApi\\Controllers\\ContactController.cs",
+              "RelativeDocumentMoniker": "Notebook.WebApi\\Controllers\\ContactController.cs",
+              "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.WebApi\\Controllers\\ContactController.cs",
+              "RelativeToolTip": "Notebook.WebApi\\Controllers\\ContactController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAATAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-01T20:43:06.372Z",
+              "WhenOpened": "2024-05-05T19:51:22.872Z",
               "EditorCaption": ""
             }
           ]

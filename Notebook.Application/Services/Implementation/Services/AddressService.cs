@@ -2,6 +2,7 @@
 using Notebook.Domain;
 using Notebook.Domain.Entities;
 using Notebook.Repositories.Contracts;
+using Notebook.Shared.RequestFeatures;
 
 namespace Notebook.Application.Services.Implementation.Services
 {
@@ -69,11 +70,9 @@ namespace Notebook.Application.Services.Implementation.Services
             return _repositoryManager.Address.GetAddressAsync(addressId);
         }
 
-        public IQueryable<Address> GetAllAddressesAsync()
+        public async Task<IEnumerable<Address>> GetAllAddressesAsync(AddressParameters addressParameters)
         {
-            var allAddresses = _repositoryManager.Address.GetAll();
-
-            return allAddresses;
+            return await _repositoryManager.Address.GetAddressesAsync(addressParameters);
         }
     }
 }

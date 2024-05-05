@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Notebook.Application.Services.Contracts;
+using Notebook.Shared.RequestFeatures;
 using Notebook.WebApi.RabbitMQ;
 using Notebook.WebApi.Requests;
 using Notebook.WebApi.Responses;
@@ -137,23 +138,11 @@ namespace Notebook.WebApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllAddress()
+        public async Task<IActionResult> GetAllAddresses([FromQuery] AddressParameters addressParameters)
         {
             try
             {
-                var addresses = _serviceManager.AddressService.GetAllAddressesAsync();
-
-                var addressDTO = addresses.Select(a => new AddressResponseDTO
-                {
-                    Id = a.Id,
-                    AddressType = a.AddressType,
-                    Country = a.Country,
-                    City = a.City,
-                    Region = a.Region,
-                    Street = a.Street,
-                    BuildingNumber = a.BuildingNumber,
-                    ContactId = a.PersonId
-                }).ToList();
+                var addresses = await _serviceManager.AddressService.GetAllAddressesAsync(addressParameters);
 
                 _logger.Information("All addresses have been got");
 
