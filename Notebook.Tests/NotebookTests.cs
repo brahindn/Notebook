@@ -2,7 +2,6 @@
 using Notebook.Application.Services.Implementation;
 using Notebook.DataAccess;
 using Notebook.Repositories.Implementation;
-using System.Data;
 using System.Globalization;
 
 namespace Notebook.Tests
@@ -30,14 +29,7 @@ namespace Notebook.Tests
         [TestMethod]
         public async Task AddNewContact()
         {
-            DateTime dt = DateTime.ParseExact("21.05.1994", "dd.MM.yyyy", CultureInfo.InvariantCulture);
-
-            await _serviceManager.ContactService.CreateContactAsync(
-                firstName: "TestFN",
-                lastName: "TestLN",
-                phoneNumber: "+380996064050",
-                email: "test@gmail.com",
-                dataOfBirth: dt);
+            await AddingTESTContactToDB();
 
             using (var context = new RepositoryContext(_options))
             {
@@ -49,14 +41,7 @@ namespace Notebook.Tests
         [TestMethod]
         public async Task AddNewContactWithoutEmail()
         {
-            DateTime dt = DateTime.ParseExact("21.05.1994", "dd.MM.yyyy", CultureInfo.InvariantCulture);
-
-            await _serviceManager.ContactService.CreateContactAsync(
-                firstName: "TestFN",
-                lastName: "TestLN",
-                phoneNumber: "+380996064050",
-                email: null,
-                dataOfBirth: dt);
+            await AddingTESTContactToDB();
 
             using (var context = new RepositoryContext(_options))
             {
@@ -99,6 +84,123 @@ namespace Notebook.Tests
                 Assert.AreEqual(1, context.Contacts.Count());
                 Assert.AreEqual("TestFN", context.Contacts.Single().FirstName);
             }
+        }
+
+        [TestMethod]
+        public async Task UpdateContact()
+        {
+            await AddingTESTContactToDB();
+
+            var contact = await _serviceManager.ContactService.GetContactByFieldAsync(
+                firstName: "TestFN",
+                lastName: null,
+                phoneNumber: null,
+                email: null);
+
+            await _serviceManager.ContactService.UpdateContactAsync(
+                contact.Id,
+                newFirstName: "NewTestFN",
+                newLastName: "NewTestLN",
+                newPhoneNumber: "+380996064051",
+                newEmail: "newTest@gmail.com",
+                newDataOfBirth: null);
+
+            using (var context = new RepositoryContext(_options))
+            {
+                Assert.AreEqual(1, context.Contacts.Count());
+                Assert.AreEqual("NewTestFN", context.Contacts.Single().FirstName);
+            }
+        }
+
+
+        [TestMethod]
+        public async Task UpdateContactTwoFields()
+        {
+            await AddingTESTContactToDB();
+
+            var contact = await _serviceManager.ContactService.GetContactByFieldAsync(
+                firstName: "TestFN",
+                lastName: null,
+                phoneNumber: null,
+                email: null);
+
+            await _serviceManager.ContactService.UpdateContactAsync(
+                contact.Id,
+                newFirstName: "NewTestFN",
+                newLastName: "NewTestLN",
+                newPhoneNumber: null,
+                newEmail: null,
+                newDataOfBirth: null);
+
+            using (var context = new RepositoryContext(_options))
+            {
+                Assert.AreEqual(1, context.Contacts.Count());
+                Assert.AreEqual("NewTestFN", context.Contacts.Single().FirstName);
+                Assert.AreEqual("NewTestLN", context.Contacts.Single().LastName);
+            }
+        }
+
+        [TestMethod]
+        public async Task UpdateContactWithoutNewFields()
+        {
+            await AddingTESTContactToDB();
+
+            var contact = await _serviceManager.ContactService.GetContactByFieldAsync(
+                firstName: "TestFN",
+                lastName: null,
+                phoneNumber: null,
+                email: null);
+
+            await _serviceManager.ContactService.UpdateContactAsync(
+                contact.Id,
+                newFirstName: null,
+                newLastName: null,
+                newPhoneNumber: null,
+                newEmail: null,
+                newDataOfBirth: null);
+
+            using (var context = new RepositoryContext(_options))
+            {
+                Assert.AreEqual(1, context.Contacts.Count());
+                Assert.AreEqual("TestFN", context.Contacts.Single().FirstName);
+            }
+        }
+
+        [TestMethod]
+        public async Task DeleteContact()
+        {
+            await AddingTESTContactToDB();
+
+            var contact = await _serviceManager.ContactService.GetContactByFieldAsync(
+                firstName: "TestFN",
+                lastName: null,
+                phoneNumber: null,
+                email: null);
+
+            await _serviceManager.ContactService.DeleteContactAsync(contact);
+
+            using(var context = new RepositoryContext(_options))
+            {
+                Assert.AreEqual(0, context.Contacts.Count());
+            }
+        }
+
+        [TestMethod]
+        public async Task DeleteContactNull()
+        {
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await _serviceManager.ContactService.DeleteContactAsync(null));
+        }
+
+        private async Task AddingTESTContactToDB()
+        {
+            DateTime dt = DateTime.ParseExact("21.05.1994", "dd.MM.yyyy", CultureInfo.InvariantCulture);
+
+            await _serviceManager.ContactService.CreateContactAsync(
+                firstName: "TestFN",
+                lastName: "TestLN",
+                phoneNumber: "+380996064050",
+                email: "test@gmail.com",
+                dataOfBirth: dt);
         }
     }
 }

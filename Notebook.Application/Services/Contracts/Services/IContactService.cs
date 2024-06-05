@@ -10,6 +10,7 @@ namespace Notebook.Application.Services.Contracts.Services
         Task DeleteContactAsync(Contact contact);
         Task<Contact> GetContactAsync(Guid id);
         Task<IEnumerable<Contact>> GetAllContactsAsync(ContactParameters contactParameters);
+        Task<Contact> GetContactByFieldAsync(string? firstName, string? lastName, string? phoneNumber, string? email);
     }
 }
     
