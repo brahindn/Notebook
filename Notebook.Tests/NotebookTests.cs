@@ -1,7 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Notebook.Application.Services.Implementation;
 using Notebook.DataAccess;
+using Notebook.Domain;
 using Notebook.Repositories.Implementation;
+using Notebook.Shared.RequestFeatures;
+using RabbitMQ.Client;
 using System.Globalization;
 
 namespace Notebook.Tests
@@ -191,9 +194,75 @@ namespace Notebook.Tests
             await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await _serviceManager.ContactService.DeleteContactAsync(null));
         }
 
+        [TestMethod]
+        public async Task GetAllContacts()
+        {
+            var date1 = new DateTime(1994, 11, 26);
+            var date2 = new DateTime(1995, 2, 10);
+            var date3 = new DateTime(1996, 7, 05);
+
+            await _serviceManager.ContactService.CreateContactAsync(
+                firstName: "TestFN",
+                lastName: "TestLN",
+                phoneNumber: "+380996064050",
+                email: "test@gmail.com",
+                dataOfBirth: date1);
+
+            await _serviceManager.ContactService.CreateContactAsync(
+                firstName: "TestFN2",
+                lastName: "TestLN2",
+                phoneNumber: "+380996064052",
+                email: "test2@gmail.com",
+                dataOfBirth: date2);
+
+            await _serviceManager.ContactService.CreateContactAsync(
+                firstName: "TestFN3",
+                lastName: "TestLN3",
+                phoneNumber: "+380996064053",
+                email: "test3@gmail.com",
+                dataOfBirth: date3);
+
+            var contactParameters = new ContactParameters();
+            var allContacts = await _serviceManager.ContactService.GetAllContactsAsync(contactParameters);
+
+            using(var context = new RepositoryContext(_options))
+            {
+                Assert.AreEqual(3, context.Contacts.Count());
+            }
+        }
+
+        [TestMethod]
+        public async Task AddNewAddress()
+        {
+            AddingTESTAddressToDB();
+
+            using(var context = new RepositoryContext(_options))
+            {
+                Assert.AreEqual(1, context.Addresses.Count());
+                Assert.AreEqual("Zhulianska", context.Addresses.Single().Street);
+            }
+        }
+
+        [TestMethod]
+        public async Task DeleteAddress()
+        {
+            await AddingTESTAddressToDB();
+
+            var address = _serviceManager.AddressService.GerAddressByFields(
+                addressType: null,
+                country: null,
+                region: null,
+                city: null,
+                street: "Zhulianska",
+                buildingNumber: null,
+                contactId: null);
+
+            await _serviceManager.AddressService.DeleteAddressAsync(address);
+        }
+
         private async Task AddingTESTContactToDB()
         {
-            DateTime dt = DateTime.ParseExact("21.05.1994", "dd.MM.yyyy", CultureInfo.InvariantCulture);
+            DateTime dt = new DateTime(1994, 11, 26);
 
             await _serviceManager.ContactService.CreateContactAsync(
                 firstName: "TestFN",
@@ -201,6 +270,31 @@ namespace Notebook.Tests
                 phoneNumber: "+380996064050",
                 email: "test@gmail.com",
                 dataOfBirth: dt);
+        }
+
+        private async Task AddingTESTAddressToDB()
+        {
+            await _serviceManager.ContactService.CreateContactAsync(
+                firstName: "TestFN",
+                lastName: "TestLN",
+                phoneNumber: "+380996064050",
+                email: "test@gmail.com",
+                dataOfBirth: new DateTime(1994, 11, 26));
+
+            var contact = await _serviceManager.ContactService.GetContactByFieldAsync(
+                firstName: "TestFN",
+                lastName: null,
+                phoneNumber: null,
+                email: null);
+
+            await _serviceManager.AddressService.CreateAddressAsync(
+                addressType: 0,
+                country: "Ukraine",
+                region: "Kyiv Oblast",
+                city: "Kyiv",
+                street: "Zhulianska",
+                buildingNumber: 1,
+                contactId: contact.Id);
         }
     }
 }

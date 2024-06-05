@@ -69,9 +69,9 @@ namespace Notebook.Application.Services.Implementation.Services
             return await _repositoryManager.Contact.GetContactsAsync(contactParameters);
         }
 
-        public Task<Contact> GetContactByFieldAsync(string? firstName, string? lastName, string? phoneNumber, string? email)
+        public async Task<Contact> GetContactByFieldAsync(string? firstName, string? lastName, string? phoneNumber, string? email)
         {
-            return _repositoryManager.Contact.GetContactByFieldsAsync(firstName, lastName, phoneNumber, email);
+            return await _repositoryManager.Contact.GetContactByFieldsAsync(firstName, lastName, phoneNumber, email);
         }
     }
 }

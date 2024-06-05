@@ -1,4 +1,5 @@
-﻿using Notebook.Application.Services.Contracts.Services;
+﻿using Microsoft.EntityFrameworkCore.Internal;
+using Notebook.Application.Services.Contracts.Services;
 using Notebook.Domain;
 using Notebook.Domain.Entities;
 using Notebook.Repositories.Contracts;
@@ -73,6 +74,42 @@ namespace Notebook.Application.Services.Implementation.Services
         public async Task<IEnumerable<Address>> GetAllAddressesAsync(AddressParameters addressParameters)
         {
             return await _repositoryManager.Address.GetAddressesAsync(addressParameters);
+        }
+
+        public IQueryable<Address> GerAddressByFields(Guid? contactId, AddressType? addressType, string? country, string? region, string? city, string? street, int? buildingNumber)
+        {
+            var query = _repositoryManager.Address.GetAll();
+
+            if(contactId != null)
+            {
+                query = query.Where(a => a.PersonId == contactId);
+            }
+            if(addressType != null)
+            {
+                query = query.Where(a => a.AddressType == addressType);
+            }
+            if(country != null)
+            {
+                query = query.Where(a => a.Country == country);
+            }
+            if(region != null)
+            {
+                query = query.Where(a => a.Region == region);
+            }
+            if(city != null)
+            {
+                query = query.Where(a => a.City == city);
+            }
+            if(street != null)
+            {
+                query = query.Where(a => a.City == city);
+            }
+            if(buildingNumber != null)
+            {
+                query = query.Where(a => a.BuildingNumber == buildingNumber);
+            }
+
+            return _repositoryManager.Address.GetAddressByFields(query);
         }
     }
 }

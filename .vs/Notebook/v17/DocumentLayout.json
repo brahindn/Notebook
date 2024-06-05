@@ -7,20 +7,8 @@
       "RelativeMoniker": "D:0:0:{03C77A42-15B5-4A3D-878A-9758499AA361}|Notebook.Tests\\Notebook.Tests.csproj|solutionrelative:notebook.tests\\notebooktests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2B3A5E79-B042-4622-9866-29BF5D251715}|Notebook.Application\\Notebook.Application.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.application\\services\\implementation\\services\\contactservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2B3A5E79-B042-4622-9866-29BF5D251715}|Notebook.Application\\Notebook.Application.csproj|solutionrelative:notebook.application\\services\\implementation\\services\\contactservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9A8A5016-E8F1-4D98-B434-CE10266F9E67}|Notebook.WebApi\\Notebook.WebApi.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.webapi\\controllers\\contactcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9A8A5016-E8F1-4D98-B434-CE10266F9E67}|Notebook.WebApi\\Notebook.WebApi.csproj|solutionrelative:notebook.webapi\\controllers\\contactcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4E2A5832-C3AE-4D69-86E5-633E6C1A75C0}|Notebook.Repositories\\Notebook.Repositories.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.repositories\\implementation\\repositories\\contactrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4E2A5832-C3AE-4D69-86E5-633E6C1A75C0}|Notebook.Repositories\\Notebook.Repositories.csproj|solutionrelative:notebook.repositories\\implementation\\repositories\\contactrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4E2A5832-C3AE-4D69-86E5-633E6C1A75C0}|Notebook.Repositories\\Notebook.Repositories.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.repositories\\implementation\\repositorybase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4E2A5832-C3AE-4D69-86E5-633E6C1A75C0}|Notebook.Repositories\\Notebook.Repositories.csproj|solutionrelative:notebook.repositories\\implementation\\repositorybase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{4E2A5832-C3AE-4D69-86E5-633E6C1A75C0}|Notebook.Repositories\\Notebook.Repositories.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.repositories\\implementation\\repositories\\addressrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4E2A5832-C3AE-4D69-86E5-633E6C1A75C0}|Notebook.Repositories\\Notebook.Repositories.csproj|solutionrelative:notebook.repositories\\implementation\\repositories\\addressrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,7 +18,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 9,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
@@ -54,54 +42,15 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "ContactController.cs",
-              "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.WebApi\\Controllers\\ContactController.cs",
-              "RelativeDocumentMoniker": "Notebook.WebApi\\Controllers\\ContactController.cs",
-              "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.WebApi\\Controllers\\ContactController.cs",
-              "RelativeToolTip": "Notebook.WebApi\\Controllers\\ContactController.cs",
-              "ViewState": "AQIAAGIAAAAAAAAAAAAAAJUAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-05T16:14:56.029Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "RepositoryBase.cs",
-              "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Repositories\\Implementation\\RepositoryBase.cs",
-              "RelativeDocumentMoniker": "Notebook.Repositories\\Implementation\\RepositoryBase.cs",
-              "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Repositories\\Implementation\\RepositoryBase.cs",
-              "RelativeToolTip": "Notebook.Repositories\\Implementation\\RepositoryBase.cs",
-              "ViewState": "AQIAABQAAAAAAAAAAAA3wCAAAAAvAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-05T15:19:45.654Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "ContactRepository.cs",
-              "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Repositories\\Implementation\\Repositories\\ContactRepository.cs",
-              "RelativeDocumentMoniker": "Notebook.Repositories\\Implementation\\Repositories\\ContactRepository.cs",
-              "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Repositories\\Implementation\\Repositories\\ContactRepository.cs",
-              "RelativeToolTip": "Notebook.Repositories\\Implementation\\Repositories\\ContactRepository.cs",
-              "ViewState": "AQIAAAMAAAAAAAAAAAAAAA8AAAAjAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-05T15:19:26.357Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "ContactService.cs",
-              "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Application\\Services\\Implementation\\Services\\ContactService.cs",
-              "RelativeDocumentMoniker": "Notebook.Application\\Services\\Implementation\\Services\\ContactService.cs",
-              "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Application\\Services\\Implementation\\Services\\ContactService.cs",
-              "RelativeToolTip": "Notebook.Application\\Services\\Implementation\\Services\\ContactService.cs",
-              "ViewState": "AQIAACcAAAAAAAAAAAApwDYAAAAQAAAA",
+              "Title": "AddressRepository.cs",
+              "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Repositories\\Implementation\\Repositories\\AddressRepository.cs",
+              "RelativeDocumentMoniker": "Notebook.Repositories\\Implementation\\Repositories\\AddressRepository.cs",
+              "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Repositories\\Implementation\\Repositories\\AddressRepository.cs",
+              "RelativeToolTip": "Notebook.Repositories\\Implementation\\Repositories\\AddressRepository.cs",
+              "ViewState": "AQIAABAAAAAAAAAAAAAQwCIAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-03T20:26:37.377Z",
+              "WhenOpened": "2024-06-05T20:03:20.688Z",
               "EditorCaption": ""
             },
             {
@@ -112,7 +61,7 @@
               "RelativeDocumentMoniker": "Notebook.Tests\\NotebookTests.cs",
               "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Tests\\NotebookTests.cs",
               "RelativeToolTip": "Notebook.Tests\\NotebookTests.cs",
-              "ViewState": "AQIAAI0AAAAAAAAAAAAwwM0AAAABAAAA",
+              "ViewState": "AQIAAPQAAAAAAAAAAAAAAP4AAAAbAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-05-09T20:32:33.561Z",
               "EditorCaption": ""

@@ -1,4 +1,5 @@
-﻿using Notebook.Domain;
+﻿using Microsoft.Extensions.Primitives;
+using Notebook.Domain;
 using Notebook.Domain.Entities;
 using Notebook.Shared.RequestFeatures;
 
@@ -11,5 +12,6 @@ namespace Notebook.Application.Services.Contracts.Services
         Task DeleteAddressAsync(Address address);
         Task<Address> GetAddressAsync(Guid personId);
         Task<IEnumerable<Address>> GetAllAddressesAsync(AddressParameters addressParameters);
+        IQueryable<Address> GerAddressByFields(Guid? contactId, AddressType? addressType, string? country, string? region, string? city, string? street, int? buildingNumber);
     }
 }

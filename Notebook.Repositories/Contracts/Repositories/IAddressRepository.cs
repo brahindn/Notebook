@@ -1,4 +1,5 @@
-﻿using Notebook.Domain.Entities;
+﻿using Notebook.Domain;
+using Notebook.Domain.Entities;
 using Notebook.Shared.RequestFeatures;
 
 namespace Notebook.Repositories.Contracts.Repositories
@@ -10,5 +11,7 @@ namespace Notebook.Repositories.Contracts.Repositories
         void Delete(Address address);
         Task<Address> GetAddressAsync(Guid contactId);
         Task <IEnumerable<Address>> GetAddressesAsync(AddressParameters addressParameters);
+        IQueryable<Address> GetAll();
+        IQueryable<Address> GetAddressByFields(IQueryable<Address> query);
     }
 }

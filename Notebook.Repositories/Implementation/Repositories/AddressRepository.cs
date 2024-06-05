@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Notebook.DataAccess;
+using Notebook.Domain;
 using Notebook.Domain.Entities;
 using Notebook.Repositories.Contracts.Repositories;
 using Notebook.Shared.RequestFeatures;
+using System.Linq.Expressions;
 
 namespace Notebook.Repositories.Implementation.Repositories
 {
@@ -21,6 +23,12 @@ namespace Notebook.Repositories.Implementation.Repositories
         public async Task<IEnumerable<Address>> GetAddressesAsync(AddressParameters addressParameters)
         {
             return await GetAll().Skip((addressParameters.PageNumber - 1) * addressParameters.PageSize).Take(addressParameters.PageSize).ToListAsync();
+        }
+
+        public IQueryable<Address> GetAddressByFields(IQueryable<Address> query)
+        {
+            Expression<Func<Address, bool>> expression = a => query.Contains(a);
+            return FindByCondition(expression);
         }
     }
 }
