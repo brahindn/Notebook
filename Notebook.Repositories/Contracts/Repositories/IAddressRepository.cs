@@ -12,6 +12,7 @@ namespace Notebook.Repositories.Contracts.Repositories
         Task<Address> GetAddressAsync(Guid contactId);
         Task <IEnumerable<Address>> GetAddressesAsync(AddressParameters addressParameters);
         IQueryable<Address> GetAll();
-        IQueryable<Address> GetAddressByFields(IQueryable<Address> query);
+        Task<Address> GetAddressByFieldsAsync(IQueryable<Address> addresses);
+
     }
 }

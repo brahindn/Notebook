@@ -2,6 +2,7 @@
 using Notebook.Application.Services.Implementation;
 using Notebook.DataAccess;
 using Notebook.Domain;
+using Notebook.Domain.Entities;
 using Notebook.Repositories.Implementation;
 using Notebook.Shared.RequestFeatures;
 using RabbitMQ.Client;
@@ -248,16 +249,21 @@ namespace Notebook.Tests
         {
             await AddingTESTAddressToDB();
 
-            var address = _serviceManager.AddressService.GerAddressByFields(
+            var address = await _serviceManager.AddressService.GetAddressByFields(
                 addressType: null,
-                country: null,
+                country: "Ukraine",
                 region: null,
-                city: null,
+                city: "Kyiv",
                 street: "Zhulianska",
                 buildingNumber: null,
                 contactId: null);
 
             await _serviceManager.AddressService.DeleteAddressAsync(address);
+
+            using( var context = new RepositoryContext(_options))
+            {
+                Assert.AreEqual(0, context.Addresses.Count());
+            }
         }
 
         private async Task AddingTESTContactToDB()
