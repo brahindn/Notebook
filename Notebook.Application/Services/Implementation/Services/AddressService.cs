@@ -1,11 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using Notebook.Application.Services.Contracts.Services;
+﻿using Notebook.Application.Services.Contracts.Services;
 using Notebook.Domain;
 using Notebook.Domain.Entities;
 using Notebook.Repositories.Contracts;
 using Notebook.Shared.RequestFeatures;
-using System.Globalization;
 
 namespace Notebook.Application.Services.Implementation.Services
 {
@@ -78,7 +75,7 @@ namespace Notebook.Application.Services.Implementation.Services
             return await _repositoryManager.Address.GetAddressesAsync(addressParameters);
         }
 
-        public Task<Address> GetAddressByFields(Guid? contactId, AddressType? addressType, string? country, string? region, string? city, string? street, int? buildingNumber)
+        public async Task<Address> GetAddressByFields(Guid? contactId, AddressType? addressType, string? country, string? region, string? city, string? street, int? buildingNumber)
         {
             var query = _repositoryManager.Address.GetAll();
 
@@ -111,7 +108,7 @@ namespace Notebook.Application.Services.Implementation.Services
                 query = query.Where(a => a.BuildingNumber == buildingNumber);
             }
 
-            return _repositoryManager.Address.GetAddressByFieldsAsync(query);
+            return await _repositoryManager.Address.GetAddressByFieldsAsync(query);
         }
     }
 }

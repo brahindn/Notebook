@@ -3,6 +3,7 @@ using Notebook.DataAccess;
 using Notebook.Domain.Entities;
 using Notebook.Repositories.Contracts.Repositories;
 using Notebook.Shared.RequestFeatures;
+using System.Linq.Expressions;
 
 namespace Notebook.Repositories.Implementation.Repositories
 {
@@ -18,21 +19,18 @@ namespace Notebook.Repositories.Implementation.Repositories
             return await FindByCondition(c => c.Id == contactId).SingleOrDefaultAsync();
         }
 
-        public async Task<Contact> GetContactByFieldsAsync(string? newFirstName, string? newLastName, string? newPhoneNumber, string? newEmail)
-        {
-            var contact = await FindByCondition(c =>
-            (c.FirstName == newFirstName || c.FirstName == null) ||
-            (c.LastName == newLastName || c.LastName == null) ||
-            (c.PhoneNumber == newPhoneNumber || c.PhoneNumber == null) ||
-            (c.Email == newEmail || c.Email == null)).
-            SingleOrDefaultAsync();
-
-            return contact;         
-        }
-
         public async Task<IEnumerable<Contact>> GetContactsAsync(ContactParameters contactParameters)
         {
             return await GetAll().Skip((contactParameters.PageNumber - 1) * contactParameters.PageSize).Take(contactParameters.PageSize).ToListAsync();
+        }
+                
+        public async Task<Contact> GetContactByFieldsAsync(IQueryable<Contact> query)
+        {
+            Expression<Func<Contact, bool>> expression = a => query.Contains(a);
+
+            var contact = await FindByCondition(expression).FirstOrDefaultAsync();
+
+            return contact;
         }
     }
 }   

@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Notebook.DataAccess;
-using Notebook.Domain;
 using Notebook.Domain.Entities;
 using Notebook.Repositories.Contracts.Repositories;
 using Notebook.Shared.RequestFeatures;
@@ -34,4 +33,4 @@ namespace Notebook.Repositories.Implementation.Repositories
             return address;
         }
     }
-}
+}               
