@@ -24,11 +24,6 @@ namespace Notebook.WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> AddAddress([FromBody] AddressForCreateDTO address)
         {
-            if(address == null)
-            {
-                return BadRequest("AddressForCreate object is null");
-            }
-
             try
             {
                 var routingKey = "AddKey";
@@ -50,11 +45,6 @@ namespace Notebook.WebApi.Controllers
         [HttpPut("{addressId}")]
         public async Task<IActionResult> UpdateAddress([FromBody] AddressForUpdateDTO address)
         {
-            if (address == null)
-            {
-                return BadRequest("AddressForUpdateDTO object is null");
-            }
-
             try
             {
                 var routingKey = "UpdateKey";
@@ -77,11 +67,6 @@ namespace Notebook.WebApi.Controllers
         public async Task<IActionResult> DeleteAddress(Guid addressId)
         {
             var existAddress = await _serviceManager.AddressService.GetAddressAsync(addressId);
-
-            if (existAddress == null)
-            {
-                return NotFound();
-            }
 
             try
             {

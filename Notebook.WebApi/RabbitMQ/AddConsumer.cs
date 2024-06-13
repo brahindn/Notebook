@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Notebook.Application.Services.Contracts;
 using Notebook.WebApi.Requests;
@@ -15,16 +16,18 @@ namespace Notebook.WebApi.RabbitMQ
         private IConnection _connection;
         private IModel _channel;
         private string _queueName;
+        private RabbitMqSettings _rabbitMqSettings;
 
-        public AddConsumer(IServiceScopeFactory serviceScopeFactory)
+        public AddConsumer(IServiceScopeFactory serviceScopeFactory, RabbitMqSettings rabbitMqSettings)
         {
             _serviceScopeFactory = serviceScopeFactory;
+            _rabbitMqSettings = rabbitMqSettings;
             InitRabbitMQ();
         }
 
         private void InitRabbitMQ()
         {
-            var factory = new ConnectionFactory { HostName = "localhost" };
+            var factory = new ConnectionFactory { HostName = _rabbitMqSettings.StringHostName };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
 

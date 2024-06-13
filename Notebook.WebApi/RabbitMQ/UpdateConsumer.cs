@@ -15,10 +15,12 @@ namespace Notebook.WebApi.RabbitMQ
         private IConnection _connection;
         private IModel _channel;
         private string _queueName;
+        private RabbitMqSettings _rabbitMqSettings;
 
-        public UpdateConsumer(IServiceScopeFactory serviceScopeFactory)
+        public UpdateConsumer(IServiceScopeFactory serviceScopeFactory, RabbitMqSettings rabbitMqSettings)
         {
             _serviceScopeFactory = serviceScopeFactory;
+            _rabbitMqSettings = rabbitMqSettings;
             InitRabbitMQ();
         }
 

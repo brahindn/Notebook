@@ -24,11 +24,6 @@ namespace Notebook.WebApi.Controllers
         [HttpPost("add")]
         public async Task<IActionResult> AddContact([FromBody] ContactForCreateDTO contact)
         {
-            if (contact == null)
-            {
-                return BadRequest("ContactForCreateUpdateDTO object is null");
-            }
-
             try
             {
                 var routingKey = "AddKey";
@@ -50,11 +45,6 @@ namespace Notebook.WebApi.Controllers
         [HttpPut("{update}")]
         public async Task<IActionResult> UpdateContact([FromBody] ContactForUpdateDTO contact)
         {
-            if (contact == null)
-            {
-                return BadRequest("ContactForCreateUpdateDTO object is null");
-            }
-
             try
             {
                 var routingKey = "UpdateKey";
@@ -77,11 +67,6 @@ namespace Notebook.WebApi.Controllers
         public async Task<IActionResult> DeleteContact(Guid contactId)
         {
             var existContact = await _serviceManager.ContactService.GetContactAsync(contactId);
-
-            if (existContact == null)
-            {
-                return NotFound();
-            }
 
             try
             {

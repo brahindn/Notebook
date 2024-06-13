@@ -20,6 +20,9 @@ var logger = new LoggerConfiguration()
     .WriteTo.MongoDB(databaseUrl: builder.Configuration.GetConnectionString("MongoDBconnection"), collectionName: "AppLogs")
     .CreateLogger();
 
+var rabbitSettings = new RabbitMqSettings();
+rabbitSettings.StringHostName = builder.Configuration.GetConnectionString("RabbitMQConnection");
+
 builder.Services.AddHostedService<AddConsumer>();
 builder.Services.AddHostedService<UpdateConsumer>();
 builder.Services.AddHostedService<DeleteConsumer>();
@@ -29,6 +32,7 @@ builder.Services.AddSingleton<ILogger>(logger);
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddScoped<IServiceManager, ServiceManager>();
 builder.Services.AddScoped<MessageProducer>();
+builder.Services.AddSingleton(rabbitSettings);
 
 
 builder.Services.AddControllers()
