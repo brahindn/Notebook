@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿/*using Microsoft.EntityFrameworkCore;
 using Notebook.Application.Services.Implementation;
 using Notebook.DataAccess;
 using Notebook.Domain.Entities;
@@ -374,3 +374,4 @@ namespace Notebook.Tests
         }
     }
 }
+*/

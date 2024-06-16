@@ -1,39 +1,30 @@
-﻿using Notebook.Application.Services.Contracts.Services;
+﻿using AutoMapper;
+using Notebook.Application.Services.Contracts.Services;
 using Notebook.Domain;
 using Notebook.Domain.Entities;
+using Notebook.Domain.Requests;
 using Notebook.Repositories.Contracts;
 using Notebook.Shared.RequestFeatures;
+using RabbitMQ.Client;
+using System.ComponentModel.DataAnnotations;
 
 namespace Notebook.Application.Services.Implementation.Services
 {
     public class AddressService : IAddressService
     {
         private readonly IRepositoryManager _repositoryManager;
-
-        public AddressService(IRepositoryManager repositoryManager)
+        private readonly IMapper _mapper;
+        public AddressService(IRepositoryManager repositoryManager, IMapper mapper)
         {
             _repositoryManager = repositoryManager;
+            _mapper = mapper;
         }
 
-        public async Task CreateAddressAsync(AddressType addressType, string country, string region, string city, string street, int buildingNumber, Guid contactId)
+        public async Task CreateAddressAsync(AddressForCreateDTO addressDTO)
         {
-            if (!(addressType.Equals(AddressType.Personal) || addressType.Equals(AddressType.Business)) || string.IsNullOrWhiteSpace(country) || string.IsNullOrWhiteSpace(city) || string.IsNullOrWhiteSpace(street) || contactId==Guid.Empty)
-            {
-                throw new ArgumentException("AddressType, Country, City, Street and PersonId cannot be null or empty");
-            }
-
-            var contact = await _repositoryManager.Contact.GetContactAsync(contactId) ?? throw new ArgumentException("Person cannot be null or empty");
-
-            var address = new Address
-            {
-                Person = contact,
-                AddressType = addressType,
-                Country = country,
-                Region = region,
-                City = city,
-                Street = street,
-                BuildingNumber = buildingNumber
-            };
+            
+            var contact = await _repositoryManager.Contact.GetContactAsync(addressDTO.ContactId) ?? throw new ArgumentException("Person cannot be null or empty");
+            var address = _mapper.Map<Address>(addressDTO);
 
             _repositoryManager.Address.Create(address);
             await _repositoryManager.SaveAsync();

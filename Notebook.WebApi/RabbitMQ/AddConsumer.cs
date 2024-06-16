@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Notebook.Application.Services.Contracts;
 using Notebook.Domain.Requests;
@@ -62,7 +61,7 @@ namespace Notebook.WebApi.RabbitMQ
                     }
                     else
                     {
-                        await serviceManager.AddressService.CreateAddressAsync(address.AddressType, address.Country, address.Region, address.City, address.Street, address.BuildingNumber, address.ContactId);
+                        await serviceManager.AddressService.CreateAddressAsync(address);
                     }
                 }
             };

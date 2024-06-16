@@ -4,6 +4,7 @@ using Notebook.Shared.RequestFeatures;
 using Notebook.WebApi.RabbitMQ;
 using Notebook.Domain.Requests;
 using Notebook.Domain.Responses;
+using AutoMapper;
 
 namespace Notebook.WebApi.Controllers
 {
@@ -13,12 +14,14 @@ namespace Notebook.WebApi.Controllers
         private readonly IServiceManager _serviceManager;
         private readonly Serilog.ILogger _logger;
         private readonly MessageProducer _messageProducer;
+        private readonly IMapper _mapper;
 
-        public AddressController(IServiceManager serviceManager, Serilog.ILogger logger, MessageProducer messageProducer)
+        public AddressController(IServiceManager serviceManager, Serilog.ILogger logger, MessageProducer messageProducer, IMapper mapper)
         {
             _serviceManager = serviceManager;
             _logger = logger;
             _messageProducer = messageProducer;
+            _mapper = mapper;
         }
 
         [HttpPost]

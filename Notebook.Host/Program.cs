@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Notebook.Application;
+using Notebook.Application.Mapping;
 using Notebook.Application.Services.Contracts;
 using Notebook.Application.Services.Implementation;
 using Notebook.DataAccess;
@@ -34,6 +36,7 @@ builder.Services.AddScoped<IServiceManager, ServiceManager>();
 builder.Services.AddScoped<MessageProducer>();
 builder.Services.AddSingleton(rabbitSettings);
 
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddControllers()
     .AddApplicationPart(typeof(AssemblyReference).Assembly);

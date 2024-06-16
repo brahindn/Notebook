@@ -1,4 +1,5 @@
-﻿using Notebook.Application.Services.Contracts;
+﻿using AutoMapper;
+using Notebook.Application.Services.Contracts;
 using Notebook.Application.Services.Contracts.Services;
 using Notebook.Application.Services.Implementation.Services;
 using Notebook.Repositories.Contracts;
@@ -11,10 +12,10 @@ namespace Notebook.Application.Services.Implementation
         private readonly Lazy<IAddressService> _addressService;
         private readonly Lazy<IMongoService> _mongoService;
 
-        public ServiceManager(IRepositoryManager repositoryManager)
+        public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper)
         {
             _contactService = new Lazy<IContactService>(() => new ContactService(repositoryManager));
-            _addressService = new Lazy<IAddressService>(() => new AddressService(repositoryManager));
+            _addressService = new Lazy<IAddressService>(() => new AddressService(repositoryManager, mapper));
             _mongoService = new Lazy<IMongoService>(() => new MongoService());
         }
         
