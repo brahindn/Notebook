@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Notebook.Application\Notebook.Application.csproj" />
+    <ProjectReference Include="..\Notebook.Domain\Notebook.Domain.csproj" />
   </ItemGroup>
 
 </Project>

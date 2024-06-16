@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Notebook.Application.Services.Contracts;
-using Notebook.WebApi.Requests;
+using Notebook.Domain.Requests;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;

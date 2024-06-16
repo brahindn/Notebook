@@ -2,8 +2,8 @@
 using Notebook.Application.Services.Contracts;
 using Notebook.Shared.RequestFeatures;
 using Notebook.WebApi.RabbitMQ;
-using Notebook.WebApi.Requests;
-using Notebook.WebApi.Responses;
+using Notebook.Domain.Requests;
+using Notebook.Domain.Responses;
 
 namespace Notebook.WebApi.Controllers
 {
@@ -98,7 +98,7 @@ namespace Notebook.WebApi.Controllers
                     return NotFound();
                 }
 
-                var addressDTO = new AddressResponseDTO
+                var addressDTO = new AddressResponseDTO()
                 {
                     Id = address.Id,
                     AddressType = address.AddressType,

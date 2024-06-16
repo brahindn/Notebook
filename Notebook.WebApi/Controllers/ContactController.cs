@@ -2,7 +2,7 @@
 using Notebook.Application.Services.Contracts;
 using Notebook.Shared.RequestFeatures;
 using Notebook.WebApi.RabbitMQ;
-using Notebook.WebApi.Requests;
+using Notebook.Domain.Requests;
 
 namespace Notebook.WebApi.Controllers
 {

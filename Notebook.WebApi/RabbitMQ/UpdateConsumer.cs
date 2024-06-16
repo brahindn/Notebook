@@ -4,7 +4,7 @@ using RabbitMQ.Client.Events;
 using RabbitMQ.Client;
 using System.Text;
 using System.Text.Json;
-using Notebook.WebApi.Requests;
+using Notebook.Domain.Requests;
 using Notebook.Application.Services.Contracts;
 
 namespace Notebook.WebApi.RabbitMQ

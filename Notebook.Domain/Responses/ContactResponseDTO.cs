@@ -1,5 +1,5 @@
 ﻿
-namespace Notebook.WebApi.Responses
+namespace Notebook.Domain.Responses
 {
     public record ContactResponseDTO
     {

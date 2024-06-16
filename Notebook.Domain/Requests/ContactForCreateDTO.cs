@@ -1,5 +1,5 @@
 ﻿
-namespace Notebook.WebApi.Requests
+namespace Notebook.Domain.Requests
 {
     public record ContactForCreateDTO
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Notebook.Application.Services.Contracts;
-using Notebook.WebApi.Responses;
+using Notebook.Domain.Responses;
 
 namespace Notebook.WebApi.Controllers
 {
