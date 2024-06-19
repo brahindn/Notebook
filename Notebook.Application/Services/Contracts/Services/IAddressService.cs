@@ -9,7 +9,7 @@ namespace Notebook.Application.Services.Contracts.Services
     public interface IAddressService
     {
         Task CreateAddressAsync(AddressForCreateDTO addressDTO);
-        Task UpdateAddressAsync(Guid id, AddressType? addressType, string? country, string? region, string? city, string? street, int? buildingNumber);
+        Task UpdateAddressAsync(AddressForUpdateDTO addressDTO);
         Task DeleteAddressAsync(Address address);
         Task<Address> GetAddressAsync(Guid personId);
         Task<IEnumerable<Address>> GetAllAddressesAsync(AddressParameters addressParameters);

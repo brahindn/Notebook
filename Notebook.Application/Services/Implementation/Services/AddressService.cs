@@ -5,8 +5,6 @@ using Notebook.Domain.Entities;
 using Notebook.Domain.Requests;
 using Notebook.Repositories.Contracts;
 using Notebook.Shared.RequestFeatures;
-using RabbitMQ.Client;
-using System.ComponentModel.DataAnnotations;
 
 namespace Notebook.Application.Services.Implementation.Services
 {
@@ -30,16 +28,11 @@ namespace Notebook.Application.Services.Implementation.Services
             await _repositoryManager.SaveAsync();
         }
 
-        public async Task UpdateAddressAsync(Guid addressId, AddressType? newAddressType, string? newCountry, string? newRegion, string? newCity, string? newStreet, int? newBuildingNumber)
+        public async Task UpdateAddressAsync(AddressForUpdateDTO addressDTO)
         {
-            var existAddress = await _repositoryManager.Address.GetAddressAsync(addressId) ?? throw new ArgumentNullException($"That address {addressId} was not found.");
+            var existAddress = await _repositoryManager.Address.GetAddressAsync(addressDTO.Id) ?? throw new ArgumentNullException($"That address {addressDTO.Id} was not found.");
 
-            existAddress.AddressType = newAddressType ?? existAddress.AddressType;
-            existAddress.Country = newCountry ?? existAddress.Country;
-            existAddress.Region = newRegion ?? existAddress.Region;
-            existAddress.City = newCity ?? existAddress.Country;
-            existAddress.Street = newStreet ?? existAddress.Street;
-            existAddress.BuildingNumber = newBuildingNumber ?? existAddress.BuildingNumber;
+            _mapper.Map(addressDTO, existAddress);
 
             _repositoryManager.Address.Update(existAddress);
             await _repositoryManager.SaveAsync();

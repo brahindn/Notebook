@@ -61,7 +61,7 @@ namespace Notebook.WebApi.RabbitMQ
                     }
                     else
                     {
-                        await serviceManager.AddressService.UpdateAddressAsync(address.Id, address.AddressType, address.Country, address.Region, address.City, address.Street, address.BuildingNumber);
+                        await serviceManager.AddressService.UpdateAddressAsync(address);
                     }
                 }
             };
