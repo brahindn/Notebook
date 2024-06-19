@@ -57,7 +57,7 @@ namespace Notebook.WebApi.RabbitMQ
 
                     if(contact.FirstName != null)
                     {
-                        await serviceManager.ContactService.UpdateContactAsync(contact.Id, contact.FirstName, contact.LastName, contact.PhoneNumber, contact.Email, contact.DateOfBirth);
+                        await serviceManager.ContactService.UpdateContactAsync(contact);
                     }
                     else
                     {

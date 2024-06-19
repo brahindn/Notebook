@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Notebook.Application;
 using Notebook.Application.Mapping;
 using Notebook.Application.Services.Contracts;
 using Notebook.Application.Services.Implementation;

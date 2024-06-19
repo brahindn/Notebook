@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Primitives;
-using Notebook.Domain;
+﻿using Notebook.Domain;
 using Notebook.Domain.Entities;
 using Notebook.Domain.Requests;
 using Notebook.Shared.RequestFeatures;

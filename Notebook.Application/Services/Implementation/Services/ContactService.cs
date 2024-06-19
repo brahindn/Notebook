@@ -1,5 +1,7 @@
-﻿using Notebook.Application.Services.Contracts.Services;
+﻿using AutoMapper;
+using Notebook.Application.Services.Contracts.Services;
 using Notebook.Domain.Entities;
+using Notebook.Domain.Requests;
 using Notebook.Repositories.Contracts;
 using Notebook.Shared.RequestFeatures;
 
@@ -8,41 +10,27 @@ namespace Notebook.Application.Services.Implementation.Services
     public class ContactService : IContactService
     {
         private readonly IRepositoryManager _repositoryManager;
+        private readonly IMapper _mapper;
 
-        public ContactService(IRepositoryManager repositoryManager)
+        public ContactService(IRepositoryManager repositoryManager, IMapper mapper)
         {
             _repositoryManager = repositoryManager;
+            _mapper = mapper;
         }
 
-        public async Task CreateContactAsync(string firstName, string lastName, string phoneNumber, string? email, DateTime? dataOfBirth)
+        public async Task CreateContactAsync(ContactForCreateDTO contactDTO)
         {
-            if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName) || string.IsNullOrWhiteSpace(phoneNumber))
-            {
-                return;
-            }
-
-            var contact = new Contact
-            {
-                FirstName = firstName,
-                LastName = lastName,
-                PhoneNumber = phoneNumber,
-                Email = email,
-                DateOfBirth = dataOfBirth
-            };
+            var contact = _mapper.Map<Contact>(contactDTO);
 
             _repositoryManager.Contact.Create(contact);
             await _repositoryManager.SaveAsync();
         }
 
-        public async Task UpdateContactAsync(Guid Id, string? newFirstName, string? newLastName, string? newPhoneNumber, string? newEmail, DateTime? newDataOfBirth)
+        public async Task UpdateContactAsync(ContactForUpdateDTO contactDTO)
         {
-            var existContact = await _repositoryManager.Contact.GetContactAsync(Id) ?? throw new ArgumentNullException($"That contact {Id} was not found.");
+            var existContact = await _repositoryManager.Contact.GetContactAsync(contactDTO.Id) ?? throw new ArgumentNullException($"That contact {contactDTO.Id} was not found.");
 
-            existContact.FirstName = newFirstName ?? existContact.FirstName;
-            existContact.LastName = newLastName ?? existContact.LastName;
-            existContact.PhoneNumber = newPhoneNumber ?? existContact.PhoneNumber;
-            existContact.Email = newEmail ?? existContact.Email;
-            existContact.DateOfBirth = newDataOfBirth ?? existContact.DateOfBirth;
+            _mapper.Map(contactDTO, existContact);
 
             _repositoryManager.Contact.Update(existContact);
             await _repositoryManager.SaveAsync();

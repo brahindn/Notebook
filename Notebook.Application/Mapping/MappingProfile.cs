@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using MongoDB.Driver.Core.Authentication;
 using Notebook.Domain.Entities;
 using Notebook.Domain.Requests;
 
@@ -19,6 +18,15 @@ namespace Notebook.Application.Mapping
                 .ForMember(dest => dest.City, opt => opt.Condition(src => !string.IsNullOrWhiteSpace(src.City)))
                 .ForMember(dest => dest.Street, opt => opt.Condition(src => !string.IsNullOrWhiteSpace(src.Street)))
                 .ForMember(dest => dest.BuildingNumber, opt => opt.Condition(src => src.BuildingNumber != null && src.BuildingNumber != 0));
+
+            CreateMap<ContactForCreateDTO, Contact>();
+
+            CreateMap<ContactForUpdateDTO, Contact>()
+                .ForMember(dest => dest.FirstName, opt => opt.Condition(src => !string.IsNullOrWhiteSpace(src.FirstName)))
+                .ForMember(dest => dest.LastName, opt => opt.Condition(src => !string.IsNullOrWhiteSpace(src.LastName)))
+                .ForMember(dest => dest.PhoneNumber, opt => opt.Condition(src => !string.IsNullOrWhiteSpace(src.PhoneNumber)))
+                .ForMember(dest => dest.Email, opt => opt.Condition(src => !string.IsNullOrWhiteSpace(src.Email)))
+                .ForMember(dest => dest.DateOfBirth, opt => opt.Condition(src => src.DateOfBirth != null));
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Notebook.Application.Services.Implementation
 
         public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper)
         {
-            _contactService = new Lazy<IContactService>(() => new ContactService(repositoryManager));
+            _contactService = new Lazy<IContactService>(() => new ContactService(repositoryManager, mapper));
             _addressService = new Lazy<IAddressService>(() => new AddressService(repositoryManager, mapper));
             _mongoService = new Lazy<IMongoService>(() => new MongoService());
         }
