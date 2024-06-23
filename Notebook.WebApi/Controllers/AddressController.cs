@@ -27,43 +27,25 @@ namespace Notebook.WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> AddAddress([FromBody] AddressForCreateDTO address)
         {
-            try
-            {
-                var routingKey = "AddKey";
+            var routingKey = "AddKey";
 
-                _messageProducer.SendMessage(address, routingKey);
+            _messageProducer.SendMessage(address, routingKey);
 
-                _logger.Information($"New address for contact {address.ContactId} has been added successfully");
+            _logger.Information($"New address for contact {address.ContactId} has been added successfully");
 
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.InnerException.Message);
-
-                return StatusCode(500, $"CreateContact error: {ex.Message}");
-            }
+            return Ok();
         }
 
         [HttpPut("{addressId}")]
         public async Task<IActionResult> UpdateAddress([FromBody] AddressForUpdateDTO address)
         {
-            try
-            {
-                var routingKey = "UpdateKey";
+            var routingKey = "UpdateKey";
 
-                _messageProducer.SendMessage(address, routingKey);
+            _messageProducer.SendMessage(address, routingKey);
 
-                _logger.Information($"Updated address: {address.Id}");
+            _logger.Information($"Updated address: {address.Id}");
 
-                return Ok();
-            }
-            catch(Exception ex)
-            {
-                _logger.Error(ex.InnerException.Message);
-
-                return StatusCode(500, $"UpdateAddress error: {ex.Message}");
-            }
+            return Ok();
         }
 
         [HttpDelete("{addressId}")]
@@ -71,77 +53,51 @@ namespace Notebook.WebApi.Controllers
         {
             var existAddress = await _serviceManager.AddressService.GetAddressAsync(addressId);
 
-            try
-            {
-                var routingKey = "DeleteKey";
+            var routingKey = "DeleteKey";
 
-                _messageProducer.SendMessage(existAddress, routingKey);
+            _messageProducer.SendMessage(existAddress, routingKey);
 
-                _logger.Information($"Deleted address: {existAddress.Id}");
+            _logger.Information($"Deleted address: {existAddress.Id}");
 
-                return Ok();
-            }
-            catch(Exception ex)
-            {
-                _logger.Error(ex.InnerException.Message);
-
-                return StatusCode(500, $"DeleteAddress error: {ex.Message}");
-            }
+            return Ok();
         }
 
         [HttpGet("{addressId}")]
         public async Task<IActionResult> GetAddressById(Guid addressId)
         {
-            try
+
+            var address = await _serviceManager.AddressService.GetAddressAsync(addressId);
+
+            if(address == null)
             {
-                var address = await _serviceManager.AddressService.GetAddressAsync(addressId);
-
-                if(address == null)
-                {
-                    return NotFound();
-                }
-
-                var addressDTO = new AddressResponseDTO()
-                {
-                    Id = address.Id,
-                    AddressType = address.AddressType,
-                    Country = address.Country,
-                    City = address.City,
-                    Region = address.Region,
-                    Street = address.Street,
-                    BuildingNumber = address.BuildingNumber,
-                    ContactId = address.PersonId
-                };
-
-                _logger.Information($"Address for contact {address.PersonId} has been got");
-
-                return Ok(addressDTO);
+                return NotFound();
             }
-            catch (Exception ex)
+
+            var addressDTO = new AddressResponseDTO()
             {
-                _logger.Error(ex.InnerException.Message);
+                Id = address.Id,
+                AddressType = address.AddressType,
+                Country = address.Country,
+                City = address.City,
+                Region = address.Region,
+                Street = address.Street,
+                BuildingNumber = address.BuildingNumber,
+                ContactId = address.PersonId
+            };
 
-                return StatusCode(500, $"GetAddress error: {ex.Message}");
-            }
+            _logger.Information($"Address for contact {address.PersonId} has been got");
+
+            return Ok(addressDTO);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllAddresses([FromQuery] AddressParameters addressParameters)
         {
-            try
-            {
-                var addresses = await _serviceManager.AddressService.GetAllAddressesAsync(addressParameters);
+            var addresses = await _serviceManager.AddressService.GetAllAddressesAsync(addressParameters);
 
-                _logger.Information("All addresses have been got");
+            _logger.Information("All addresses have been got");
 
-                return Ok(addresses);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.InnerException.Message);
-
-                return StatusCode(500, $"GetAddresses error: {ex.Message}");
-            }
+            return Ok(addresses);
         }
     }
 }

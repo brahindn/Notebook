@@ -26,7 +26,7 @@ namespace Notebook.WebApi.RabbitMQ
 
         private void InitRabbitMQ()
         {
-            var factory = new ConnectionFactory { HostName = "localhost" };
+            var factory = new ConnectionFactory { HostName = _rabbitMqSettings.StringHostName };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
 

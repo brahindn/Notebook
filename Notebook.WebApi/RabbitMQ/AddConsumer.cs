@@ -55,7 +55,7 @@ namespace Notebook.WebApi.RabbitMQ
                 {
                     var serviceManager = scope.ServiceProvider.GetRequiredService<IServiceManager>();
 
-                    if (contact.FirstName != null)
+                    if(contact.FirstName != null)
                     {
                         await serviceManager.ContactService.CreateContactAsync(contact);
                     }
