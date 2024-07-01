@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Notebook.Application.Mapping;
 using Notebook.Application.Services.Implementation;
 using Notebook.DataAccess;
 using Notebook.Domain.Entities;
@@ -18,6 +19,17 @@ namespace Notebook.Tests
 
         public NotebookTests()
         {
+            if(_mapper == null)
+            {
+                var mappingConfig = new MapperConfiguration(mc =>
+                {
+                    mc.AddProfile(new MappingProfile());
+                });
+
+                var mapper = mappingConfig.CreateMapper();
+                _mapper = mapper;
+            }
+
             _options = new DbContextOptionsBuilder<RepositoryContext>()
                 .UseInMemoryDatabase(databaseName: "TestDatabase")
                 .Options;
@@ -28,7 +40,7 @@ namespace Notebook.Tests
             _serviceManager = new ServiceManager(repositoryManager, _mapper);
 
             context.Database.EnsureDeleted();
-        }
+        }        
 
         [TestMethod]
         public async Task AddNewContact()
