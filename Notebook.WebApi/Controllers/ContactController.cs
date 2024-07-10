@@ -22,7 +22,7 @@ namespace Notebook.WebApi.Controllers
         }
 
         [HttpPost("add")]
-        public async Task<IActionResult> AddContact([FromBody] ContactForCreateDTO contact)
+        public Task<IActionResult> AddContact([FromBody] ContactForCreateDTO contact)
         {
             try
             {
@@ -32,18 +32,18 @@ namespace Notebook.WebApi.Controllers
 
                 _logger.Information($"New contact {contact.FirstName} {contact.LastName} has been added successfully");
 
-                return Ok(); 
+                return Task.FromResult<IActionResult>(Ok());
             }
             catch (Exception ex)
             {
                 _logger.Error(ex.InnerException.Message);
 
-                return StatusCode(500, $"CreateContact error: {ex.Message}");
+                return Task.FromResult<IActionResult>(StatusCode(500, $"CreateContact error: {ex.Message}"));
             }
         }
 
         [HttpPut("{update}")]
-        public async Task<IActionResult> UpdateContact([FromBody] ContactForUpdateDTO contact)
+        public Task<IActionResult> UpdateContact([FromBody] ContactForUpdateDTO contact)
         {
             try
             {
@@ -53,13 +53,13 @@ namespace Notebook.WebApi.Controllers
 
                 _logger.Information($"Contact {contact.Id} has been updated successfully!");
 
-                return Ok();
+                return Task.FromResult<IActionResult>(Ok());
             }
             catch (Exception ex)
             {
                 _logger.Error(ex.InnerException.Message);
 
-                return StatusCode(500, $"UpdateContact error: {ex.Message}");
+                return Task.FromResult<IActionResult>(StatusCode(500, $"UpdateContact error: {ex.Message}"));
             }
         }
 

@@ -25,7 +25,7 @@ namespace Notebook.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddAddress([FromBody] AddressForCreateDTO address)
+        public Task<IActionResult> AddAddress([FromBody] AddressForCreateDTO address)
         {
             var routingKey = "AddKey";
 
@@ -33,11 +33,11 @@ namespace Notebook.WebApi.Controllers
 
             _logger.Information($"New address for contact {address.ContactId} has been added successfully");
 
-            return Ok();
+            return Task.FromResult<IActionResult>(Ok());
         }
 
         [HttpPut("{addressId}")]
-        public async Task<IActionResult> UpdateAddress([FromBody] AddressForUpdateDTO address)
+        public Task<IActionResult> UpdateAddress([FromBody] AddressForUpdateDTO address)
         {
             var routingKey = "UpdateKey";
 
@@ -45,7 +45,7 @@ namespace Notebook.WebApi.Controllers
 
             _logger.Information($"Updated address: {address.Id}");
 
-            return Ok();
+            return Task.FromResult<IActionResult>(Ok());
         }
 
         [HttpDelete("{addressId}")]
