@@ -3,12 +3,16 @@
   "WorkspaceRootPath": "C:\\Projects\\.NET 6.0\\Notebook\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{9A8A5016-E8F1-4D98-B434-CE10266F9E67}|Notebook.WebApi\\Notebook.WebApi.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.webapi\\controllers\\contactcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9A8A5016-E8F1-4D98-B434-CE10266F9E67}|Notebook.WebApi\\Notebook.WebApi.csproj|solutionrelative:notebook.webapi\\controllers\\contactcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{9A8A5016-E8F1-4D98-B434-CE10266F9E67}|Notebook.WebApi\\Notebook.WebApi.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.webapi\\controllers\\addresscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9A8A5016-E8F1-4D98-B434-CE10266F9E67}|Notebook.WebApi\\Notebook.WebApi.csproj|solutionrelative:notebook.webapi\\controllers\\addresscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2F935B6-23AC-4EB2-B704-74731EB6206E}|Notebook.Host\\Notebook.Host.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.host\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2F935B6-23AC-4EB2-B704-74731EB6206E}|Notebook.Host\\Notebook.Host.csproj|solutionrelative:notebook.host\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{2B3A5E79-B042-4622-9866-29BF5D251715}|Notebook.Application\\Notebook.Application.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.application\\services\\implementation\\services\\contactservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2B3A5E79-B042-4622-9866-29BF5D251715}|Notebook.Application\\Notebook.Application.csproj|solutionrelative:notebook.application\\services\\implementation\\services\\contactservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{03C77A42-15B5-4A3D-878A-9758499AA361}|Notebook.Tests\\Notebook.Tests.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.tests\\notebooktests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -17,22 +21,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{2B3A5E79-B042-4622-9866-29BF5D251715}|Notebook.Application\\Notebook.Application.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.application\\services\\contracts\\iservicemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{2B3A5E79-B042-4622-9866-29BF5D251715}|Notebook.Application\\Notebook.Application.csproj|solutionrelative:notebook.application\\services\\contracts\\iservicemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2B3A5E79-B042-4622-9866-29BF5D251715}|Notebook.Application\\Notebook.Application.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.application\\services\\implementation\\services\\contactservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2B3A5E79-B042-4622-9866-29BF5D251715}|Notebook.Application\\Notebook.Application.csproj|solutionrelative:notebook.application\\services\\implementation\\services\\contactservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2B3A5E79-B042-4622-9866-29BF5D251715}|Notebook.Application\\Notebook.Application.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.application\\services\\implementation\\services\\mongoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2B3A5E79-B042-4622-9866-29BF5D251715}|Notebook.Application\\Notebook.Application.csproj|solutionrelative:notebook.application\\services\\implementation\\services\\mongoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{03C77A42-15B5-4A3D-878A-9758499AA361}|Notebook.Tests\\Notebook.Tests.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.tests\\globalusings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{03C77A42-15B5-4A3D-878A-9758499AA361}|Notebook.Tests\\Notebook.Tests.csproj|solutionrelative:notebook.tests\\globalusings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2B3A5E79-B042-4622-9866-29BF5D251715}|Notebook.Application\\Notebook.Application.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.application\\services\\implementation\\servicemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2B3A5E79-B042-4622-9866-29BF5D251715}|Notebook.Application\\Notebook.Application.csproj|solutionrelative:notebook.application\\services\\implementation\\servicemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -67,19 +55,32 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "ContactController.cs",
+              "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.WebApi\\Controllers\\ContactController.cs",
+              "RelativeDocumentMoniker": "Notebook.WebApi\\Controllers\\ContactController.cs",
+              "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.WebApi\\Controllers\\ContactController.cs",
+              "RelativeToolTip": "Notebook.WebApi\\Controllers\\ContactController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-10T16:38:12.315Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "AddressController.cs",
               "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.WebApi\\Controllers\\AddressController.cs",
               "RelativeDocumentMoniker": "Notebook.WebApi\\Controllers\\AddressController.cs",
               "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.WebApi\\Controllers\\AddressController.cs",
               "RelativeToolTip": "Notebook.WebApi\\Controllers\\AddressController.cs",
-              "ViewState": "AQIAAEEAAAAAAAAAAAAkwGYAAAABAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAAlAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-07-10T16:06:38.804Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "IServiceManager.cs",
               "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Application\\Services\\Contracts\\IServiceManager.cs",
               "RelativeDocumentMoniker": "Notebook.Application\\Services\\Contracts\\IServiceManager.cs",
@@ -91,68 +92,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "GlobalUsings.cs",
-              "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Tests\\GlobalUsings.cs",
-              "RelativeDocumentMoniker": "Notebook.Tests\\GlobalUsings.cs",
-              "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Tests\\GlobalUsings.cs",
-              "RelativeToolTip": "Notebook.Tests\\GlobalUsings.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-01T18:49:20.658Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "ServiceManager.cs",
-              "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Application\\Services\\Implementation\\ServiceManager.cs",
-              "RelativeDocumentMoniker": "Notebook.Application\\Services\\Implementation\\ServiceManager.cs",
-              "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Application\\Services\\Implementation\\ServiceManager.cs",
-              "RelativeToolTip": "Notebook.Application\\Services\\Implementation\\ServiceManager.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-01T18:29:57.121Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "MongoService.cs",
-              "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Application\\Services\\Implementation\\Services\\MongoService.cs",
-              "RelativeDocumentMoniker": "Notebook.Application\\Services\\Implementation\\Services\\MongoService.cs",
-              "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Application\\Services\\Implementation\\Services\\MongoService.cs",
-              "RelativeToolTip": "Notebook.Application\\Services\\Implementation\\Services\\MongoService.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-01T18:29:53.92Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Host\\Program.cs",
-              "RelativeDocumentMoniker": "Notebook.Host\\Program.cs",
-              "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Host\\Program.cs",
-              "RelativeToolTip": "Notebook.Host\\Program.cs",
-              "ViewState": "AQIAABYAAAAAAAAAAAAAAB8AAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-01T17:46:35.738Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 2,
               "Title": "ContactService.cs",
               "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Application\\Services\\Implementation\\Services\\ContactService.cs",
               "RelativeDocumentMoniker": "Notebook.Application\\Services\\Implementation\\Services\\ContactService.cs",
               "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Application\\Services\\Implementation\\Services\\ContactService.cs",
               "RelativeToolTip": "Notebook.Application\\Services\\Implementation\\Services\\ContactService.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABMAAAAAAAAA",
+              "ViewState": "AQIAAAkAAAAAAAAAAAAAABsAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-27T17:19:41.278Z"
+              "WhenOpened": "2024-06-27T17:19:41.278Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "NotebookTests.cs",
               "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Tests\\NotebookTests.cs",
               "RelativeDocumentMoniker": "Notebook.Tests\\NotebookTests.cs",

@@ -3,7 +3,6 @@ using Notebook.Application.Services.Contracts;
 using Notebook.Shared.RequestFeatures;
 using Notebook.WebApi.RabbitMQ;
 using Notebook.Domain.Requests;
-using Notebook.Domain.Responses;
 using AutoMapper;
 
 namespace Notebook.WebApi.Controllers
@@ -73,17 +72,7 @@ namespace Notebook.WebApi.Controllers
                 return NotFound();
             }
 
-            var addressDTO = new AddressResponseDTO()
-            {
-                Id = address.Id,
-                AddressType = address.AddressType,
-                Country = address.Country,
-                City = address.City,
-                Region = address.Region,
-                Street = address.Street,
-                BuildingNumber = address.BuildingNumber,
-                ContactId = address.PersonId
-            };
+            var addressDTO = _mapper.Map<AddressForCreateDTO>(address);
 
             _logger.Information($"Address for contact {address.PersonId} has been got");
 
