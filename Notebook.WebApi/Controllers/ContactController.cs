@@ -24,43 +24,26 @@ namespace Notebook.WebApi.Controllers
         [HttpPost("add")]
         public Task<IActionResult> AddContact([FromBody] ContactForCreateDTO contact)
         {
-            try
-            {
-                var routingKey = "AddKey";
 
-                _messageProducer.SendMessage(contact, routingKey);
+            var routingKey = "AddKey";
 
-                _logger.Information($"New contact {contact.FirstName} {contact.LastName} has been added successfully");
+            _messageProducer.SendMessage(contact, routingKey);
 
-                return Task.FromResult<IActionResult>(Ok());
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.InnerException.Message);
+            _logger.Information($"New contact {contact.FirstName} {contact.LastName} has been added successfully");
 
-                return Task.FromResult<IActionResult>(StatusCode(500, $"CreateContact error: {ex.Message}"));
-            }
+            return Task.FromResult<IActionResult>(Ok());
         }
 
         [HttpPut("{update}")]
         public Task<IActionResult> UpdateContact([FromBody] ContactForUpdateDTO contact)
         {
-            try
-            {
-                var routingKey = "UpdateKey";
+            var routingKey = "UpdateKey";
 
-                _messageProducer.SendMessage(contact, routingKey);
+            _messageProducer.SendMessage(contact, routingKey);
 
-                _logger.Information($"Contact {contact.Id} has been updated successfully!");
+            _logger.Information($"Contact {contact.Id} has been updated successfully!");
 
-                return Task.FromResult<IActionResult>(Ok());
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.InnerException.Message);
-
-                return Task.FromResult<IActionResult>(StatusCode(500, $"UpdateContact error: {ex.Message}"));
-            }
+            return Task.FromResult<IActionResult>(Ok());
         }
 
         [HttpDelete("{delete}")]
@@ -68,67 +51,40 @@ namespace Notebook.WebApi.Controllers
         {
             var existContact = await _serviceManager.ContactService.GetContactAsync(contactId);
 
-            try
-            {
-                var routingKey = "DeleteKey";
+            var routingKey = "DeleteKey";
 
-                _messageProducer.SendMessage(existContact, routingKey);
+            _messageProducer.SendMessage(existContact, routingKey);
 
-                _logger.Information($"Contact deleted: {existContact.Id}");
+            _logger.Information($"Contact deleted: {existContact.Id}");
 
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.InnerException.Message);
-
-                return StatusCode(500, $"DeleteContact error: {ex.Message}");
-            }
+            return Ok();
         }
 
         [HttpGet("{getById}")]
         public async Task<IActionResult> GetContactById(Guid contactId)
         {
-            try
+            var contact = await _serviceManager.ContactService.GetContactAsync(contactId);
+
+            if (contact == null)
             {
-                var contact = await _serviceManager.ContactService.GetContactAsync(contactId);
-
-                if (contact == null)
-                {
-                    return NotFound();
-                }
-
-                var contactDTO = contact;
-
-                _logger.Information($"Contact {contactDTO.Id} has been got");
-
-                return Ok(contactDTO);
+                return NotFound();
             }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.InnerException.Message);
 
-                return StatusCode(500, $"GetContact error: {ex.Message}");
-            }
+            var contactDTO = contact;
+
+            _logger.Information($"Contact {contactDTO.Id} has been got");
+
+            return Ok(contactDTO);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllContacts([FromQuery] ContactParameters contactParameters)
         {
-            try
-            {
-                var allContacts = await _serviceManager.ContactService.GetAllContactsAsync(contactParameters);
+            var allContacts = await _serviceManager.ContactService.GetAllContactsAsync(contactParameters);
 
-                _logger.Information("All contacts have been got");
+            _logger.Information("All contacts have been got");
 
-                return Ok(allContacts);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.InnerException.Message);
-
-                return StatusCode(500, $"GetContacts error: {ex.Message}");
-            }
+            return Ok(allContacts);
         }
     }
 }
