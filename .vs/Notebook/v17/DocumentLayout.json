@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "C:\\Projects\\.NET 6.0\\Notebook\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2F935B6-23AC-4EB2-B704-74731EB6206E}|Notebook.Host\\Notebook.Host.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.host\\extensions\\exceptionmiddlewareextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2F935B6-23AC-4EB2-B704-74731EB6206E}|Notebook.Host\\Notebook.Host.csproj|solutionrelative:notebook.host\\extensions\\exceptionmiddlewareextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{79F76846-1FB7-4ECA-B455-F2621FF1236C}|Notebook.UI\\Notebook.UI.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.ui\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{79F76846-1FB7-4ECA-B455-F2621FF1236C}|Notebook.UI\\Notebook.UI.csproj|solutionrelative:notebook.ui\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2F935B6-23AC-4EB2-B704-74731EB6206E}|Notebook.Host\\Notebook.Host.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.host\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -48,22 +48,22 @@
               "RelativeDocumentMoniker": "Notebook.Host\\Program.cs",
               "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Host\\Program.cs",
               "RelativeToolTip": "Notebook.Host\\Program.cs",
-              "ViewState": "AQIAAAMAAAAAAAAAAAAAACMAAAA+AAAA",
+              "ViewState": "AQIAAEAAAAAAAAAAAAAqwEQAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-10T16:45:55.222Z",
+              "WhenOpened": "2024-07-15T19:52:21.556Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "ExceptionMiddlewareExtensions.cs",
-              "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Host\\Extensions\\ExceptionMiddlewareExtensions.cs",
-              "RelativeDocumentMoniker": "Notebook.Host\\Extensions\\ExceptionMiddlewareExtensions.cs",
-              "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Host\\Extensions\\ExceptionMiddlewareExtensions.cs",
-              "RelativeToolTip": "Notebook.Host\\Extensions\\ExceptionMiddlewareExtensions.cs",
-              "ViewState": "AQIAAAIAAAAAAAAAAAAqwB0AAAATAAAA",
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.UI\\Program.cs",
+              "RelativeDocumentMoniker": "Notebook.UI\\Program.cs",
+              "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.UI\\Program.cs",
+              "RelativeToolTip": "Notebook.UI\\Program.cs",
+              "ViewState": "AQIAABAAAAAAAAAAAAAQwCMAAAA2AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-10T16:41:34.469Z",
+              "WhenOpened": "2024-07-15T19:51:55.313Z",
               "EditorCaption": ""
             }
           ]
