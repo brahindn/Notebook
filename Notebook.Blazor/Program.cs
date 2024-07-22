@@ -1,6 +1,7 @@
-using Notebook.UI.Components;
+using MudBlazor.Services;
+using Notebook.Blazor.Components;
 
-namespace Notebook.UI
+namespace Notebook.Blazor
 {
     public class Program
     {
@@ -11,6 +12,7 @@ namespace Notebook.UI
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
+            builder.Services.AddMudServices();
 
             var app = builder.Build();
 
@@ -29,12 +31,6 @@ namespace Notebook.UI
 
             app.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapBlazorHub();
-                endpoints.MapFallbackToPage("/_Host");
-            });
 
             app.Run();
         }
