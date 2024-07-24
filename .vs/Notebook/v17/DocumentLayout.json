@@ -7,16 +7,12 @@
       "RelativeMoniker": "D:0:0:{43DB5907-F06C-4049-8537-7034C1A37109}|Notebook.Blazor\\Notebook.Blazor.csproj|solutionrelative:notebook.blazor\\components\\layout\\mainlayout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{43DB5907-F06C-4049-8537-7034C1A37109}|Notebook.Blazor\\Notebook.Blazor.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.blazor\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{43DB5907-F06C-4049-8537-7034C1A37109}|Notebook.Blazor\\Notebook.Blazor.csproj|solutionrelative:notebook.blazor\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{43DB5907-F06C-4049-8537-7034C1A37109}|Notebook.Blazor\\Notebook.Blazor.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.blazor\\components\\pages\\contactpage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{43DB5907-F06C-4049-8537-7034C1A37109}|Notebook.Blazor\\Notebook.Blazor.csproj|solutionrelative:notebook.blazor\\components\\pages\\contactpage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{43DB5907-F06C-4049-8537-7034C1A37109}|Notebook.Blazor\\Notebook.Blazor.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.blazor\\components\\app.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{43DB5907-F06C-4049-8537-7034C1A37109}|Notebook.Blazor\\Notebook.Blazor.csproj|solutionrelative:notebook.blazor\\components\\app.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{43DB5907-F06C-4049-8537-7034C1A37109}|Notebook.Blazor\\Notebook.Blazor.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.blazor\\components\\_imports.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{43DB5907-F06C-4049-8537-7034C1A37109}|Notebook.Blazor\\Notebook.Blazor.csproj|solutionrelative:notebook.blazor\\components\\_imports.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{43DB5907-F06C-4049-8537-7034C1A37109}|Notebook.Blazor\\Notebook.Blazor.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.blazor\\components\\pages\\addresspage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{43DB5907-F06C-4049-8537-7034C1A37109}|Notebook.Blazor\\Notebook.Blazor.csproj|solutionrelative:notebook.blazor\\components\\pages\\addresspage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,7 +22,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -50,54 +46,41 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "AddressPage.razor",
+              "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Blazor\\Components\\Pages\\AddressPage.razor",
+              "RelativeDocumentMoniker": "Notebook.Blazor\\Components\\Pages\\AddressPage.razor",
+              "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Blazor\\Components\\Pages\\AddressPage.razor",
+              "RelativeToolTip": "Notebook.Blazor\\Components\\Pages\\AddressPage.razor",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-24T15:13:46.912Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ContactPage.razor",
+              "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Blazor\\Components\\Pages\\ContactPage.razor",
+              "RelativeDocumentMoniker": "Notebook.Blazor\\Components\\Pages\\ContactPage.razor",
+              "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Blazor\\Components\\Pages\\ContactPage.razor",
+              "RelativeToolTip": "Notebook.Blazor\\Components\\Pages\\ContactPage.razor",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA4AAAAOAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-07-22T19:16:58.71Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
               "Title": "MainLayout.razor",
               "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Blazor\\Components\\Layout\\MainLayout.razor",
               "RelativeDocumentMoniker": "Notebook.Blazor\\Components\\Layout\\MainLayout.razor",
               "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Blazor\\Components\\Layout\\MainLayout.razor",
               "RelativeToolTip": "Notebook.Blazor\\Components\\Layout\\MainLayout.razor",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAAAmAAAA",
+              "ViewState": "AQIAAAkAAAAAAAAAAAAAABEAAABBAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2024-07-22T16:42:23.498Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Blazor\\Program.cs",
-              "RelativeDocumentMoniker": "Notebook.Blazor\\Program.cs",
-              "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Blazor\\Program.cs",
-              "RelativeToolTip": "Notebook.Blazor\\Program.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-22T16:41:42.267Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "App.razor",
-              "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Blazor\\Components\\App.razor",
-              "RelativeDocumentMoniker": "Notebook.Blazor\\Components\\App.razor",
-              "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Blazor\\Components\\App.razor",
-              "RelativeToolTip": "Notebook.Blazor\\Components\\App.razor",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAA/AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-07-22T16:37:49.096Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "_Imports.razor",
-              "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Blazor\\Components\\_Imports.razor",
-              "RelativeDocumentMoniker": "Notebook.Blazor\\Components\\_Imports.razor",
-              "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Blazor\\Components\\_Imports.razor",
-              "RelativeToolTip": "Notebook.Blazor\\Components\\_Imports.razor",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAQAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-07-22T16:37:25.692Z",
               "EditorCaption": ""
             }
           ]

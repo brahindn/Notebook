@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notebook.Shared", "Notebook
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notebook.Tests", "Notebook.Tests\Notebook.Tests.csproj", "{03C77A42-15B5-4A3D-878A-9758499AA361}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notebook.Blazor", "Notebook.Blazor\Notebook.Blazor.csproj", "{43DB5907-F06C-4049-8537-7034C1A37109}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notebook.Blazor", "Notebook.Blazor\Notebook.Blazor.csproj", "{43DB5907-F06C-4049-8537-7034C1A37109}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
