@@ -1,20 +1,24 @@
 ﻿@page "/contacts/addContactForm"
+@using Notebook.Domain.Requests
+@using Notebook.WebApi.Controllers
 @inject NavigationManager NavigationManager
+@inject ContactController contactController
+@rendermode InteractiveServer
 
 <MudGrid Justify="Justify.Center">
     <MudItem xs="12" sm="7">
         <MudPaper Class="pa-4">
-            <MudForm>
-                <MudTextField T="string" Label="First Name" Required="true" RequiredError="First name is required!" />
-                <MudTextField T="string" Label="Last Name" Required="true" RequiredError="Last name is required!"/>
-                <MudTextField T="string" Label="Phone number" Required="true" RequiredError="Phone number is required!"/>
-                <MudTextField T="string" Label="Email"/>
-                <MudTextField T="string" Label="Date of birth"/>
+            <MudForm Model = "contactForCreateDTO" @ref="form" @bind-IsValis="@success" @bind-Errors="@errors">
+                <MudTextField @bind-Value="contactForCreateDTO.FirstName" T="string" Label="First Name" Required="true" RequiredError="First name is required!" />
+                <MudTextField @bind-Value="contactForCreateDTO.LastName" T="string" Label="Last Name" Required="true" RequiredError="Last name is required!" />
+                <MudTextField @bind-Value="contactForCreateDTO.PhoneNumber" T="string" Label="Phone number" Required="true" RequiredError="Phone number is required!" />
+                <MudTextField @bind-Value="contactForCreateDTO.Email" T="string" Label="Email" />
+                <MudTextField @bind-Value="contactForCreateDTO.DateOfBirth" T="DateTime?" Label="Date of birth" />
             </MudForm>
         </MudPaper>
         <MudPaper Class="pa-4 mt-4">
             <div style="display:flex; justify-content: flex-end;">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" DropShadow="false">Add</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" DropShadow="false" OnClick="@((e) => AddContact())">Add</MudButton>
                 <div style="margin-left: 1rem;"/>
                 <MudButton Variant="Variant.Filled" Color="Color.Secondary" DropShadow="false" OnClick="@((e) => Back())">Cancel</MudButton>
             </div>
@@ -24,9 +28,21 @@
 
 
 @code
-{   
+{
+    bool success;
+    string[] errors = { };
+    MudForm form = new MudForm();
+    bool showValues = false;
+    ContactForCreateDTO contactForCreateDTO = new ContactForCreateDTO();
+
+
     private void Back()
     {
         NavigationManager.NavigateTo("/contacts");
+    }
+
+    private async void AddContact()
+    {
+        await contactController.AddContact(contactForCreateDTO);
     }
 }

@@ -10,4 +10,8 @@
     <PackageReference Include="MudBlazor" Version="7.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Notebook.WebApi\Notebook.WebApi.csproj" />
+  </ItemGroup>
+
 </Project>
