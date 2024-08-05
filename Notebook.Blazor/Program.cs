@@ -13,6 +13,7 @@ namespace Notebook.Blazor
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
             builder.Services.AddMudServices();
+            builder.Services.AddHttpClient();
 
             var app = builder.Build();
 
