@@ -1,5 +1,4 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Notebook.Domain.Requests
 {
@@ -15,7 +14,7 @@ namespace Notebook.Domain.Requests
         public string PhoneNumber { get; set; } = string.Empty;
 
         [StringLength(256)]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "Invalid email address.")]
         public string? Email { get; set; }
         public DateTime? DateOfBirth { get; set; }
     }

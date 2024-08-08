@@ -4,6 +4,7 @@ using Notebook.Domain.Entities;
 using Notebook.Domain.Requests;
 using Notebook.Repositories.Contracts;
 using Notebook.Shared.RequestFeatures;
+using System.Linq.Expressions;
 
 namespace Notebook.Application.Services.Implementation.Services
 {

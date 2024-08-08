@@ -1,7 +1,10 @@
 ﻿@page "/contacts/addContactForm"
 @using Notebook.Domain.Requests
 @using System.Text.Json
+@using System.Configuration
 @inject NavigationManager NavigationManager
+@inject HttpClient httpClient
+@inject IConfiguration configuration
 @rendermode InteractiveServer
 
 <MudGrid Justify="Justify.Center">
@@ -12,7 +15,6 @@
                 <MudTextField @bind-Value="contactForCreateDTO.LastName" T="string" Label="Last Name" Required="true" RequiredError="Last name is required!" />
                 <MudTextField @bind-Value="contactForCreateDTO.PhoneNumber" T="string" Label="Phone number" Required="true" RequiredError="Phone number is required!" />
                 <MudTextField @bind-Value="contactForCreateDTO.Email" T="string" Label="Email" />
-                <MudDatePicker PickerVariant="PickerVariant.Dialog" @bind-Date="contactForCreateDTO.DateOfBirth" Label="Only Calendar"  ShowToolbar="false" />
             </MudForm>
         </MudPaper>
         <MudPaper Class="pa-4 mt-4">
@@ -35,26 +37,22 @@
 
 
     private void Back()
-    {
-        NavigationManager.NavigateTo("/contacts");
+    { 
+        NavigationManager.NavigateTo("contacts");
     }
 
     private async Task AddContact()
     {
-        var url = "https://localhost:7274/api/contacts/add";
+        var newContact = contactForCreateDTO;
+        var addContactUri = new Uri(httpClient.BaseAddress, "contacts/add");
+        var response = await httpClient.PostAsJsonAsync(addContactUri, newContact);
 
-        using(var httpClient = new HttpClient())
+        if(response.IsSuccessStatusCode)
         {
-            var newContact = contactForCreateDTO;
-            var response = await httpClient.PostAsJsonAsync(url, newContact);
-
-            if(response.IsSuccessStatusCode)
-            {
-                contactForCreateDTO.FirstName = string.Empty;
-                contactForCreateDTO.LastName = string.Empty;
-                contactForCreateDTO.PhoneNumber = string.Empty;
-                contactForCreateDTO.Email = string.Empty;
-            }
+            contactForCreateDTO.FirstName = string.Empty;
+            contactForCreateDTO.LastName = string.Empty;
+            contactForCreateDTO.PhoneNumber = string.Empty;
+            contactForCreateDTO.Email = string.Empty;
         }
     }
 }
