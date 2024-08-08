@@ -2,6 +2,7 @@
 @using Notebook.Domain.Requests
 @using System.Text.Json
 @inject NavigationManager NavigationManager
+@inject HttpClient httpClient
 @rendermode InteractiveServer
 
 <MudGrid Justify="Justify.Center">
@@ -30,6 +31,7 @@
 {
     bool success = false;
     string[] errors = { };
+    string addContactUri = "contacts/add";
     MudForm form = new MudForm();
     ContactForCreateDTO contactForCreateDTO = new ContactForCreateDTO();
 
@@ -41,20 +43,15 @@
 
     private async Task AddContact()
     {
-        var url = "https://localhost:7274/api/contacts/add";
+        var newContact = contactForCreateDTO;
+        var response = await httpClient.PostAsJsonAsync(addContactUri, newContact);
 
-        using(var httpClient = new HttpClient())
+        if(response.IsSuccessStatusCode)
         {
-            var newContact = contactForCreateDTO;
-            var response = await httpClient.PostAsJsonAsync(url, newContact);
-
-            if(response.IsSuccessStatusCode)
-            {
-                contactForCreateDTO.FirstName = string.Empty;
-                contactForCreateDTO.LastName = string.Empty;
-                contactForCreateDTO.PhoneNumber = string.Empty;
-                contactForCreateDTO.Email = string.Empty;
-            }
+            contactForCreateDTO.FirstName = string.Empty;
+            contactForCreateDTO.LastName = string.Empty;
+            contactForCreateDTO.PhoneNumber = string.Empty;
+            contactForCreateDTO.Email = string.Empty;
         }
     }
 }

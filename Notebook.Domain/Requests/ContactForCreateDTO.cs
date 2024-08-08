@@ -1,5 +1,4 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Notebook.Domain.Requests
 {
@@ -16,6 +15,7 @@ namespace Notebook.Domain.Requests
 
         [StringLength(256)]
         [EmailAddress]
+        [EmailValidation]
         public string? Email { get; set; }
         public DateTime? DateOfBirth { get; set; }
     }

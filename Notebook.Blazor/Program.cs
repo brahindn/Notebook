@@ -13,7 +13,9 @@ namespace Notebook.Blazor
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
             builder.Services.AddMudServices();
-            builder.Services.AddHttpClient();
+
+            builder.Services.AddHttpClient("WebApiURL", client => 
+            client.BaseAddress = new Uri(builder.Configuration.GetConnectionString("WebApiURL")));
 
             var app = builder.Build();
 
