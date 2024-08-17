@@ -4,7 +4,10 @@
 @using System.Configuration
 @inject NavigationManager NavigationManager
 @inject HttpClient httpClient
+<<<<<<< HEAD
 @inject IConfiguration configuration
+=======
+>>>>>>> faff5ce7e8027fa5f241d45474814d0da9fce27c
 @rendermode InteractiveServer
 
 <MudGrid Justify="Justify.Center">
@@ -32,6 +35,7 @@
 {
     bool success = false;
     string[] errors = { };
+    string addContactUri = "contacts/add";
     MudForm form = new MudForm();
     ContactForCreateDTO contactForCreateDTO = new ContactForCreateDTO();
 
@@ -44,7 +48,10 @@
     private async Task AddContact()
     {
         var newContact = contactForCreateDTO;
+<<<<<<< HEAD
         var addContactUri = new Uri(httpClient.BaseAddress, "contacts/add");
+=======
+>>>>>>> faff5ce7e8027fa5f241d45474814d0da9fce27c
         var response = await httpClient.PostAsJsonAsync(addContactUri, newContact);
 
         if(response.IsSuccessStatusCode)

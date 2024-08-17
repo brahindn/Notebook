@@ -17,6 +17,12 @@ namespace Notebook.Blazor
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
             builder.Services.AddMudServices();
+<<<<<<< HEAD
+=======
+
+            builder.Services.AddHttpClient("WebApiURL", client => 
+            client.BaseAddress = new Uri(builder.Configuration.GetConnectionString("WebApiURL")));
+>>>>>>> faff5ce7e8027fa5f241d45474814d0da9fce27c
 
             var app = builder.Build();
 

@@ -14,7 +14,12 @@ namespace Notebook.Domain.Requests
         public string PhoneNumber { get; set; } = string.Empty;
 
         [StringLength(256)]
+<<<<<<< HEAD
         [EmailAddress(ErrorMessage = "Invalid email address.")]
+=======
+        [EmailAddress]
+        [EmailValidation]
+>>>>>>> faff5ce7e8027fa5f241d45474814d0da9fce27c
         public string? Email { get; set; }
         public DateTime? DateOfBirth { get; set; }
     }
