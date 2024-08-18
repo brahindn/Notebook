@@ -7,6 +7,7 @@ using Notebook.DataAccess;
 using Notebook.Host.Extensions;
 using Notebook.Repositories.Contracts;
 using Notebook.Repositories.Implementation;
+using Notebook.WebApi.Controllers;
 using Notebook.WebApi.RabbitMQ;
 using Serilog;
 using System.Reflection.Metadata;
@@ -43,7 +44,7 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
     
 builder.Services.AddControllers()
-    .AddApplicationPart(typeof(AssemblyReference).Assembly);
+    .AddApplicationPart(typeof(ContactController).Assembly);
 
 builder.Services.AddOpenApiDocument();
 

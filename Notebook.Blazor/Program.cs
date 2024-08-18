@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MudBlazor.Services;
+using Notebook.Blazor.Components;
 
 namespace Notebook.Blazor
 {
@@ -12,19 +13,11 @@ namespace Notebook.Blazor
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
             builder.Services.AddMudServices();
+            builder.Services.AddHttpClient();
 
             builder.Services.AddScoped(sp => new HttpClient
             {
                 BaseAddress = new Uri(builder.Configuration.GetConnectionString("WebApiURL"))
-            });
-
-            builder.Services.AddRazorPages();
-            builder.Services.AddServerSideBlazor();
-            builder.Services.AddControllers();
-
-            builder.Services.Configure<RazorPagesOptions>(options =>
-            {
-            options.RootDirectory = "/Pages";
             });
 
             var app = builder.Build();
@@ -37,14 +30,10 @@ namespace Notebook.Blazor
 
             app.UseHttpsRedirection();  
             app.UseStaticFiles();
+            app.UseAntiforgery();
 
-            app.UseRouting();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapBlazorHub();
-                endpoints.MapFallbackToPage(page: "/Home");
-            });
+            app.MapRazorComponents<App>()
+                .AddInteractiveServerRenderMode(); //new
 
             app.Run();
         }
