@@ -6,7 +6,7 @@ using Notebook.Domain.Requests;
 
 namespace Notebook.WebApi.Controllers
 {
-    [Route("api/contacts/[controller]")]
+    [Route("api/contacts/")]
     [ApiController]
     public class ContactController : ControllerBase
     {

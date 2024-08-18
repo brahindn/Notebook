@@ -1,5 +1,4 @@
 using MudBlazor.Services;
-using Notebook.Blazor.Components;
 
 namespace Notebook.Blazor
 {
@@ -9,20 +8,18 @@ namespace Notebook.Blazor
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddHttpClient("NotebookApi", client =>
+            builder.Services.AddRazorComponents()
+                .AddInteractiveServerComponents();
+            builder.Services.AddMudServices();
+
+            builder.Services.AddScoped(sp => new HttpClient
             {
-                client.BaseAddress = new Uri(builder.Configuration.GetConnectionString("WebApiURL"));
+                BaseAddress = new Uri(builder.Configuration.GetConnectionString("WebApiURL"))
             });
 
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
-            builder.Services.AddMudServices();
-<<<<<<< HEAD
-=======
-
-            builder.Services.AddHttpClient("WebApiURL", client => 
-            client.BaseAddress = new Uri(builder.Configuration.GetConnectionString("WebApiURL")));
->>>>>>> faff5ce7e8027fa5f241d45474814d0da9fce27c
+            builder.Services.AddControllers();
 
             var app = builder.Build();
 
@@ -37,12 +34,6 @@ namespace Notebook.Blazor
             app.UseStaticFiles();
 
             app.UseRouting();
-
-            app.UseEndpoints(endpoints =>
-            {
-                app.MapBlazorHub();
-                app.MapFallbackToPage("/_Host");
-            });
             
             app.Run();
         }

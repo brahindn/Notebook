@@ -7,9 +7,9 @@ using Notebook.DataAccess;
 using Notebook.Host.Extensions;
 using Notebook.Repositories.Contracts;
 using Notebook.Repositories.Implementation;
-using Notebook.WebApi.Controllers;
 using Notebook.WebApi.RabbitMQ;
 using Serilog;
+using System.Reflection.Metadata;
 using ILogger = Serilog.ILogger;
 
 
@@ -43,7 +43,7 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
     
 builder.Services.AddControllers()
-    .AddApplicationPart(typeof(ContactController).Assembly);
+    .AddApplicationPart(typeof(AssemblyReference).Assembly);
 
 builder.Services.AddOpenApiDocument();
 
