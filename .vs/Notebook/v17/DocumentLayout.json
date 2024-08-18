@@ -1,7 +1,16 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Projects\\.NET 6.0\\Notebook\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{43DB5907-F06C-4049-8537-7034C1A37109}|Notebook.Blazor\\Notebook.Blazor.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.blazor\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{43DB5907-F06C-4049-8537-7034C1A37109}|Notebook.Blazor\\Notebook.Blazor.csproj|solutionrelative:notebook.blazor\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43DB5907-F06C-4049-8537-7034C1A37109}|Notebook.Blazor\\Notebook.Blazor.csproj|c:\\projects\\.net 6.0\\notebook\\notebook.blazor\\components\\pages\\newcontactform.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{43DB5907-F06C-4049-8537-7034C1A37109}|Notebook.Blazor\\Notebook.Blazor.csproj|solutionrelative:notebook.blazor\\components\\pages\\newcontactform.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,7 +18,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
@@ -30,6 +39,32 @@
             {
               "$type": "Bookmark",
               "Name": "ST:1:0:{e8b06f52-6d01-11d2-aa7d-00c04f990343}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Blazor\\Program.cs",
+              "RelativeDocumentMoniker": "Notebook.Blazor\\Program.cs",
+              "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Blazor\\Program.cs",
+              "RelativeToolTip": "Notebook.Blazor\\Program.cs",
+              "ViewState": "AQIAAB8AAAAAAAAAAAAQwCsAAAANAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-18T15:09:32.782Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "NewContactForm.razor",
+              "DocumentMoniker": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Blazor\\Components\\Pages\\NewContactForm.razor",
+              "RelativeDocumentMoniker": "Notebook.Blazor\\Components\\Pages\\NewContactForm.razor",
+              "ToolTip": "C:\\Projects\\.NET 6.0\\Notebook\\Notebook.Blazor\\Components\\Pages\\NewContactForm.razor",
+              "RelativeToolTip": "Notebook.Blazor\\Components\\Pages\\NewContactForm.razor",
+              "ViewState": "AQIAACEAAAAAAAAAAAAAADoAAAAOAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-08-18T14:59:43.331Z",
+              "EditorCaption": ""
             }
           ]
         },

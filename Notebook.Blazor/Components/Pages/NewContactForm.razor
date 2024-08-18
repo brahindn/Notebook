@@ -10,11 +10,14 @@
 <MudGrid Justify="Justify.Center">
     <MudItem xs="12" sm="7">
         <MudPaper Class="pa-4">
-            <MudForm Model = "contactForCreateDTO" @ref="form" @bind-IsValis="@success" @bind-Errors="@errors">
-                <MudTextField @bind-Value="contactForCreateDTO.FirstName" T="string" Label="First Name" Required="true" RequiredError="First name is required!" />
-                <MudTextField @bind-Value="contactForCreateDTO.LastName" T="string" Label="Last Name" Required="true" RequiredError="Last name is required!" />
-                <MudTextField @bind-Value="contactForCreateDTO.PhoneNumber" T="string" Label="Phone number" Required="true" RequiredError="Phone number is required!" />
-                <MudTextField @bind-Value="contactForCreateDTO.Email" T="string" Label="Email" />
+            <MudForm Model = "newContact" @ref="form" @bind-IsValis="@success" @bind-Errors="@errors">
+                <DataAnnotationsValidator/>
+                <ValidationSummary/>
+
+                <MudTextField @bind-Value="newContact.FirstName" Label="First Name" Required="true" RequiredError="First name is required!" />
+                <MudTextField @bind-Value="newContact.LastName" Label="Last Name" Required="true" RequiredError="Last name is required!" />
+                <MudTextField @bind-Value="newContact.PhoneNumber" Label="Phone number" Required="true" RequiredError="Phone number is required!" />
+                <MudTextField @bind-Value="newContact.Email" Label="Email" />
             </MudForm>
         </MudPaper>
         <MudPaper Class="pa-4 mt-4">
@@ -24,18 +27,47 @@
                 <MudButton Variant="Variant.Filled" Color="Color.Secondary" DropShadow="false" OnClick="@((e) => Back())">Cancel</MudButton>
             </div>
         </MudPaper>
+
+        <h4>Recent Contacts</h4>
+
+        @if(recentContacts is null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <MudTable Items="@recentContacts" Hover="true", Striped="true">
+                <HeaderContent>
+                    <MudTh>First Name</MudTh>
+                    <MudTh>Last Name</MudTh>
+                    <MudTh>Phone number</MudTh>
+                    <MudTh>Email</MudTh>
+                    <MudTh>Date of Birthday</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    @foreach(var contact in recentContacts)
+                    {
+                        <MudTd DataLabel="First Name">@contact.FirstName</MudTd>
+                        <MudTd DataLabel="Last Name">@contact.LastName</MudTd>
+                        <MudTd DataLabel="Phone number">@contact.PhoneNumber</MudTd>
+                        <MudTd DataLabel="Email">@contact.Email</MudTd>
+                        <MudTd DataLabel="Date of Birth">@contact.DateOfBirth</MudTd>
+                    }
+                </RowTemplate>
+            </MudTable>
+        }
     </MudItem>
 </MudGrid>
 
 
 @code
 {
+    ContactForCreateDTO newContact = new ContactForCreateDTO();
+    private List<ContactForCreateDTO> recentContacts;
     bool success = false;
     string[] errors = { };
     string addContactUri = "contacts/add";
     MudForm form = new MudForm();
-    ContactForCreateDTO contactForCreateDTO = new ContactForCreateDTO();
-
 
     private void Back()
     { 
@@ -44,16 +76,17 @@
 
     private async Task AddContact()
     {
-        var newContact = contactForCreateDTO;
         var addContactUri = new Uri(httpClient.BaseAddress, "contacts/add");
         var response = await httpClient.PostAsJsonAsync(addContactUri, newContact);
 
         if(response.IsSuccessStatusCode)
         {
-            contactForCreateDTO.FirstName = string.Empty;
-            contactForCreateDTO.LastName = string.Empty;
-            contactForCreateDTO.PhoneNumber = string.Empty;
-            contactForCreateDTO.Email = string.Empty;
+            recentContacts.Add(newContact);
+
+            newContact.FirstName = string.Empty;
+            newContact.LastName = string.Empty;
+            newContact.PhoneNumber = string.Empty;
+            newContact.Email = string.Empty;
         }
     }
 }

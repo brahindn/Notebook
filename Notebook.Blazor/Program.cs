@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using MudBlazor.Services;
 
 namespace Notebook.Blazor
@@ -21,6 +22,11 @@ namespace Notebook.Blazor
             builder.Services.AddServerSideBlazor();
             builder.Services.AddControllers();
 
+            builder.Services.Configure<RazorPagesOptions>(options =>
+            {
+            options.RootDirectory = "/Pages";
+            });
+
             var app = builder.Build();
 
              if (!app.Environment.IsDevelopment())
@@ -30,11 +36,16 @@ namespace Notebook.Blazor
             }
 
             app.UseHttpsRedirection();  
-
             app.UseStaticFiles();
 
             app.UseRouting();
-            
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapBlazorHub();
+                endpoints.MapFallbackToPage(page: "/Home");
+            });
+
             app.Run();
         }
     }
