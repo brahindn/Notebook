@@ -1,4 +1,5 @@
 ﻿@page "/contacts/addContactForm"
+
 @using Notebook.Domain.Requests
 @using System.Text.Json
 @using System.Configuration
@@ -7,13 +8,10 @@
 @inject IConfiguration configuration
 @rendermode InteractiveServer
 
-<MudGrid Justify="Justify.Center">
+<MudStack Justify="Justify.Center">
     <MudItem xs="12" sm="7">
         <MudPaper Class="pa-4">
-            <MudForm Model = "newContact" @ref="form" @bind-IsValis="@success" @bind-Errors="@errors">
-                <DataAnnotationsValidator/>
-                <ValidationSummary/>
-
+            <MudForm @ref="mudForm" Model = "newContact">
                 <MudTextField @bind-Value="newContact.FirstName" Label="First Name" Required="true" RequiredError="First name is required!" />
                 <MudTextField @bind-Value="newContact.LastName" Label="Last Name" Required="true" RequiredError="Last name is required!" />
                 <MudTextField @bind-Value="newContact.PhoneNumber" Label="Phone number" Required="true" RequiredError="Phone number is required!" />
@@ -27,47 +25,42 @@
                 <MudButton Variant="Variant.Filled" Color="Color.Secondary" DropShadow="false" OnClick="@((e) => Back())">Cancel</MudButton>
             </div>
         </MudPaper>
-
-        <h4>Recent Contacts</h4>
-
-        @if(recentContacts is null)
-        {
-            <p><em>Loading...</em></p>
-        }
-        else
-        {
-            <MudTable Items="@recentContacts" Hover="true", Striped="true">
-                <HeaderContent>
-                    <MudTh>First Name</MudTh>
-                    <MudTh>Last Name</MudTh>
-                    <MudTh>Phone number</MudTh>
-                    <MudTh>Email</MudTh>
-                    <MudTh>Date of Birthday</MudTh>
-                </HeaderContent>
-                <RowTemplate>
-                    @foreach(var contact in recentContacts)
-                    {
-                        <MudTd DataLabel="First Name">@contact.FirstName</MudTd>
-                        <MudTd DataLabel="Last Name">@contact.LastName</MudTd>
-                        <MudTd DataLabel="Phone number">@contact.PhoneNumber</MudTd>
-                        <MudTd DataLabel="Email">@contact.Email</MudTd>
-                        <MudTd DataLabel="Date of Birth">@contact.DateOfBirth</MudTd>
-                    }
-                </RowTemplate>
-            </MudTable>
-        }
     </MudItem>
-</MudGrid>
+
+    <MudPaper Style="margin-top: 16px; max-width: 100%">
+        <MudTable Items="@recentContacts" Bordered="true" Striped="true">
+            <ToolBarContent>
+                <MudText>Recent contacts:</MudText>
+            </ToolBarContent>
+
+            <HeaderContent>
+                <MudTh>First Name</MudTh>
+                <MudTh>Last Name</MudTh>
+                <MudTh>Phone number</MudTh>
+                <MudTh>Email</MudTh>
+                <MudTh>Date of Birth</MudTh>
+            </HeaderContent>
+
+            <RowTemplate>
+                <MudTd DataLabel="First Name">@context.FirstName</MudTd>
+                <MudTd DataLabel="Last Name">@context.LastName</MudTd>
+                <MudTd DataLabel="Phone number">@context.PhoneNumber</MudTd>
+                <MudTd DataLabel="Email">@context.Email</MudTd>
+                <MudTd DataLabel="Data of Birth">@context.DateOfBirth</MudTd>
+            </RowTemplate>
+        </MudTable>
+    </MudPaper>
+        
+</MudStack>
 
 
 @code
 {
-    ContactForCreateDTO newContact = new ContactForCreateDTO();
-    private List<ContactForCreateDTO> recentContacts;
-    bool success = false;
     string[] errors = { };
-    string addContactUri = "contacts/add";
-    MudForm form = new MudForm();
+    private MudForm mudForm;
+    string addContactControllerUri = "/api/contacts/add";
+    private ContactForCreateDTO newContact = new ContactForCreateDTO();
+    private List<ContactForCreateDTO> recentContacts = new List<ContactForCreateDTO>();
 
     private void Back()
     { 
@@ -76,17 +69,13 @@
 
     private async Task AddContact()
     {
-        var addContactUri = new Uri(httpClient.BaseAddress, "contacts/add");
+        var addContactUri = new Uri(httpClient.BaseAddress, addContactControllerUri);
         var response = await httpClient.PostAsJsonAsync(addContactUri, newContact);
 
         if(response.IsSuccessStatusCode)
         {
             recentContacts.Add(newContact);
-
-            newContact.FirstName = string.Empty;
-            newContact.LastName = string.Empty;
-            newContact.PhoneNumber = string.Empty;
-            newContact.Email = string.Empty;
+            await mudForm.ResetAsync();
         }
     }
 }

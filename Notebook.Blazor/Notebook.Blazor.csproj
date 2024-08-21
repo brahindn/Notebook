@@ -15,4 +15,8 @@
     <ProjectReference Include="..\Notebook.WebApi\Notebook.WebApi.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Components\SubComponents\" />
+  </ItemGroup>
+
 </Project>
