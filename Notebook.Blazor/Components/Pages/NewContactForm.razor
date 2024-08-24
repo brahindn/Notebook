@@ -11,11 +11,14 @@
 <MudStack Justify="Justify.Center">
     <MudItem xs="12" sm="7">
         <MudPaper Class="pa-4">
-            <MudForm @ref="mudForm" Model = "newContact">
-                <MudTextField @bind-Value="newContact.FirstName" Label="First Name" Required="true" RequiredError="First name is required!" />
-                <MudTextField @bind-Value="newContact.LastName" Label="Last Name" Required="true" RequiredError="Last name is required!" />
-                <MudTextField @bind-Value="newContact.PhoneNumber" Label="Phone number" Required="true" RequiredError="Phone number is required!" />
-                <MudTextField @bind-Value="newContact.Email" Label="Email" />
+            <MudForm @ref="mudForm" @bind-IsValid="isValid" Model="@newContact">
+                <MudTextField Label="First Name" @bind-Value="newContact.FirstName" For="@(() => newContact.FirstName)"
+                    Required="true" RequiredError="First name is required!" />
+                <MudTextField Label="Last Name" @bind-Value="newContact.LastName" For="@(() => newContact.LastName)"
+                    Required="true" RequiredError="Last name is required!" />
+                <MudTextField Label="Phone number" @bind-Value="newContact.PhoneNumber" For="@(() => newContact.PhoneNumber)"
+                    Required="true" RequiredError="Phone number is required!" />
+                <MudTextField Label="Email" @bind-Value="newContact.Email" For="@(() => newContact.Email)" />
             </MudForm>
         </MudPaper>
         <MudPaper Class="pa-4 mt-4">
@@ -42,29 +45,37 @@
             </HeaderContent>
 
             <RowTemplate>
-                <MudTd DataLabel="First Name">@context.FirstName</MudTd>
-                <MudTd DataLabel="Last Name">@context.LastName</MudTd>
-                <MudTd DataLabel="Phone number">@context.PhoneNumber</MudTd>
-                <MudTd DataLabel="Email">@context.Email</MudTd>
-                <MudTd DataLabel="Data of Birth">@context.DateOfBirth</MudTd>
+                @foreach(var contact in recentContacts)
+                {
+                    <MudTd DataLabel="First Name">@contact.FirstName</MudTd>
+                    <MudTd DataLabel="Last Name">@contact.LastName</MudTd>
+                    <MudTd DataLabel="Phone number">@contact.PhoneNumber</MudTd>
+                    <MudTd DataLabel="Email">@contact.Email</MudTd>
+                    <MudTd DataLabel="Data of Birth">@contact.DateOfBirth</MudTd>
+                }
             </RowTemplate>
         </MudTable>
     </MudPaper>
-        
 </MudStack>
-
 
 @code
 {
-    string[] errors = { };
     private MudForm mudForm;
+    private bool isValid;
     string addContactControllerUri = "/api/contacts/add";
     private ContactForCreateDTO newContact = new ContactForCreateDTO();
     private List<ContactForCreateDTO> recentContacts = new List<ContactForCreateDTO>();
 
-    private void Back()
-    { 
-        NavigationManager.NavigateTo("/contacts");
+    private async Task Back()
+    {
+        if (isValid)
+        {
+            await mudForm.ResetAsync();
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/contacts");
+        }
     }
 
     private async Task AddContact()
@@ -72,10 +83,15 @@
         var addContactUri = new Uri(httpClient.BaseAddress, addContactControllerUri);
         var response = await httpClient.PostAsJsonAsync(addContactUri, newContact);
 
-        if(response.IsSuccessStatusCode)
+        if (response.IsSuccessStatusCode)
         {
             recentContacts.Add(newContact);
-            await mudForm.ResetAsync();
+            StateHasChanged();
+
+            if(mudForm != null)
+            {
+                await mudForm.ResetAsync();
+            }
         }
     }
 }
