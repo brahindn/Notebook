@@ -46,7 +46,7 @@ namespace Notebook.WebApi.Controllers
             return Task.FromResult<IActionResult>(Ok());
         }
 
-        [HttpDelete("{delete}")]
+        [HttpDelete("delete")]
         public async Task<IActionResult> DeleteContact(Guid contactId)
         {
             var existContact = await _serviceManager.ContactService.GetContactAsync(contactId);
@@ -60,7 +60,7 @@ namespace Notebook.WebApi.Controllers
             return Ok();
         }
 
-        [HttpGet("{getById}")]
+        [HttpGet("getById")]
         public async Task<IActionResult> GetContactById(Guid contactId)
         {
             var contact = await _serviceManager.ContactService.GetContactAsync(contactId);
@@ -77,12 +77,22 @@ namespace Notebook.WebApi.Controllers
             return Ok(contactDTO);
         }
 
+        [HttpGet("getByFields")]
+        public async Task<IActionResult> GetContactsByFields([FromQuery] ContactForCreateDTO createDTO)
+        {
+            var allContacts = await _serviceManager.ContactService.GetContactByFieldAsync(createDTO.FirstName, createDTO.LastName, createDTO.PhoneNumber, createDTO.Email);
+
+            _logger.Information("Neсessary contacts received");
+
+            return Ok(allContacts);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAllContacts([FromQuery] ContactParameters contactParameters)
         {
             var allContacts = await _serviceManager.ContactService.GetAllContactsAsync(contactParameters);
 
-            _logger.Information("All contacts have been got");
+            _logger.Information("All contacts received");
 
             return Ok(allContacts);
         }

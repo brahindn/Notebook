@@ -33,7 +33,7 @@ namespace Notebook.Blazor
             app.UseAntiforgery();
 
             app.MapRazorComponents<App>()
-                .AddInteractiveServerRenderMode(); //new
+                .AddInteractiveServerRenderMode();
 
             app.Run();
         }

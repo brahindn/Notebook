@@ -7,6 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Components\SubComponents\**" />
+    <Content Remove="Components\SubComponents\**" />
+    <EmbeddedResource Remove="Components\SubComponents\**" />
+    <None Remove="Components\SubComponents\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Components\Pages\DeleteContactPage.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MudBlazor" Version="7.3.0" />
     <PackageReference Include="System.Net.Http.Json" Version="8.0.0" />
   </ItemGroup>
@@ -16,7 +27,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Components\SubComponents\" />
+    <UpToDateCheckInput Remove="Components\Pages\DeleteContactPage.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Components\Pages\DeleteContactPage.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Components\Pages\DeleteContactPage.razor" />
   </ItemGroup>
 
 </Project>
