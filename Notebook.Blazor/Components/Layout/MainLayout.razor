@@ -1,11 +1,10 @@
 ﻿@inherits LayoutComponentBase
 
-<MudThemeProvider/>
-<MudPopoverProvider/>
-<MudDialogProvider/>
-<MudSnackbarProvider/>
-
 <MudLayout>
+    <MudThemeProvider />
+    <MudDialogProvider />
+    <MudSnackbarProvider />
+    <MudPopoverProvider />
     <MudAppBar>
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
             Denys Web Api Application

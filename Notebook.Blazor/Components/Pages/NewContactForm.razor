@@ -28,41 +28,49 @@
         </MudPaper>
     </MudItem>
 
-    <MudPaper Style="margin-top: 16px; max-width: 100%">
-        <MudTable Items="@recentContacts" Bordered="true" Striped="true">
-            <ToolBarContent>
-                <MudText>Recent contacts:</MudText>
-            </ToolBarContent>
-
-            <HeaderContent>
-                <MudTh>First Name</MudTh>
-                <MudTh>Last Name</MudTh>
-                <MudTh>Phone number</MudTh>
-                <MudTh>Email</MudTh>
-                <MudTh>Date of Birth</MudTh>
-            </HeaderContent>
-
-            <RowTemplate>
-                @foreach(var contact in recentContacts)
-                {
-                    <MudTd DataLabel="First Name">@contact.FirstName</MudTd>
-                    <MudTd DataLabel="Last Name">@contact.LastName</MudTd>
-                    <MudTd DataLabel="Phone number">@contact.PhoneNumber</MudTd>
-                    <MudTd DataLabel="Email">@contact.Email</MudTd>
-                    <MudTd DataLabel="Data of Birth">@contact.DateOfBirth</MudTd>
-                }
-            </RowTemplate>
-        </MudTable>
-    </MudPaper>
+    <MudItem>
+        
+    </MudItem>
 </MudStack>
+
+<MudTable Items="@recentContacts">
+    <ToolBarContent>
+        <MudText>Recently added contacts</MudText>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>First Name</MudTh>
+        <MudTh>Last Name</MudTh>
+        <MudTh>Phone number</MudTh>
+        <MudTh>Email</MudTh>
+        <MudTh>Date of Birth</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        @foreach (var contact in recentContacts)
+        {
+            <MudTd DataLabel="First Name">@context.FirstName</MudTd>
+            <MudTd DataLabel="Last Name">@context.LastName</MudTd>
+            <MudTd DataLabel="Phone number">@context.PhoneNumber</MudTd>
+            <MudTd DataLabel="Email">@context.Email</MudTd>
+            <MudTd DataLabel="Data of Birth">@context.DateOfBirth</MudTd>
+        }
+    </RowTemplate>
+</MudTable>
 
 @code
 {
     private MudForm mudForm;
     private bool isValid;
-    string addContactControllerUri = "/api/contacts/add";
     private ContactForCreateDTO newContact = new ContactForCreateDTO();
-    private List<ContactForCreateDTO> recentContacts = new List<ContactForCreateDTO>();
+    private Uri addContactUri;
+
+    private List<ContactForCreateDTO> recentContacts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        string addContactControllerUri = "/api/contacts/add";
+        addContactUri = new Uri(httpClient.BaseAddress, addContactControllerUri);
+        recentContacts = new List<ContactForCreateDTO>();
+    }
 
     private async Task Back()
     {
@@ -78,7 +86,6 @@
 
     private async Task AddContact()
     {
-        var addContactUri = new Uri(httpClient.BaseAddress, addContactControllerUri);
         var response = await httpClient.PostAsJsonAsync(addContactUri, newContact);
 
         if (response.IsSuccessStatusCode)
