@@ -1,22 +1,22 @@
 ﻿@page "/contacts/addContactForm"
 
 @using Notebook.Domain.Requests
-@using System.Text.Json
 @inject NavigationManager NavigationManager
 @inject HttpClient httpClient
+
 @rendermode InteractiveServer
 
 <MudStack Justify="Justify.Center">
     <MudItem xs="12" sm="7">
         <MudPaper Class="pa-4">
-            <MudForm @ref="mudForm" @bind-IsValid="isValid" Model="@newContact">
-                <MudTextField Label="First Name" @bind-Value="newContact.FirstName" For="@(() => newContact.FirstName)"
+            <MudForm @ref="mudForm" @bind-IsValid="_isValid" Model="@_newContact">
+                <MudTextField Label="First Name" @bind-Value="_newContact.FirstName" For="@(() => _newContact.FirstName)"
                     Required="true" RequiredError="First name is required!" />
-                <MudTextField Label="Last Name" @bind-Value="newContact.LastName" For="@(() => newContact.LastName)"
+                <MudTextField Label="Last Name" @bind-Value="_newContact.LastName" For="@(() => _newContact.LastName)"
                     Required="true" RequiredError="Last name is required!" />
-                <MudTextField Label="Phone number" @bind-Value="newContact.PhoneNumber" For="@(() => newContact.PhoneNumber)"
+                <MudTextField Label="Phone number" @bind-Value="_newContact.PhoneNumber" For="@(() => _newContact.PhoneNumber)"
                     Required="true" RequiredError="Phone number is required!" />
-                <MudTextField Label="Email" @bind-Value="newContact.Email" For="@(() => newContact.Email)" />
+                <MudTextField Label="Email" @bind-Value="_newContact.Email" For="@(() => _newContact.Email)" />
             </MudForm>
         </MudPaper>
         <MudPaper Class="pa-4 mt-4">
@@ -33,7 +33,7 @@
     </MudItem>
 </MudStack>
 
-<MudTable Items="@recentContacts">
+<MudTable Items="@_recentContacts">
     <ToolBarContent>
         <MudText>Recently added contacts</MudText>
     </ToolBarContent>
@@ -45,38 +45,34 @@
         <MudTh>Date of Birth</MudTh>
     </HeaderContent>
     <RowTemplate>
-        @foreach (var contact in recentContacts)
-        {
-            <MudTd DataLabel="First Name">@context.FirstName</MudTd>
-            <MudTd DataLabel="Last Name">@context.LastName</MudTd>
-            <MudTd DataLabel="Phone number">@context.PhoneNumber</MudTd>
-            <MudTd DataLabel="Email">@context.Email</MudTd>
-            <MudTd DataLabel="Data of Birth">@context.DateOfBirth</MudTd>
-        }
+        <MudTd DataLabel="First Name">@context.FirstName</MudTd>
+        <MudTd DataLabel="Last Name">@context.LastName</MudTd>
+        <MudTd DataLabel="Phone number">@context.PhoneNumber</MudTd>
+        <MudTd DataLabel="Email">@context.Email</MudTd>
+        <MudTd DataLabel="Data of Birth">@context.DateOfBirth</MudTd>
     </RowTemplate>
 </MudTable>
 
 @code
 {
-    private MudForm mudForm;
-    private bool isValid;
-    private ContactForCreateDTO newContact = new ContactForCreateDTO();
-    private Uri addContactUri;
+    private MudForm? mudForm;
+    private bool _isValid;
+    private ContactForCreateDTO _newContact = new ContactForCreateDTO();
+    private Uri? _addContactUri;
 
-    private List<ContactForCreateDTO> recentContacts;
+    private List<ContactForCreateDTO> _recentContacts = new();
 
     protected override async Task OnInitializedAsync()
     {
-        string addContactControllerUri = "/api/contacts/add";
-        addContactUri = new Uri(httpClient.BaseAddress, addContactControllerUri);
-        recentContacts = new List<ContactForCreateDTO>();
+        const string addContactControllerUri = "/api/contacts/add";
+        _addContactUri = new Uri(httpClient.BaseAddress!, addContactControllerUri);
     }
 
     private async Task Back()
     {
-        if (isValid)
+        if (_isValid)
         {
-            await mudForm.ResetAsync();
+            await mudForm!.ResetAsync();
         }
         else
         {
@@ -86,17 +82,12 @@
 
     private async Task AddContact()
     {
-        var response = await httpClient.PostAsJsonAsync(addContactUri, newContact);
+        var response = await httpClient.PostAsJsonAsync(_addContactUri, _newContact);
 
         if (response.IsSuccessStatusCode)
         {
-            recentContacts.Add(newContact);
-            StateHasChanged();
-
-            if(mudForm != null)
-            {
-                await mudForm.ResetAsync();
-            }
+            _recentContacts.Add(_newContact);
+            _newContact = new ContactForCreateDTO();
         }
     }
 }
