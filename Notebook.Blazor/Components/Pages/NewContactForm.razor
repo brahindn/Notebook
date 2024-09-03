@@ -9,27 +9,28 @@
 <MudStack Justify="Justify.Center">
     <MudItem xs="12" sm="7">
         <MudPaper Class="pa-4">
-            <MudForm @ref="mudForm" @bind-IsValid="_isValid" Model="@_newContact">
+            <MudForm @ref="_mudForm" @bind-IsValid="_isValid" Model="@_newContact" @bind-Errors="@_errors">
                 <MudTextField Label="First Name" @bind-Value="_newContact.FirstName" For="@(() => _newContact.FirstName)"
-                    Required="true" RequiredError="First name is required!" />
+                    Required="true" RequiredError="First name is required!"
+                              Validation="@(new Func<string, IEnumerable<string>>(FirstNameVerification))"/>
                 <MudTextField Label="Last Name" @bind-Value="_newContact.LastName" For="@(() => _newContact.LastName)"
-                    Required="true" RequiredError="Last name is required!" />
+                    Required="true" RequiredError="Last name is required!"
+                              Validation="@(new Func<string, IEnumerable<string>>(LastNameVerification))"/>
                 <MudTextField Label="Phone number" @bind-Value="_newContact.PhoneNumber" For="@(() => _newContact.PhoneNumber)"
-                    Required="true" RequiredError="Phone number is required!" />
+                    Required="true" RequiredError="Phone number is required!"
+                              Validation="@(new Func<string, IEnumerable<string>>(PhoneNumberVerification))"/>
                 <MudTextField Label="Email" @bind-Value="_newContact.Email" For="@(() => _newContact.Email)" />
             </MudForm>
         </MudPaper>
         <MudPaper Class="pa-4 mt-4">
             <div style="display:flex; justify-content: flex-end;">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" DropShadow="false" OnClick="@((e) => AddContact())">Add</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Surface" DropShadow="false" OnClick="@((e) => _mudForm!.Validate())">Validate</MudButton>
+                <div style="margin-left: 1rem;" />
+                <MudButton Variant="Variant.Filled" Disabled="@(!_isValid)" Color="Color.Primary" DropShadow="false" OnClick="@((e) => AddContact())">Add</MudButton>
                 <div style="margin-left: 1rem;"/>
                 <MudButton Variant="Variant.Filled" Color="Color.Secondary" DropShadow="false" OnClick="@((e) => Back())">Cancel</MudButton>
             </div>
         </MudPaper>
-    </MudItem>
-
-    <MudItem>
-        
     </MudItem>
 </MudStack>
 
@@ -55,10 +56,13 @@
 
 @code
 {
-    private MudForm? mudForm;
+    private MudForm? _mudForm;
     private bool _isValid;
+    private bool _uniquePhoneNumber;
+    private string[] _errors = { };
     private ContactForCreateDTO _newContact = new ContactForCreateDTO();
     private Uri? _addContactUri;
+    private Uri? _getContactUri;
 
     private List<ContactForCreateDTO> _recentContacts = new();
 
@@ -66,13 +70,16 @@
     {
         const string addContactControllerUri = "/api/contacts/add";
         _addContactUri = new Uri(httpClient.BaseAddress!, addContactControllerUri);
+
+        const string getContactControllerUri = "/api/contacts/getByFields";
+        _getContactUri = new Uri(httpClient.BaseAddress!, getContactControllerUri);
     }
 
     private async Task Back()
     {
         if (_isValid)
         {
-            await mudForm!.ResetAsync();
+            await _mudForm!.ResetAsync();
         }
         else
         {
@@ -90,4 +97,94 @@
             _newContact = new ContactForCreateDTO();
         }
     }
+
+    private IEnumerable<string> FirstNameVerification(string firstNameFromField)
+    {
+        if(string.IsNullOrWhiteSpace(firstNameFromField))
+        {
+            yield return "First Name is required!";
+            yield break;
+        }
+        if(firstNameFromField.Length > 30)
+        {
+            yield return "First Name must not contain more than 30 letters";
+        }
+        if(!char.IsUpper(firstNameFromField[0]))
+        {
+            yield return "First Name must start with a capital letter";
+        }
+    }
+
+    private IEnumerable<string> LastNameVerification(string lastNameFromField)
+    {
+        if (string.IsNullOrWhiteSpace(lastNameFromField))
+        {
+            yield return "Last Name is required!";
+            yield break;
+        }
+        if (lastNameFromField.Length > 30)
+        {
+            yield return "Last Name must not contain more than 30 letters";
+        }
+        if (!char.IsUpper(lastNameFromField[0]))
+        {
+            yield return "Last Name must start with a capital letter";
+        }
+    }
+
+    private IEnumerable<string> PhoneNumberVerification(string phoneNumberFromField)
+    {
+        if (string.IsNullOrWhiteSpace(phoneNumberFromField))
+        {
+            yield return "Phone number is required!";
+            yield break;
+        }
+        if (!System.Text.RegularExpressions.Regex.IsMatch(phoneNumberFromField, @"^\d+$"))
+        {
+            yield return "Phone number must contain only numbers";
+            yield break;
+        }
+        if (phoneNumberFromField.Length > 13)
+        {
+            yield return "Phone number must not contain more than 13 characters";
+        }
+        if(_uniquePhoneNumber)
+        {
+            yield return "Phone number must be unique";
+        }
+    }
+
+    private async Task<bool> PhoneNumberDuplicateVerification(string phoneNumber)
+    {
+        var response = await httpClient.GetAsync($"{_getContactUri}?PhoneNumber={phoneNumber}");
+
+        if(response.IsSuccessStatusCode)
+        {
+            var contacts = await response.Content.ReadFromJsonAsync<List<ContactForCreateDTO>>();
+            _uniquePhoneNumber = contacts.Any();
+
+            return _uniquePhoneNumber;
+        }
+
+        return _uniquePhoneNumber;
+    }
+
+    private IEnumerable<string> EmailVerification(string emailFromField)
+    {
+        if (string.IsNullOrWhiteSpace(emailFromField))
+        {
+            yield return "Phone number is required!";
+            yield break;
+        }
+        if (!System.Text.RegularExpressions.Regex.IsMatch(emailFromField, @"^\d+$"))
+        {
+            yield return "Phone number must contain only numbers";
+            yield break;
+        }
+        if (emailFromField.Length > 13)
+        {
+            yield return "Phone number must not contain more than 13 characters";
+        }
+    } //start
+
 }
