@@ -18,7 +18,8 @@
                               Validation="@(new Func<string, IEnumerable<string>>(LastNameVerification))"/>
                 <MudTextField Label="Phone number" @bind-Value="_newContact.PhoneNumber" For="@(() => _newContact.PhoneNumber)"
                     Required="true" RequiredError="Phone number is required!"
-                              Validation="@(new Func<string, IEnumerable<string>>(PhoneNumberVerification))"/>
+                              Validation="@(new Func<string, IEnumerable<string>>(PhoneNumberVerification))"
+                                  OnBlur="@(async () => await PhoneNumberDuplicateVerification(_newContact.PhoneNumber))"/>
                 <MudTextField Label="Email" @bind-Value="_newContact.Email" For="@(() => _newContact.Email)" />
             </MudForm>
         </MudPaper>
@@ -148,25 +149,24 @@
         {
             yield return "Phone number must not contain more than 13 characters";
         }
-        if(_uniquePhoneNumber)
+        if(!_uniquePhoneNumber)
         {
             yield return "Phone number must be unique";
         }
     }
 
-    private async Task<bool> PhoneNumberDuplicateVerification(string phoneNumber)
+    private async Task PhoneNumberDuplicateVerification(string phoneNumberFromField)
     {
-        var response = await httpClient.GetAsync($"{_getContactUri}?PhoneNumber={phoneNumber}");
+        var response = await httpClient.GetAsync($"{_getContactUri}?PhoneNumber={phoneNumberFromField}");
 
         if(response.IsSuccessStatusCode)
         {
-            var contacts = await response.Content.ReadFromJsonAsync<List<ContactForCreateDTO>>();
-            _uniquePhoneNumber = contacts.Any();
+            _uniquePhoneNumber = false;
 
-            return _uniquePhoneNumber;
+            return;
         }
 
-        return _uniquePhoneNumber;
+        _uniquePhoneNumber = true;
     }
 
     private IEnumerable<string> EmailVerification(string emailFromField)
