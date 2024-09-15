@@ -20,7 +20,9 @@
                     Required="true" RequiredError="Phone number is required!"
                               Validation="@(new Func<string, IEnumerable<string>>(PhoneNumberVerification))"
                                   OnBlur="@(async () => await PhoneNumberDuplicateVerification(_newContact.PhoneNumber))"/>
-                <MudTextField Label="Email" @bind-Value="_newContact.Email" For="@(() => _newContact.Email)" />
+                <MudTextField Label="Email" @bind-Value="_newContact.Email" For="@(() => _newContact.Email)"
+                    Required="false"
+                    Validation="@(new Func<string, IEnumerable<string>>(EmailVerification))"/>
             </MudForm>
         </MudPaper>
         <MudPaper Class="pa-4 mt-4">
@@ -72,7 +74,7 @@
         const string addContactControllerUri = "/api/contacts/add";
         _addContactUri = new Uri(httpClient.BaseAddress!, addContactControllerUri);
 
-        const string getContactControllerUri = "/api/contacts/getByFields";
+        const string getContactControllerUri = "/api/contacts/getByPhoneNumber";
         _getContactUri = new Uri(httpClient.BaseAddress!, getContactControllerUri);
     }
 
@@ -149,7 +151,7 @@
         {
             yield return "Phone number must not contain more than 13 characters";
         }
-        if(!_uniquePhoneNumber)
+        if(_uniquePhoneNumber == false)
         {
             yield return "Phone number must be unique";
         }
@@ -157,9 +159,10 @@
 
     private async Task PhoneNumberDuplicateVerification(string phoneNumberFromField)
     {
-        var response = await httpClient.GetAsync($"{_getContactUri}?PhoneNumber={phoneNumberFromField}");
+        var parameterUrl = $"{_getContactUri}?phoneNumber={phoneNumberFromField}";
+        var response = await httpClient.GetAsync(parameterUrl);
 
-        if(response.IsSuccessStatusCode)
+        if(response.StatusCode == System.Net.HttpStatusCode.OK)
         {
             _uniquePhoneNumber = false;
 
@@ -173,18 +176,17 @@
     {
         if (string.IsNullOrWhiteSpace(emailFromField))
         {
-            yield return "Phone number is required!";
-            yield break;
-        }
-        if (!System.Text.RegularExpressions.Regex.IsMatch(emailFromField, @"^\d+$"))
-        {
-            yield return "Phone number must contain only numbers";
+            yield return "Email number is required!";
             yield break;
         }
         if (emailFromField.Length > 13)
         {
-            yield return "Phone number must not contain more than 13 characters";
+            yield return "Email number must not contain more than 13 characters";
         }
-    } //start
-
+        if (!System.Text.RegularExpressions.Regex.IsMatch(emailFromField, @"^[A-Za-z0-9._-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"))
+        {
+            yield return "Email must be in the format: example@gmail.com";
+            yield break;
+        }
+    }
 }

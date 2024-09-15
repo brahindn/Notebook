@@ -77,14 +77,20 @@ namespace Notebook.WebApi.Controllers
             return Ok(contactDTO);
         }
 
-        [HttpGet("getByFields")]
-        public async Task<IActionResult> GetContactsByFields([FromQuery] ContactForCreateDTO createDTO)
-        {
-            var allContacts = await _serviceManager.ContactService.GetContactByFieldAsync(createDTO.FirstName, createDTO.LastName, createDTO.PhoneNumber, createDTO.Email);
+        [HttpGet("getByPhoneNumber")]
+        public async Task<IActionResult> GetContactsByFields(string phoneNumber)
+        { 
+            if(string.IsNullOrEmpty(phoneNumber))
+            {
+                return BadRequest();
+            }
+
+            var allContacts = await _serviceManager.ContactService.GetContactByFieldAsync(firstName:null, lastName:null, phoneNumber, email:null);
 
             _logger.Information("Neсessary contacts received");
 
             return Ok(allContacts);
+
         }
 
         [HttpGet]
