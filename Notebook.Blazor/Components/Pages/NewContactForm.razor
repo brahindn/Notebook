@@ -23,6 +23,7 @@
                 <MudTextField Label="Email" @bind-Value="_newContact.Email" For="@(() => _newContact.Email)"
                     Required="false"
                     Validation="@(new Func<string, IEnumerable<string>>(EmailVerification))"/>
+                <MudDatePicker Label="Date of Birth" @bind-Date="_newContact.DateOfBirth" PickerVariant="PickerVariant.Dialog" />
             </MudForm>
         </MudPaper>
         <MudPaper Class="pa-4 mt-4">
@@ -179,9 +180,9 @@
             yield return "Email number is required!";
             yield break;
         }
-        if (emailFromField.Length > 13)
+        if (emailFromField.Length > 256)
         {
-            yield return "Email number must not contain more than 13 characters";
+            yield return "Email number must not contain more than 256 characters";
         }
         if (!System.Text.RegularExpressions.Regex.IsMatch(emailFromField, @"^[A-Za-z0-9._-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"))
         {
