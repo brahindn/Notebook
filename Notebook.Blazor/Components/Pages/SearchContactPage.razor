@@ -12,90 +12,54 @@
 <MudStack Justify="Justify.Center">
     <MudItem xs="12" sm="7">
         <MudPaper Class="pa-4">
-            <MudForm @ref="mudForm" @bind-IsValid="isValid">
-                <MudTextField T="string" @bind-Value="contactDTO.FirstName" For=@(() => contactDTO.FirstName)/>
-                <MudTextField T="string" @bind-Value="contactDTO.LastName" For=@(() => contactDTO.LastName) />
-                <MudTextField T="string" @bind-Value="contactDTO.PhoneNumber" For=@(() => contactDTO.PhoneNumber) />
-                <MudTextField T="string" @bind-Value="contactDTO.Email" For=@(() => contactDTO.Email) />
-            </MudForm>
+            <MudStack Row="true">
+                <MudSwitch Class="pa-1" @bind-Value="_searchAllContacts">
+                    <MudItem>
+                        @if (!_searchAllContacts)
+                        {
+                            <MudText>Switch to searching through fields</MudText>
+                        }
+                        else
+                        {
+
+                            <MudText>Switch to searching all contacts</MudText>
+                        }
+                    </MudItem>
+                </MudSwitch>
+
+            <MudSpacer/>
+                <MudItem Class="mr-4 mt-1">
+                    <MudButton Disabled="@_searchAllContacts" Variant="Variant.Filled" Color="Color.Primary">SEARCH</MudButton>
+                </MudItem>
+            </MudStack>
         </MudPaper>
-        <MudPaper Class="pa-4 mt-4">
-            <div style="display:flex; justify-content: flex-end;">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" DropShadow="false" OnClick="@((e) => Search(contactDTO))">Search</MudButton>
-                <div style="margin-left: 1rem;" />
-                <MudButton Variant="Variant.Filled" Color="Color.Secondary" DropShadow="false" OnClick="@((e) => Back())">Cancel</MudButton>
-            </div>
-        </MudPaper>
-    </MudItem>
+     </MudItem>
 
-    <MudPaper Style="margin-top: 16px; max-width: 100%;">
-        <MudTable @ref="mudTable" Hidden="@isTableHidden" Items="@necessaryContacts" Bordered="true" Striped="true">
-            <ToolBarContent>
-                <MudText>Found contacts:</MudText>
-            </ToolBarContent>
+     @if(_searchAllContacts)
+    {
+        <MudItem xs="12" sm="7">
+            <MudPaper Class="pa-4 border-solid border-2 mud-border-primary">
+                <MudForm @ref="_mudForm">
+                    <MudTextField T="string" Label="First Name" />
+                    <MudTextField T="string" Label="Last Name" />
+                    <MudTextField T="string" Label="Phone number" />
+                    <MudTextField T="string" Label="Email" />
 
-            <HeaderContent>
-                <MudTh>First Name</MudTh>
-                <MudTh>Last Name</MudTh>
-                <MudTh>Phone number</MudTh>
-                <MudTh>Email</MudTh>
-                <MudTh>Date of Birth</MudTh>
-            </HeaderContent>
-
-            <RowTemplate>
-                @foreach (var contact in necessaryContacts)
-                {
-                    <MudTd DataLabel="First Name">@contact.FirstName</MudTd>
-                    <MudTd DataLabel="Last Name">@contact.LastName</MudTd>
-                    <MudTd DataLabel="Phone number">@contact.PhoneNumber</MudTd>
-                    <MudTd DataLabel="Email">@contact.Email</MudTd>
-                }
-            </RowTemplate>
-        </MudTable>
-    </MudPaper>
+                    <MudItem Class="pa-4 mt-4">
+                        <MudButton style="float: right" Variant="Variant.Filled" Color="Color.Primary" DropShadow="false">Search</MudButton>
+                    </MudItem>
+                </MudForm>
+            </MudPaper>
+        </MudItem>
+    }
 </MudStack>
 
-@code
-{
-    private string deleteContactControllerUri = "/api/contacts/delete";
-    private string getByFieldsContactControllerUri = "/api/contacts/getByFields";
-    private ContactForCreateDTO contactDTO = new ContactForCreateDTO();
-    private MudForm mudForm;
-    private MudTable<ContactForCreateDTO> mudTable;
-    private bool isTableHidden = false;
-    private bool isValid;
-    private List<ContactForCreateDTO> necessaryContacts;
 
-    private async Task Search(ContactForCreateDTO createDTO)
-    {
-        if (isValid)
-        {
-            var query = $"?FirstName={createDTO.FirstName}&LastName={createDTO.LastName}&PhoneNumber={createDTO.PhoneNumber}&Email={createDTO.Email}";
 
-            var necessaryContactsUri = new Uri(httpClient.BaseAddress, $"{getByFieldsContactControllerUri}/{query}");
-            var response = await httpClient.GetAsync(necessaryContactsUri);
 
-            if (response.IsSuccessStatusCode)
-            {
-                necessaryContacts = await response.Content.ReadFromJsonAsync<List<ContactForCreateDTO>>();
-                isTableHidden = true;
-            }
-            else
-            {
-                isTableHidden = false;
-            }
-        }
-    }
 
-    private async Task Back()
-    {
-        if (isValid)
-        {
-            await mudForm.ResetAsync();
-        }
-        else
-        {
-            NavigationManager.NavigateTo("/contacts");
-        }
-    }
+@code{
+    private MudForm? _mudForm;
+    private bool _searchAllContacts = false;
+    private string _switchText;
 }
