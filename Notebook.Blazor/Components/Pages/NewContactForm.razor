@@ -23,16 +23,16 @@
                 <MudTextField Label="Email" @bind-Value="_newContact.Email" For="@(() => _newContact.Email)"
                     Required="false"
                     Validation="@(new Func<string, IEnumerable<string>>(EmailVerification))"/>
-                <MudDatePicker Label="Date of Birth" @bind-Date="_newContact.DateOfBirth" PickerVariant="PickerVariant.Dialog" />
+                <MudDatePicker Label="Date of Birth" @bind-Date="_newContact.DateOfBirth" PickerVariant="PickerVariant.Dialog"/>
             </MudForm>
         </MudPaper>
         <MudPaper Class="pa-4 mt-4">
             <div style="display:flex; justify-content: flex-end;">
-                <MudButton Variant="Variant.Filled" Color="Color.Surface" DropShadow="false" OnClick="@((e) => _mudForm!.Validate())">Validate</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Surface" DropShadow="false" OnClick="@(() => _mudForm!.Validate())">Validate</MudButton>
                 <div style="margin-left: 1rem;" />
-                <MudButton Variant="Variant.Filled" Disabled="@(!_isValid)" Color="Color.Primary" DropShadow="false" OnClick="@((e) => AddContact())">Add</MudButton>
+                <MudButton Variant="Variant.Filled" Disabled="@(!_isValid)" Color="Color.Primary" DropShadow="false" OnClick="@(() => AddContact())">Add</MudButton>
                 <div style="margin-left: 1rem;"/>
-                <MudButton Variant="Variant.Filled" Color="Color.Secondary" DropShadow="false" OnClick="@((e) => Back())">Cancel</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Secondary" DropShadow="false" OnClick="@(() => Back())">Cancel</MudButton>
             </div>
         </MudPaper>
     </MudItem>
@@ -79,7 +79,7 @@
         _getContactUri = new Uri(httpClient.BaseAddress!, getContactControllerUri);
     }
 
-    private async Task Back()
+    private async Task Back()   
     {
         if (_isValid)
         {

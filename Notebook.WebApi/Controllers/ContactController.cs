@@ -93,7 +93,7 @@ namespace Notebook.WebApi.Controllers
 
         }
 
-        [HttpGet]
+        [HttpGet("getAllContacts")]
         public async Task<IActionResult> GetAllContacts([FromQuery] ContactParameters contactParameters)
         {
             var allContacts = await _serviceManager.ContactService.GetAllContactsAsync(contactParameters);

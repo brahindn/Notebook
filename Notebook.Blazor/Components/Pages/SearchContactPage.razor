@@ -3,11 +3,10 @@
 @using Notebook.Domain.Entities
 @using Notebook.Domain.Requests
 @using Notebook.Shared.RequestFeatures
-
 @inject NavigationManager NavigationManager
 @inject HttpClient httpClient
-@rendermode InteractiveServer
 
+@rendermode InteractiveServer
 
 <MudStack Justify="Justify.Center">
     <MudItem xs="12" sm="7">
@@ -17,11 +16,12 @@
                     <MudItem>
                         @if (!_searchAllContacts)
                         {
+                            _disabledSearchButton = false;
                             <MudText>Switch to searching through fields</MudText>
                         }
                         else
                         {
-
+                            _disabledSearchButton = true;
                             <MudText>Switch to searching all contacts</MudText>
                         }
                     </MudItem>
@@ -29,14 +29,34 @@
 
             <MudSpacer/>
                 <MudItem Class="mr-4 mt-1">
-                    <MudButton Disabled="@_searchAllContacts" Variant="Variant.Filled" Color="Color.Primary">SEARCH</MudButton>
+                    <MudButton Disabled="@_disabledSearchButton" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => SearchAllContacts())">SEARCH</MudButton>
+                    @if(_showTable)
+                    {
+                        <MudTable Items="@_allContacts">
+                            <HeaderContent>
+                                <MudTh>Id</MudTh>
+                                <MudTh>First Name</MudTh>
+                                <MudTh>Last Name</MudTh>
+                                <MudTh>Phone Number</MudTh>
+                                <MudTh>Email</MudTh>
+                            </HeaderContent>
+                            <RowTemplate>
+                                <MudTd DataLabel="First Name">@context.FirstName</MudTd>
+                                <MudTd DataLabel="Last Name">@context.LastName</MudTd>
+                                <MudTd DataLabel="Phone Number">@context.PhoneNumber</MudTd>
+                                <MudTd DataLabel="Email">@context.Email</MudTd>
+                            </RowTemplate>
+                        </MudTable>
+                    }
                 </MudItem>
             </MudStack>
         </MudPaper>
      </MudItem>
 
-     @if(_searchAllContacts)
+    @if(_searchAllContacts)
     {
+        <MudStack Justify="Justify.Center">
+        </MudStack>
         <MudItem xs="12" sm="7">
             <MudPaper Class="pa-4 border-solid border-2 mud-border-primary">
                 <MudForm @ref="_mudForm">
@@ -44,22 +64,52 @@
                     <MudTextField T="string" Label="Last Name" />
                     <MudTextField T="string" Label="Phone number" />
                     <MudTextField T="string" Label="Email" />
-
-                    <MudItem Class="pa-4 mt-4">
-                        <MudButton style="float: right" Variant="Variant.Filled" Color="Color.Primary" DropShadow="false">Search</MudButton>
-                    </MudItem>
                 </MudForm>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="7">
+            <MudPaper>
+                <MudItem class="mr-6 mt-1">
+                    <MudButton style="float: right" Variant="Variant.Filled" Color="Color.Dark" DropShadow="false">Search</MudButton>
+                </MudItem>
             </MudPaper>
         </MudItem>
     }
 </MudStack>
 
-
-
-
-
-@code{
+@code
+{
     private MudForm? _mudForm;
     private bool _searchAllContacts = false;
-    private string _switchText;
+    private bool _disabledSearchButton;
+    private bool _showTable;
+    private Uri? _getAllContactsUri;
+    private IEnumerable<ContactForCreateDTO>? _allContacts = new List<ContactForCreateDTO>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        const string allContactControllerUri = "/api/contacts/getAllContacts";
+        _getAllContactsUri = new Uri(httpClient.BaseAddress!, allContactControllerUri);
+    }
+
+    private async Task SearchAllContacts()
+    {
+        //var uri = $"{_getAllContactsUri}?PageNumber={pageNumber}";
+        var response = await httpClient.GetAsync(_getAllContactsUri);
+
+        if (response.IsSuccessStatusCode)
+        {
+            _allContacts = await response.Content.ReadFromJsonAsync<List<ContactForCreateDTO>>();
+
+            if (_allContacts.Any())
+            {
+                _showTable = true;
+            }
+        }
+        else
+        {
+            _allContacts = new List<ContactForCreateDTO>();
+        }
+        
+    }
 }
