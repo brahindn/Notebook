@@ -8,74 +8,83 @@
 
 @rendermode InteractiveServer
 
-<MudStack Justify="Justify.Center">
-    <MudItem xs="12" sm="7">
-        <MudPaper Class="pa-4">
-            <MudStack Row="true">
-                <MudSwitch Class="pa-1" @bind-Value="_searchAllContacts">
-                    <MudItem>
-                        @if (!_searchAllContacts)
-                        {
-                            _disabledSearchButton = false;
-                            <MudText>Switch to searching through fields</MudText>
-                        }
-                        else
-                        {
-                            _disabledSearchButton = true;
-                            <MudText>Switch to searching all contacts</MudText>
-                        }
-                    </MudItem>
-                </MudSwitch>
+<MudPaper Height="400px" Width="100%">
+        <MudStack Justify="Justify.FlexStart" Row="true">
+            <MudPaper Class="pa-4" Style="width:50%">
+                <MudStack Row="true">
+                    <MudSwitch Class="pa-1" @bind-Value="_searchAllContacts">
+                            @if (!_searchAllContacts)
+                            {
+                                _disabledSearchButton = false;
+                                <MudText>Switch to searching through fields</MudText>
+                            }
+                            else
+                            {
+                                _disabledSearchButton = true;
+                                <MudText>Switch to searching all contacts</MudText>
+                            }
+                    </MudSwitch>
 
-            <MudSpacer/>
-                <MudItem Class="mr-4 mt-1">
+                    <MudSpacer/>
+
                     <MudButton Disabled="@_disabledSearchButton" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => SearchAllContacts())">SEARCH</MudButton>
-                    @if(_showTable)
-                    {
-                        <MudTable Items="@_allContacts">
-                            <HeaderContent>
-                                <MudTh>Id</MudTh>
-                                <MudTh>First Name</MudTh>
-                                <MudTh>Last Name</MudTh>
-                                <MudTh>Phone Number</MudTh>
-                                <MudTh>Email</MudTh>
-                            </HeaderContent>
-                            <RowTemplate>
-                                <MudTd DataLabel="First Name">@context.FirstName</MudTd>
-                                <MudTd DataLabel="Last Name">@context.LastName</MudTd>
-                                <MudTd DataLabel="Phone Number">@context.PhoneNumber</MudTd>
-                                <MudTd DataLabel="Email">@context.Email</MudTd>
-                            </RowTemplate>
-                        </MudTable>
-                    }
-                </MudItem>
-            </MudStack>
-        </MudPaper>
-     </MudItem>
 
-    @if(_searchAllContacts)
-    {
-        <MudStack Justify="Justify.Center">
+                </MudStack>
+            </MudPaper>
+
+            <MudPaper Class="pa-4" Style="width:50%">
+
+            @if (_searchAllContacts)
+            {
+                <MudStack Justify="Justify.FlexEnd">
+                    <MudItem xs="12" sm="7">
+                        <MudPaper Class="pa-4 border-solid border-2 mud-border-primary">
+                            <MudForm @ref="_mudForm">
+                                <MudTextField T="string" Label="First Name" />
+                                <MudTextField T="string" Label="Last Name" />
+                                <MudTextField T="string" Label="Phone number" />
+                                <MudTextField T="string" Label="Email" />
+                            </MudForm>
+                        </MudPaper>
+                    </MudItem>
+                    <MudItem xs="12" sm="7">
+                        <MudPaper>
+                            <MudItem class="mr-6 mt-1">
+                                <MudButton style="float: right" Variant="Variant.Filled" Color="Color.Dark" DropShadow="false">Search</MudButton>
+                            </MudItem>
+                        </MudPaper>
+                    </MudItem>
+                </MudStack>
+            }
+
+            </MudPaper>
         </MudStack>
-        <MudItem xs="12" sm="7">
-            <MudPaper Class="pa-4 border-solid border-2 mud-border-primary">
-                <MudForm @ref="_mudForm">
-                    <MudTextField T="string" Label="First Name" />
-                    <MudTextField T="string" Label="Last Name" />
-                    <MudTextField T="string" Label="Phone number" />
-                    <MudTextField T="string" Label="Email" />
-                </MudForm>
-            </MudPaper>
-        </MudItem>
-        <MudItem xs="12" sm="7">
-            <MudPaper>
-                <MudItem class="mr-6 mt-1">
-                    <MudButton style="float: right" Variant="Variant.Filled" Color="Color.Dark" DropShadow="false">Search</MudButton>
-                </MudItem>
-            </MudPaper>
-        </MudItem>
-    }
-</MudStack>
+</MudPaper>
+
+
+
+    <MudItem Class="mr-4 mt-1">
+        
+
+        @if(_showTable)
+        {
+            <MudTable Items="@_allContacts">
+                <HeaderContent>
+                    <MudTh>Id</MudTh>
+                    <MudTh>First Name</MudTh>
+                    <MudTh>Last Name</MudTh>
+                    <MudTh>Phone Number</MudTh>
+                    <MudTh>Email</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="First Name">@context.FirstName</MudTd>
+                    <MudTd DataLabel="Last Name">@context.LastName</MudTd>
+                    <MudTd DataLabel="Phone Number">@context.PhoneNumber</MudTd>
+                    <MudTd DataLabel="Email">@context.Email</MudTd>
+                </RowTemplate>
+            </MudTable>
+        }
+    </MudItem>
 
 @code
 {
@@ -95,7 +104,7 @@
     private async Task SearchAllContacts()
     {
         //var uri = $"{_getAllContactsUri}?PageNumber={pageNumber}";
-        var response = await httpClient.GetAsync(_getAllContactsUri);
+        var response = await httpClient.GetAsync($"{_getAllContactsUri}?PageNumber={1}");
 
         if (response.IsSuccessStatusCode)
         {
