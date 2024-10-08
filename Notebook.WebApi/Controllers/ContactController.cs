@@ -77,6 +77,21 @@ namespace Notebook.WebApi.Controllers
             return Ok(contactDTO);
         }
 
+        [HttpGet("getContactsThroughFields")]
+        public async Task<IActionResult> GetContactsByFields(ContactForCreateDTO contactDTO)
+        {
+            if (contactDTO == null)
+            {
+                return BadRequest();
+            }
+
+            var allContacts = await _serviceManager.ContactService.GetContactByFieldAsync(contactDTO.FirstName, contactDTO.LastName, contactDTO.PhoneNumber, contactDTO.Email);
+
+            _logger.Information("Neсessary contacts received");
+
+            return Ok(allContacts);
+        }
+
         [HttpGet("getByPhoneNumber")]
         public async Task<IActionResult> GetContactsByFields(string phoneNumber)
         { 
@@ -90,7 +105,6 @@ namespace Notebook.WebApi.Controllers
             _logger.Information("Neсessary contacts received");
 
             return Ok(allContacts);
-
         }
 
         [HttpGet("getAllContacts")]

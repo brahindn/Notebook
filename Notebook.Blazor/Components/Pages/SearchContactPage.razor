@@ -10,7 +10,7 @@
 
 <MudPaper Height="400px" Width="100%">
         <MudStack Justify="Justify.FlexStart" Row="true">
-            <MudPaper Class="pa-4" Style="width:50%">
+            <MudPaper Class="pa-4" Style="width:50%; height:400px">
                 <MudStack Row="true">
                     <MudSwitch Class="pa-1" @bind-Value="_searchAllContacts">
                             @if (!_searchAllContacts)
@@ -32,31 +32,25 @@
                 </MudStack>
             </MudPaper>
 
-            <MudPaper Class="pa-4" Style="width:50%">
+            <MudPaper Style="height:400px; width:50%">
 
             @if (_searchAllContacts)
             {
                 <MudStack Justify="Justify.FlexEnd">
-                    <MudItem xs="12" sm="7">
-                        <MudPaper Class="pa-4 border-solid border-2 mud-border-primary">
-                            <MudForm @ref="_mudForm">
-                                <MudTextField T="string" Label="First Name" />
-                                <MudTextField T="string" Label="Last Name" />
-                                <MudTextField T="string" Label="Phone number" />
-                                <MudTextField T="string" Label="Email" />
-                            </MudForm>
-                        </MudPaper>
-                    </MudItem>
-                    <MudItem xs="12" sm="7">
-                        <MudPaper>
-                            <MudItem class="mr-6 mt-1">
-                                <MudButton style="float: right" Variant="Variant.Filled" Color="Color.Dark" DropShadow="false">Search</MudButton>
-                            </MudItem>
-                        </MudPaper>
-                    </MudItem>
+                    <MudPaper Class="pa-4 border-solid border-2 mud-border-primary" style="height:400px;">
+                        <MudForm @ref="_mudForm">
+                            <MudTextField T="string" Label="First Name" @bind-Value="_contactDTO.FirstName" For="@(()=>_contactDTO.FirstName)"/>
+                            <MudTextField T="string" Label="Last Name" @bind-Value="_contactDTO.LastName" For="@(()=>_contactDTO.LastName)"/>
+                            <MudTextField T="string" Label="Phone number" @bind-Value="_contactDTO.PhoneNumber" For="@(()=>_contactDTO.PhoneNumber)"/>
+                            <MudTextField T="string" Label="Email" @bind-Value="_contactDTO.Email" For="@(()=>_contactDTO.Email)"/>
+                        </MudForm>
+
+                        <MudSpacer/>
+
+                        <MudButton style="mt-4 float: right" Variant="Variant.Filled" Color="Color.Dark" DropShadow="false" OneCLick="@(() => SearchContactsThroughFields(_contactDTO))">Search</MudButton>
+                    </MudPaper>
                 </MudStack>
             }
-
             </MudPaper>
         </MudStack>
 </MudPaper>
@@ -93,18 +87,22 @@
     private bool _disabledSearchButton;
     private bool _showTable;
     private Uri? _getAllContactsUri;
+    private Uri? _getAllContactsFieldsUri;
     private IEnumerable<ContactForCreateDTO>? _allContacts = new List<ContactForCreateDTO>();
+    private ContactForCreateDTO _contactDTO = new ContactForCreateDTO();
 
     protected override async Task OnInitializedAsync()
     {
         const string allContactControllerUri = "/api/contacts/getAllContacts";
+        const string allContactsFieldsControllerUri = "/api/contacts/getContactsThroughFields";
         _getAllContactsUri = new Uri(httpClient.BaseAddress!, allContactControllerUri);
+        _getAllContactsFieldsUri = new Uri(httpClient.BaseAddress!, allContactsFieldsControllerUri);
     }
 
     private async Task SearchAllContacts()
     {
-        //var uri = $"{_getAllContactsUri}?PageNumber={pageNumber}";
-        var response = await httpClient.GetAsync($"{_getAllContactsUri}?PageNumber={1}");
+        const int defaultPageNumber = 1;
+        var response = await httpClient.GetAsync($"{_getAllContactsUri}?PageNumber={defaultPageNumber}");
 
         if (response.IsSuccessStatusCode)
         {
@@ -119,6 +117,24 @@
         {
             _allContacts = new List<ContactForCreateDTO>();
         }
-        
+    }
+
+    private async Task SearchContactsThroughFields(ContactForCreateDTO _contactDTO)
+    {
+        var response = await httpClient.GetAsync(_getAllContactsFieldsUri);
+
+        if(response.IsSuccessStatusCode)
+        {
+            _allContacts = await response.Content.ReadFromJsonAsync<List<ContactForCreateDTO>>();
+
+            if(_allContacts.Any())
+            {
+                _showTable = true;
+            }
+            else
+            {
+                _allContacts = new List<ContactForCreateDTO>();
+            }
+        }
     }
 }
