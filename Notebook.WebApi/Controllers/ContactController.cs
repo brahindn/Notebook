@@ -78,7 +78,7 @@ namespace Notebook.WebApi.Controllers
         }
 
         [HttpGet("getContactsThroughFields")]
-        public async Task<IActionResult> GetContactsByFields(ContactForCreateDTO contactDTO)
+        public async Task<IActionResult> GetContactsByFields([FromQuery]ContactForCreateDTO contactDTO)
         {
             if (contactDTO == null)
             {

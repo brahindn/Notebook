@@ -284,25 +284,18 @@ namespace Notebook.Tests
         [TestMethod]
         public async Task GetAllContactsThroughFields()
         {
-            var date = new DateTime(1994, 11, 26);
+            AddingTESTContactToDB();
 
-            for (var i = 0; i < 3; i++)
-            {
-                await _serviceManager.ContactService.CreateContactAsync(new ContactForCreateDTO
-                {
-                    FirstName = $"TestFN{i}",
-                    LastName = $"TestLN{i}",
-                    PhoneNumber = $"+38099606405{i}",
-                    Email = $"test{i}@gmail.com",
-                    DateOfBirth = date
-                });
-            }
 
-            var allContacts = await _serviceManager.ContactService.GetContactByFieldAsync(firstName: "TestFN0", lastName: null, phoneNumber: null, email: null);
+            var contact = await _serviceManager.ContactService.GetContactByFieldAsync(
+                firstName: "TestFN",
+                lastName: null,
+                phoneNumber: null,
+                email: null);
 
             using (var context = new RepositoryContext(_options))
             {
-                Assert.AreEqual("TestFN0", allContacts.FirstName);
+                Assert.AreEqual("TestFN", context.Contacts.Single().FirstName);
             }
         }
 

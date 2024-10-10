@@ -37,8 +37,8 @@
             @if (_searchAllContacts)
             {
                 <MudStack Justify="Justify.FlexEnd">
-                    <MudPaper Class="pa-4 border-solid border-2 mud-border-primary" style="height:400px;">
-                        <MudForm @ref="_mudForm">
+                    <MudPaper Class="pa-4 border-solid border-2 mud-border-primary" Style="height:400px;">
+                        <MudForm @ref="_mudForm" Model="_contactDTO">
                             <MudTextField T="string" Label="First Name" @bind-Value="_contactDTO.FirstName" For="@(()=>_contactDTO.FirstName)"/>
                             <MudTextField T="string" Label="Last Name" @bind-Value="_contactDTO.LastName" For="@(()=>_contactDTO.LastName)"/>
                             <MudTextField T="string" Label="Phone number" @bind-Value="_contactDTO.PhoneNumber" For="@(()=>_contactDTO.PhoneNumber)"/>
@@ -47,7 +47,7 @@
 
                         <MudSpacer/>
 
-                        <MudButton style="mt-4 float: right" Variant="Variant.Filled" Color="Color.Dark" DropShadow="false" OneCLick="@(() => SearchContactsThroughFields(_contactDTO))">Search</MudButton>
+                        <MudButton Style="mt-4 float: right" Variant="Variant.Filled" Color="Color.Dark" DropShadow="false" OnClick="@(() => SearchContactsThroughFields(_contactDTO))">Search</MudButton>
                     </MudPaper>
                 </MudStack>
             }
@@ -121,7 +121,8 @@
 
     private async Task SearchContactsThroughFields(ContactForCreateDTO _contactDTO)
     {
-        var response = await httpClient.GetAsync(_getAllContactsFieldsUri);
+        var query = $"?FirstName={_contactDTO.FirstName}&LastName={_contactDTO.LastName}&PhoneNumber={_contactDTO.PhoneNumber}&Email={_contactDTO.Email}";
+        var response = await httpClient.GetAsync(_getAllContactsFieldsUri + query);
 
         if(response.IsSuccessStatusCode)
         {

@@ -61,19 +61,19 @@ namespace Notebook.Application.Services.Implementation.Services
         {
             var query = _repositoryManager.Contact.GetAll();
 
-            if (firstName != null)
+            if (!string.IsNullOrEmpty(firstName))
             {
                 query = query.Where(c => c.FirstName == firstName);
             }
-            if (lastName != null)
+            if (!string.IsNullOrEmpty(lastName))
             {
                 query = query.Where(c => c.LastName == lastName);
             }
-            if(phoneNumber != null)
+            if(!string.IsNullOrEmpty(phoneNumber))
             {
                 query = query.Where(c => c.PhoneNumber == phoneNumber);
             }
-            if (email != null)
+            if (!string.IsNullOrEmpty(email))
             {
                 query = query.Where(c => c.Email == email);
             }
