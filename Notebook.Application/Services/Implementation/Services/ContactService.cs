@@ -57,28 +57,30 @@ namespace Notebook.Application.Services.Implementation.Services
             return await _repositoryManager.Contact.GetContactsAsync(contactParameters);
         }
 
-        public async Task<Contact> GetContactByFieldAsync(string? firstName, string? lastName, string? phoneNumber, string? email)
+        public async Task<ContactForCreateDTO> GetContactByFieldAsync(ContactForCreateDTO contactDTO)
         {
             var query = _repositoryManager.Contact.GetAll();
 
-            if (!string.IsNullOrEmpty(firstName))
+            if (!string.IsNullOrEmpty(contactDTO.FirstName))
             {
-                query = query.Where(c => c.FirstName == firstName);
+                query = query.Where(c => c.FirstName == contactDTO.FirstName);
             }
-            if (!string.IsNullOrEmpty(lastName))
+            if (!string.IsNullOrEmpty(contactDTO.LastName))
             {
-                query = query.Where(c => c.LastName == lastName);
+                query = query.Where(c => c.LastName == contactDTO.LastName);
             }
-            if(!string.IsNullOrEmpty(phoneNumber))
+            if(!string.IsNullOrEmpty(contactDTO.PhoneNumber))
             {
-                query = query.Where(c => c.PhoneNumber == phoneNumber);
+                query = query.Where(c => c.PhoneNumber == contactDTO.PhoneNumber);
             }
-            if (!string.IsNullOrEmpty(email))
+            if (!string.IsNullOrEmpty(contactDTO.Email))
             {
-                query = query.Where(c => c.Email == email);
+                query = query.Where(c => c.Email == contactDTO.Email);
             }
             
-            return await _repositoryManager.Contact.GetContactByFieldsAsync(query);
+            var contact = await _repositoryManager.Contact.GetContactByFieldsAsync(query);
+
+            return _mapper.Map(contact, contactDTO);
         }
     }
 }

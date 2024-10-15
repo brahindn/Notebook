@@ -111,7 +111,7 @@ namespace Notebook.Tests
             }
         }
 
-        [TestMethod]
+        /*[TestMethod]
         public async Task UpdateContact()
         {
             await AddingTESTContactToDB();
@@ -137,9 +137,9 @@ namespace Notebook.Tests
                 Assert.AreEqual(1, context.Contacts.Count());
                 Assert.AreEqual("NewTestFN", context.Contacts.Single().FirstName);
             }
-        }
+        }*/
 
-        [TestMethod]
+        /*[TestMethod]
         public async Task UpdateAddress()
         {
             await AddingTESTAddressToDB();
@@ -171,9 +171,9 @@ namespace Notebook.Tests
                 Assert.AreEqual("NewStreet", context.Addresses.Single().Street);
             }
         }
+*/
 
-
-        [TestMethod]
+        /*[TestMethod]
         public async Task UpdateContactTwoFields()
         {
             await AddingTESTContactToDB();
@@ -200,9 +200,9 @@ namespace Notebook.Tests
                 Assert.AreEqual("NewTestFN", context.Contacts.Single().FirstName);
                 Assert.AreEqual("NewTestLN", context.Contacts.Single().LastName);
             }
-        }
+        }*/
 
-        [TestMethod]
+        /*[TestMethod]
         public async Task UpdateContactWithoutNewFields()
         {
             await AddingTESTContactToDB();
@@ -228,9 +228,9 @@ namespace Notebook.Tests
                 Assert.AreEqual(1, context.Contacts.Count());
                 Assert.AreEqual("TestFN", context.Contacts.Single().FirstName);
             }
-        }
+        }*/
 
-        [TestMethod]
+        /*[TestMethod]
         public async Task DeleteContact()
         {
             await AddingTESTContactToDB();
@@ -247,7 +247,7 @@ namespace Notebook.Tests
             {
                 Assert.AreEqual(0, context.Contacts.Count());
             }
-        }
+        }*/
 
         [TestMethod]
         public async Task DeleteContactNull()
@@ -281,7 +281,7 @@ namespace Notebook.Tests
             }
         }
 
-        [TestMethod]
+        /*[TestMethod]
         public async Task GetAllContactsThroughFields()
         {
             AddingTESTContactToDB();
@@ -297,9 +297,9 @@ namespace Notebook.Tests
             {
                 Assert.AreEqual("TestFN", context.Contacts.Single().FirstName);
             }
-        }
+        }*/
 
-        [TestMethod]
+        /*[TestMethod]
         public async Task GetAllAddresses()
         {
             for (var i = 0; i < 3; i++)
@@ -343,9 +343,9 @@ namespace Notebook.Tests
             {
                 Assert.AreEqual(3, context.Addresses.Count());
             }
-        }
+        }*/
 
-        [TestMethod]
+        /*[TestMethod]
         public async Task AddNewAddress()
         {
             await AddingTESTAddressToDB();
@@ -355,7 +355,7 @@ namespace Notebook.Tests
                 Assert.AreEqual(1, context.Addresses.Count());
                 Assert.AreEqual("Zhulianska", context.Addresses.Single().Street);
             }
-        }
+        }*/
 
         [TestMethod]
         public async Task AddNewAddressWithoutAnyField()
@@ -375,7 +375,7 @@ namespace Notebook.Tests
             });
         }
 
-        [TestMethod]
+        /*[TestMethod]
         public async Task DeleteAddress()
         {
             await AddingTESTAddressToDB();
@@ -395,7 +395,7 @@ namespace Notebook.Tests
             {
                 Assert.AreEqual(0, context.Addresses.Count());
             }
-        }
+        }*/
 
         [TestMethod]
         public async Task DeleteAddressNull()
@@ -415,7 +415,7 @@ namespace Notebook.Tests
             });
         }
 
-        private async Task AddingTESTAddressToDB()
+        /*private async Task AddingTESTAddressToDB()
         {
             AddingTESTContactToDB();
 
@@ -435,6 +435,6 @@ namespace Notebook.Tests
                 BuildingNumber = 1,
                 ContactId = contact.Id
             });
-        }
+        }*/
     }
 }

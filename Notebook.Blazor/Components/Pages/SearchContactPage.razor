@@ -93,8 +93,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        const string allContactControllerUri = "/api/contacts/getAllContacts";
-        const string allContactsFieldsControllerUri = "/api/contacts/getContactsThroughFields";
+        const string allContactControllerUri = "/api/contacts/allContacts";
+        const string allContactsFieldsControllerUri = "/api/contacts/contactsThroughFields";
         _getAllContactsUri = new Uri(httpClient.BaseAddress!, allContactControllerUri);
         _getAllContactsFieldsUri = new Uri(httpClient.BaseAddress!, allContactsFieldsControllerUri);
     }
@@ -121,8 +121,7 @@
 
     private async Task SearchContactsThroughFields(ContactForCreateDTO _contactDTO)
     {
-        var query = $"?FirstName={_contactDTO.FirstName}&LastName={_contactDTO.LastName}&PhoneNumber={_contactDTO.PhoneNumber}&Email={_contactDTO.Email}";
-        var response = await httpClient.GetAsync(_getAllContactsFieldsUri + query);
+        var response = await httpClient.PostAsJsonAsync(_getAllContactsFieldsUri, _contactDTO);
 
         if(response.IsSuccessStatusCode)
         {

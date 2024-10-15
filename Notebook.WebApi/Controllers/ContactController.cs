@@ -77,37 +77,37 @@ namespace Notebook.WebApi.Controllers
             return Ok(contactDTO);
         }
 
-        [HttpGet("getContactsThroughFields")]
-        public async Task<IActionResult> GetContactsByFields([FromQuery]ContactForCreateDTO contactDTO)
+        [HttpPost("contactsThroughFields")]
+        public async Task<IActionResult> GetContactsByFields([FromBody]ContactForCreateDTO contactDTO)
         {
             if (contactDTO == null)
             {
                 return BadRequest();
             }
 
-            var allContacts = await _serviceManager.ContactService.GetContactByFieldAsync(contactDTO.FirstName, contactDTO.LastName, contactDTO.PhoneNumber, contactDTO.Email);
+            var allContacts = await _serviceManager.ContactService.GetContactByFieldAsync(contactDTO);
 
             _logger.Information("Neсessary contacts received");
 
             return Ok(allContacts);
         }
 
-        [HttpGet("getByPhoneNumber")]
-        public async Task<IActionResult> GetContactsByFields(string phoneNumber)
+        /*[HttpGet("getByPhoneNumber")]
+        public async Task<IActionResult> GetContactsByFields(ContactForCreateDTO contactDTO)
         { 
-            if(string.IsNullOrEmpty(phoneNumber))
+            if(string.IsNullOrEmpty(contactDTO.PhoneNumber))
             {
                 return BadRequest();
             }
 
-            var allContacts = await _serviceManager.ContactService.GetContactByFieldAsync(firstName:null, lastName:null, phoneNumber, email:null);
+            var allContacts = await _serviceManager.ContactService.GetContactByFieldAsync(contactDTO);
 
             _logger.Information("Neсessary contacts received");
 
             return Ok(allContacts);
-        }
+        }*/
 
-        [HttpGet("getAllContacts")]
+        [HttpGet("allContacts")]
         public async Task<IActionResult> GetAllContacts([FromQuery] ContactParameters contactParameters)
         {
             var allContacts = await _serviceManager.ContactService.GetAllContactsAsync(contactParameters);

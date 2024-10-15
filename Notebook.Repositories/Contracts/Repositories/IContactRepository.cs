@@ -1,4 +1,5 @@
 ﻿using Notebook.Domain.Entities;
+using Notebook.Domain.Requests;
 using Notebook.Shared.RequestFeatures;
 
 namespace Notebook.Repositories.Contracts.Repositories
