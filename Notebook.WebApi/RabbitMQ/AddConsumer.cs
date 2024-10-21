@@ -48,7 +48,7 @@ namespace Notebook.WebApi.RabbitMQ
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
 
-                var contact = JsonSerializer.Deserialize<ContactForCreateDTO>(message);
+                var contact = JsonSerializer.Deserialize<CreateContactRequest>(message);
                 var address = JsonSerializer.Deserialize<AddressForCreateDTO>(message);
 
                 using (var scope = _serviceScopeFactory.CreateScope())

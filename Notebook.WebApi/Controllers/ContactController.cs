@@ -22,7 +22,7 @@ namespace Notebook.WebApi.Controllers
         }
 
         [HttpPost("add")]
-        public Task<IActionResult> AddContact([FromBody] ContactForCreateDTO contact)
+        public Task<IActionResult> AddContact([FromBody] CreateContactRequest contact)
         {
 
             var routingKey = "AddKey";
@@ -78,34 +78,37 @@ namespace Notebook.WebApi.Controllers
         }
 
         [HttpPost("contactsThroughFields")]
-        public async Task<IActionResult> GetContactsByFields([FromBody]ContactForCreateDTO contactDTO)
+        public async Task<IActionResult> GetContactsByFields([FromBody]GetContactRequest contactRequest)
         {
-            if (contactDTO == null)
+            if (contactRequest == null)
             {
                 return BadRequest();
             }
 
-            var allContacts = await _serviceManager.ContactService.GetContactByFieldAsync(contactDTO);
+            var allContacts = await _serviceManager.ContactService.GetContactByFieldAsync(contactRequest);
 
             _logger.Information("Neсessary contacts received");
 
             return Ok(allContacts);
         }
 
-        /*[HttpGet("getByPhoneNumber")]
-        public async Task<IActionResult> GetContactsByFields(ContactForCreateDTO contactDTO)
-        { 
-            if(string.IsNullOrEmpty(contactDTO.PhoneNumber))
+        [HttpGet("getByPhoneNumber")]
+        public async Task<IActionResult> GetContactsByFields(string phoneNumber)
+        {
+            if (string.IsNullOrEmpty(phoneNumber))
             {
                 return BadRequest();
-            }
+            };
 
-            var allContacts = await _serviceManager.ContactService.GetContactByFieldAsync(contactDTO);
+            var contactRequest = new GetContactRequest();
+            contactRequest.PhoneNumber = phoneNumber;
+
+            var allContacts = await _serviceManager.ContactService.GetContactByFieldAsync(contactRequest);
 
             _logger.Information("Neсessary contacts received");
 
             return Ok(allContacts);
-        }*/
+        }
 
         [HttpGet("allContacts")]
         public async Task<IActionResult> GetAllContacts([FromQuery] ContactParameters contactParameters)

@@ -1,7 +1,9 @@
 ﻿@page "/contacts/searchContact"
 
+@using Newtonsoft.Json
 @using Notebook.Domain.Entities
 @using Notebook.Domain.Requests
+@using Notebook.Domain.Responses
 @using Notebook.Shared.RequestFeatures
 @inject NavigationManager NavigationManager
 @inject HttpClient httpClient
@@ -38,16 +40,16 @@
             {
                 <MudStack Justify="Justify.FlexEnd">
                     <MudPaper Class="pa-4 border-solid border-2 mud-border-primary" Style="height:400px;">
-                        <MudForm @ref="_mudForm" Model="_contactDTO">
-                            <MudTextField T="string" Label="First Name" @bind-Value="_contactDTO.FirstName" For="@(()=>_contactDTO.FirstName)"/>
-                            <MudTextField T="string" Label="Last Name" @bind-Value="_contactDTO.LastName" For="@(()=>_contactDTO.LastName)"/>
-                            <MudTextField T="string" Label="Phone number" @bind-Value="_contactDTO.PhoneNumber" For="@(()=>_contactDTO.PhoneNumber)"/>
-                            <MudTextField T="string" Label="Email" @bind-Value="_contactDTO.Email" For="@(()=>_contactDTO.Email)"/>
+                        <MudForm @ref="_mudForm" Model="_getContactRequest">
+                            <MudTextField T="string" Label="First Name" @bind-Value="_getContactRequest.FirstName" For="@(()=>_getContactRequest.FirstName)" />
+                            <MudTextField T="string" Label="Last Name" @bind-Value="_getContactRequest.LastName" For="@(()=>_getContactRequest.LastName)" />
+                            <MudTextField T="string" Label="Phone number" @bind-Value="_getContactRequest.PhoneNumber" For="@(()=>_getContactRequest.PhoneNumber)" />
+                            <MudTextField T="string" Label="Email" @bind-Value="_getContactRequest.Email" For="@(()=>_getContactRequest.Email)" />
                         </MudForm>
 
                         <MudSpacer/>
 
-                        <MudButton Style="mt-4 float: right" Variant="Variant.Filled" Color="Color.Dark" DropShadow="false" OnClick="@(() => SearchContactsThroughFields(_contactDTO))">Search</MudButton>
+                        <MudButton Style="mt-4 float: right" Variant="Variant.Filled" Color="Color.Dark" DropShadow="false" OnClick="@(() => SearchContactsThroughFields(_getContactRequest))">Search</MudButton>
                     </MudPaper>
                 </MudStack>
             }
@@ -88,8 +90,8 @@
     private bool _showTable;
     private Uri? _getAllContactsUri;
     private Uri? _getAllContactsFieldsUri;
-    private IEnumerable<ContactForCreateDTO>? _allContacts = new List<ContactForCreateDTO>();
-    private ContactForCreateDTO _contactDTO = new ContactForCreateDTO();
+    private IEnumerable<GetContactResponse>? _allContacts = new List<GetContactResponse>();
+    private GetContactRequest _getContactRequest = new GetContactRequest();
 
     protected override async Task OnInitializedAsync()
     {
@@ -106,7 +108,7 @@
 
         if (response.IsSuccessStatusCode)
         {
-            _allContacts = await response.Content.ReadFromJsonAsync<List<ContactForCreateDTO>>();
+            _allContacts = await response.Content.ReadFromJsonAsync<List<GetContactResponse>>();
 
             if (_allContacts.Any())
             {
@@ -115,17 +117,17 @@
         }
         else
         {
-            _allContacts = new List<ContactForCreateDTO>();
+            _allContacts = new List<GetContactResponse>();
         }
     }
 
-    private async Task SearchContactsThroughFields(ContactForCreateDTO _contactDTO)
+    private async Task SearchContactsThroughFields(GetContactRequest contactRequest)
     {
-        var response = await httpClient.PostAsJsonAsync(_getAllContactsFieldsUri, _contactDTO);
+        var response = await httpClient.PostAsJsonAsync(_getAllContactsFieldsUri, contactRequest);
 
         if(response.IsSuccessStatusCode)
         {
-            _allContacts = await response.Content.ReadFromJsonAsync<List<ContactForCreateDTO>>();
+            _allContacts = await response.Content.ReadFromJsonAsync<List<GetContactResponse>>();
 
             if(_allContacts.Any())
             {
@@ -133,7 +135,7 @@
             }
             else
             {
-                _allContacts = new List<ContactForCreateDTO>();
+                _allContacts = new List<GetContactResponse>();
             }
         }
     }

@@ -64,11 +64,11 @@
     private bool _isValid;
     private bool _uniquePhoneNumber;
     private string[] _errors = { };
-    private ContactForCreateDTO _newContact = new ContactForCreateDTO();
+    private CreateContactRequest _newContact = new CreateContactRequest();
     private Uri? _addContactUri;
     private Uri? _getContactUri;
 
-    private List<ContactForCreateDTO> _recentContacts = new();
+    private List<CreateContactRequest> _recentContacts = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -98,7 +98,7 @@
         if (response.IsSuccessStatusCode)
         {
             _recentContacts.Add(_newContact);
-            _newContact = new ContactForCreateDTO();
+            _newContact = new CreateContactRequest();
         }
     }
 

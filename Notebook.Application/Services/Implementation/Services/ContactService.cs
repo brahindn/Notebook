@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Notebook.Application.Services.Contracts.Services;
 using Notebook.Domain.Entities;
 using Notebook.Domain.Requests;
+using Notebook.Domain.Responses;
 using Notebook.Repositories.Contracts;
 using Notebook.Shared.RequestFeatures;
 
@@ -18,9 +20,9 @@ namespace Notebook.Application.Services.Implementation.Services
             _mapper = mapper;
         }
 
-        public async Task CreateContactAsync(ContactForCreateDTO contactDTO)
+        public async Task CreateContactAsync(CreateContactRequest createContactRequest)
         {
-            var contact = _mapper.Map<Contact>(contactDTO);
+            var contact = _mapper.Map<Contact>(createContactRequest);
 
             _repositoryManager.Contact.Create(contact);
             await _repositoryManager.SaveAsync();
@@ -57,30 +59,31 @@ namespace Notebook.Application.Services.Implementation.Services
             return await _repositoryManager.Contact.GetContactsAsync(contactParameters);
         }
 
-        public async Task<ContactForCreateDTO> GetContactByFieldAsync(ContactForCreateDTO contactDTO)
+        public async Task<IEnumerable<GetContactResponse>> GetContactByFieldAsync(GetContactRequest contactRequest)
         {
             var query = _repositoryManager.Contact.GetAll();
 
-            if (!string.IsNullOrEmpty(contactDTO.FirstName))
+            if (!string.IsNullOrEmpty(contactRequest.FirstName))
             {
-                query = query.Where(c => c.FirstName == contactDTO.FirstName);
+                query = query.Where(c => c.FirstName == contactRequest.FirstName);
             }
-            if (!string.IsNullOrEmpty(contactDTO.LastName))
+            if (!string.IsNullOrEmpty(contactRequest.LastName))
             {
-                query = query.Where(c => c.LastName == contactDTO.LastName);
+                query = query.Where(c => c.LastName == contactRequest.LastName);
             }
-            if(!string.IsNullOrEmpty(contactDTO.PhoneNumber))
+            if (!string.IsNullOrEmpty(contactRequest.PhoneNumber))
             {
-                query = query.Where(c => c.PhoneNumber == contactDTO.PhoneNumber);
+                query = query.Where(c => c.PhoneNumber == contactRequest.PhoneNumber);
             }
-            if (!string.IsNullOrEmpty(contactDTO.Email))
+            if (!string.IsNullOrEmpty(contactRequest.Email))
             {
-                query = query.Where(c => c.Email == contactDTO.Email);
+                query = query.Where(c => c.Email == contactRequest.Email);
             }
-            
-            var contact = await _repositoryManager.Contact.GetContactByFieldsAsync(query);
 
-            return _mapper.Map(contact, contactDTO);
+            //var contacts = await _repositoryManager.Contact.GetContactByFieldsAsync(query);
+            var contacts = await query.ToListAsync();
+
+            return _mapper.Map<IEnumerable<GetContactResponse>>(contacts);
         }
     }
 }

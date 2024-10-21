@@ -1,7 +1,7 @@
 ﻿
 namespace Notebook.Domain.Responses
 {
-    public record ContactResponseDTO
+    public record GetContactResponse
     {
         public Guid Id { get; set; }
         public string FirstName { get; set; }

@@ -24,13 +24,11 @@ namespace Notebook.Repositories.Implementation.Repositories
             return await GetAll().Skip((contactParameters.PageNumber - 1) * contactParameters.PageSize).Take(contactParameters.PageSize).ToListAsync();
         }
                 
-        public async Task<Contact> GetContactByFieldsAsync(IQueryable<Contact> query)
+        public async Task<IEnumerable<Contact>> GetContactByFieldsAsync(IQueryable<Contact> query)
         {
-            Expression<Func<Contact, bool>> expression = a => query.Contains(a);
+            var contacts = await FindByCondition(e => e == query).ToListAsync();
 
-            var contact = await FindByCondition(expression).FirstOrDefaultAsync();
-
-            return contact;
+            return contacts;
         }
     }
 }   
