@@ -35,7 +35,7 @@ namespace Notebook.WebApi.Controllers
         }
 
         [HttpPut("{update}")]
-        public Task<IActionResult> UpdateContact([FromBody] ContactForUpdateDTO contact)
+        public Task<IActionResult> UpdateContact([FromBody] UpdateContactRequest contact)
         {
             var routingKey = "UpdateKey";
 
@@ -49,7 +49,7 @@ namespace Notebook.WebApi.Controllers
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteContact(Guid contactId)
         {
-            var existContact = await _serviceManager.ContactService.GetContactAsync(contactId);
+            var existContact = await _serviceManager.ContactService.GetContactByIdAsync(contactId);
 
             var routingKey = "DeleteKey";
 
@@ -63,7 +63,7 @@ namespace Notebook.WebApi.Controllers
         [HttpGet("getById")]
         public async Task<IActionResult> GetContactById(Guid contactId)
         {
-            var contact = await _serviceManager.ContactService.GetContactAsync(contactId);
+            var contact = await _serviceManager.ContactService.GetContactByIdAsync(contactId);
 
             if (contact == null)
             {

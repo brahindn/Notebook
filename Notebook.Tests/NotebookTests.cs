@@ -5,6 +5,7 @@ using Notebook.Application.Services.Implementation;
 using Notebook.DataAccess;
 using Notebook.Domain.Entities;
 using Notebook.Domain.Requests;
+using Notebook.Domain.Responses;
 using Notebook.Repositories.Implementation;
 using Notebook.Shared.RequestFeatures;
 
@@ -123,7 +124,7 @@ namespace Notebook.Tests
                 DateOfBirth = new DateTime(1994, 11, 26)
             };
 
-            var deleteContact = await _serviceManager.ContactService.GetContactAsync(contact.Id);
+            var deleteContact = await _serviceManager.ContactService.GetContactByIdAsync(contact.Id);
 
             if(deleteContact != null)
             {
@@ -218,6 +219,35 @@ namespace Notebook.Tests
             }
         }
 
+        [TestMethod]
+        public async Task UpdateContact()
+        {
+            await AddingTESTContactToDB();
+
+            var contactRequest = new GetContactRequest()
+            {
+                FirstName = "TestFN"
+            };
+
+            var getExistContact = await _serviceManager.ContactService.GetContactByFieldAsync(contactRequest);
+
+            var newContactRequest = new UpdateContactRequest()
+            {
+                FirstName = "TestNewFirstName",
+                LastName = "TestNewLastName"
+            };
+
+            await _serviceManager.ContactService.UpdateContactAsync(getExistContact.ToList().First().Id, newContactRequest);
+
+            using (var context = new RepositoryContext(_options))
+            {
+                Assert.AreEqual(1, context.Contacts.Count());
+                Assert.AreEqual("TestNewFirstName", context.Contacts.Single().FirstName);
+            }
+        }
+
+
+
 
 
 
@@ -237,33 +267,7 @@ namespace Notebook.Tests
 
 
         /*
-        *//*[TestMethod]
-        public async Task UpdateContact()
-        {
-            await AddingTESTContactToDB();
-
-            var contact = await _serviceManager.ContactService.GetContactByFieldAsync(
-                firstName: "TestFN",
-                lastName: null,
-                phoneNumber: null,
-                email: null);
-
-            await _serviceManager.ContactService.UpdateContactAsync(new ContactForUpdateDTO
-            {
-                Id = contact.Id,
-                FirstName = "NewTestFN",
-                LastName = "NewTestLN",
-                PhoneNumber = "+380996064051",
-                Email = "newTest@gmail.com",
-                DateOfBirth = null
-            });
-
-            using (var context = new RepositoryContext(_options))
-            {
-                Assert.AreEqual(1, context.Contacts.Count());
-                Assert.AreEqual("NewTestFN", context.Contacts.Single().FirstName);
-            }
-        }*/
+        */
 
         /*[TestMethod]
         public async Task UpdateAddress()

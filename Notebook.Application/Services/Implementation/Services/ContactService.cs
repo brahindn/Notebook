@@ -6,6 +6,7 @@ using Notebook.Domain.Requests;
 using Notebook.Domain.Responses;
 using Notebook.Repositories.Contracts;
 using Notebook.Shared.RequestFeatures;
+using ZstdSharp;
 
 namespace Notebook.Application.Services.Implementation.Services
 {
@@ -28,13 +29,17 @@ namespace Notebook.Application.Services.Implementation.Services
             await _repositoryManager.SaveAsync();
         }
 
-        public async Task UpdateContactAsync(ContactForUpdateDTO contactDTO)
+        public async Task UpdateContactAsync(Guid contactId, UpdateContactRequest updateContactRequest)
         {
-            var existContact = await _repositoryManager.Contact.GetContactAsync(contactDTO.Id) ?? throw new ArgumentNullException($"That contact {contactDTO.Id} was not found.");
+            var contact = await _repositoryManager.Contact.GetContactByIdAsync(contactId);
 
-            _mapper.Map(contactDTO, existContact);
+            if (contact == null)
+                throw new ArgumentNullException();
 
-            _repositoryManager.Contact.Update(existContact);
+
+            var updatedContact = _mapper.Map(updateContactRequest, contact);
+
+            _repositoryManager.Contact.Update(updatedContact);
             await _repositoryManager.SaveAsync();
         }
 
@@ -49,9 +54,9 @@ namespace Notebook.Application.Services.Implementation.Services
             await _repositoryManager.SaveAsync();
         }
 
-        public Task<Contact> GetContactAsync(Guid contactId)
+        public Task<Contact> GetContactByIdAsync(Guid contactId)
         {
-            return _repositoryManager.Contact.GetContactAsync(contactId);
+            return _repositoryManager.Contact.GetContactByIdAsync(contactId);
         }
 
         public async Task<IEnumerable<Contact>> GetAllContactsAsync(ContactParameters contactParameters)
@@ -80,7 +85,6 @@ namespace Notebook.Application.Services.Implementation.Services
                 query = query.Where(c => c.Email == contactRequest.Email);
             }
 
-            //var contacts = await _repositoryManager.Contact.GetContactByFieldsAsync(query);
             var contacts = await query.ToListAsync();
 
             return _mapper.Map<IEnumerable<GetContactResponse>>(contacts);

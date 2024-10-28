@@ -14,7 +14,7 @@ namespace Notebook.Repositories.Implementation.Repositories
         {
         }
 
-        public async Task<Contact> GetContactAsync(Guid contactId)
+        public async Task<Contact> GetContactByIdAsync(Guid contactId)
         {
             return await FindByCondition(c => c.Id == contactId).SingleOrDefaultAsync();
         }
@@ -29,6 +29,11 @@ namespace Notebook.Repositories.Implementation.Repositories
             var contacts = await FindByCondition(e => e == query).ToListAsync();
 
             return contacts;
+        }
+
+        public Task<Contact> GetContactByAsyncAsync(Guid id)
+        {
+            throw new NotImplementedException();
         }
     }
 }   

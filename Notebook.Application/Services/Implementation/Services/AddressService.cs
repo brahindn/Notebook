@@ -21,7 +21,7 @@ namespace Notebook.Application.Services.Implementation.Services
         public async Task CreateAddressAsync(AddressForCreateDTO addressDTO)
         {
             
-            var contact = await _repositoryManager.Contact.GetContactAsync(addressDTO.ContactId) ?? throw new ArgumentException("Person cannot be null or empty");
+            var contact = await _repositoryManager.Contact.GetContactByIdAsync(addressDTO.ContactId) ?? throw new ArgumentException("Person cannot be null or empty");
             var address = _mapper.Map<Address>(addressDTO);
 
             _repositoryManager.Address.Create(address);

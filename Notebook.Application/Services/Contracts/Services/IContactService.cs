@@ -8,9 +8,9 @@ namespace Notebook.Application.Services.Contracts.Services
     public interface IContactService
     {
         Task CreateContactAsync(CreateContactRequest createContactRequest);
-        Task UpdateContactAsync(ContactForUpdateDTO contactDTO);
+        Task UpdateContactAsync(Guid contactId, UpdateContactRequest updateContactRequest);
         Task DeleteContactAsync(Contact contact);
-        Task<Contact> GetContactAsync(Guid id);
+        Task<Contact> GetContactByIdAsync(Guid id);
         Task<IEnumerable<Contact>> GetAllContactsAsync(ContactParameters contactParameters);
         Task<IEnumerable<GetContactResponse>> GetContactByFieldAsync(GetContactRequest contactRequest);
     }

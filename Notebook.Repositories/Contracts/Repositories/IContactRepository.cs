@@ -9,7 +9,7 @@ namespace Notebook.Repositories.Contracts.Repositories
         void Create(Contact contact);
         void Update(Contact contact);
         void Delete(Contact contact);
-        Task<Contact> GetContactAsync(Guid id);
+        Task<Contact> GetContactByIdAsync(Guid id);
         Task<IEnumerable<Contact>> GetContactByFieldsAsync(IQueryable<Contact> query);
         IQueryable<Contact> GetAll();
         Task<IEnumerable<Contact>> GetContactsAsync(ContactParameters contactParameters);

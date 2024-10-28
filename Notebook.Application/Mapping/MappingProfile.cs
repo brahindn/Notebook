@@ -19,6 +19,7 @@ namespace Notebook.Application.Mapping
                 .ForMember(dest => dest.DateOfBirth, opt => opt.Condition(src => src.DateOfBirth != null));
 
             CreateMap<Contact, GetContactResponse>();
+            CreateMap<UpdateContactRequest, Contact>();
 
             /*CreateMap<AddressForCreateDTO, Address>()
                 .ForMember(dest => dest.PersonId, opt => opt.MapFrom(src => src.ContactId));

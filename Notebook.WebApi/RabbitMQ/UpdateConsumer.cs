@@ -48,7 +48,7 @@ namespace Notebook.WebApi.RabbitMQ
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
 
-                var contact = JsonSerializer.Deserialize<ContactForUpdateDTO>(message);
+                var contact = JsonSerializer.Deserialize<UpdateContactRequest>(message);
                 var address = JsonSerializer.Deserialize<AddressForUpdateDTO>(message);
 
                 using (var scope = _serviceScopeFactory.CreateScope())
@@ -57,7 +57,7 @@ namespace Notebook.WebApi.RabbitMQ
 
                     if(contact.FirstName != null)
                     {
-                        await serviceManager.ContactService.UpdateContactAsync(contact);
+                        await serviceManager.ContactService.UpdateContactAsync(contact.Id, contact);
                     }
                     else
                     {
