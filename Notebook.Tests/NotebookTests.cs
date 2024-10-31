@@ -246,7 +246,33 @@ namespace Notebook.Tests
             }
         }
 
+        [TestMethod]
+        public async Task UpdateContactWithoutNewFields()
+        {
+            await AddingTESTContactToDB();
 
+            var contactRequest = new GetContactRequest()
+            {
+                FirstName = "TestFN"
+            };
+
+            var getExistContact = await _serviceManager.ContactService.GetContactByFieldAsync(contactRequest);
+
+            var newContactRequest = new UpdateContactRequest();
+
+            try
+            {
+                await _serviceManager.ContactService.UpdateContactAsync(getExistContact.ToList().First().Id, newContactRequest);
+            }
+            catch
+            {
+                using (var context = new RepositoryContext(_options))
+                {
+                    Assert.AreEqual(1, context.Contacts.Count());
+                    Assert.AreEqual("TestFN", context.Contacts.Single().FirstName);
+                }
+            }
+        }
 
 
 
@@ -303,62 +329,7 @@ namespace Notebook.Tests
         }
 */
 
-        /*[TestMethod]
-        public async Task UpdateContactTwoFields()
-        {
-            await AddingTESTContactToDB();
-
-            var contact = await _serviceManager.ContactService.GetContactByFieldAsync(
-                firstName: "TestFN",
-                lastName: null,
-                phoneNumber: null,
-                email: null);
-
-            await _serviceManager.ContactService.UpdateContactAsync(new ContactForUpdateDTO
-            {
-                Id = contact.Id,
-                FirstName = "NewTestFN",
-                LastName = "NewTestLN",
-                PhoneNumber = null,
-                Email = null,
-                DateOfBirth = null
-            });
-
-            using (var context = new RepositoryContext(_options))
-            {
-                Assert.AreEqual(1, context.Contacts.Count());
-                Assert.AreEqual("NewTestFN", context.Contacts.Single().FirstName);
-                Assert.AreEqual("NewTestLN", context.Contacts.Single().LastName);
-            }
-        }*/
-
-        /*[TestMethod]
-        public async Task UpdateContactWithoutNewFields()
-        {
-            await AddingTESTContactToDB();
-
-            var contact = await _serviceManager.ContactService.GetContactByFieldAsync(
-                firstName: "TestFN",
-                lastName: null,
-                phoneNumber: null,
-                email: null);
-
-            await _serviceManager.ContactService.UpdateContactAsync(new ContactForUpdateDTO
-            {
-                Id = contact.Id,
-                FirstName = null,
-                LastName = null,
-                PhoneNumber = null,
-                Email = null,
-                DateOfBirth = null
-            });
-
-            using (var context = new RepositoryContext(_options))
-            {
-                Assert.AreEqual(1, context.Contacts.Count());
-                Assert.AreEqual("TestFN", context.Contacts.Single().FirstName);
-            }
-        }*/
+        /**/
 
         /**//*
 

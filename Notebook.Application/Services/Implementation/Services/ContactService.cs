@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Notebook.Application.Services.Contracts.Services;
 using Notebook.Domain.Entities;
 using Notebook.Domain.Requests;
 using Notebook.Domain.Responses;
 using Notebook.Repositories.Contracts;
 using Notebook.Shared.RequestFeatures;
-using ZstdSharp;
 
 namespace Notebook.Application.Services.Implementation.Services
 {
@@ -33,9 +33,19 @@ namespace Notebook.Application.Services.Implementation.Services
         {
             var contact = await _repositoryManager.Contact.GetContactByIdAsync(contactId);
 
-            if (contact == null)
+            if (contact == null || updateContactRequest == null)
+            {
                 throw new ArgumentNullException();
+            }
 
+            if(string.IsNullOrEmpty(updateContactRequest.FirstName) &&
+               string.IsNullOrEmpty(updateContactRequest.LastName) &&
+               string.IsNullOrEmpty(updateContactRequest.PhoneNumber) &&
+               string.IsNullOrEmpty(updateContactRequest.Email) &&
+               !updateContactRequest.DateOfBirth.HasValue)
+            {
+                throw new ArgumentException();
+            }
 
             var updatedContact = _mapper.Map(updateContactRequest, contact);
 
