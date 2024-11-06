@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Notebook.Domain.Requests
 {
-    public record AddressForCreateDTO
+    public record CreateAddressRequest
     {
         [Required, EnumDataType(typeof(AddressType))]
         public AddressType AddressType { get; set; }

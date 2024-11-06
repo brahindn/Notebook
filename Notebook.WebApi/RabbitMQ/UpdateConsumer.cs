@@ -49,7 +49,7 @@ namespace Notebook.WebApi.RabbitMQ
                 var message = Encoding.UTF8.GetString(body);
 
                 var contact = JsonSerializer.Deserialize<UpdateContactRequest>(message);
-                var address = JsonSerializer.Deserialize<AddressForUpdateDTO>(message);
+                var address = JsonSerializer.Deserialize<UpdateAddressRequest>(message);
 
                 using (var scope = _serviceScopeFactory.CreateScope())
                 {

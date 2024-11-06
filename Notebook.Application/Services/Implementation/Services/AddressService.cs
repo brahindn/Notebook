@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Notebook.Application.Services.Contracts.Services;
 using Notebook.Domain;
 using Notebook.Domain.Entities;
 using Notebook.Domain.Requests;
+using Notebook.Domain.Responses;
 using Notebook.Repositories.Contracts;
 using Notebook.Shared.RequestFeatures;
 
@@ -12,23 +14,22 @@ namespace Notebook.Application.Services.Implementation.Services
     {
         private readonly IRepositoryManager _repositoryManager;
         private readonly IMapper _mapper;
+
         public AddressService(IRepositoryManager repositoryManager, IMapper mapper)
         {
             _repositoryManager = repositoryManager;
             _mapper = mapper;
         }
 
-        public async Task CreateAddressAsync(AddressForCreateDTO addressDTO)
-        {
-            
-            var contact = await _repositoryManager.Contact.GetContactByIdAsync(addressDTO.ContactId) ?? throw new ArgumentException("Person cannot be null or empty");
-            var address = _mapper.Map<Address>(addressDTO);
+        public async Task CreateAddressAsync(CreateAddressRequest createAddressRequest)
+        { 
+            var address = _mapper.Map<Address>(createAddressRequest);
 
             _repositoryManager.Address.Create(address);
             await _repositoryManager.SaveAsync();
         }
 
-        public async Task UpdateAddressAsync(AddressForUpdateDTO addressDTO)
+        public async Task UpdateAddressAsync(UpdateAddressRequest addressDTO)
         {
             var existAddress = await _repositoryManager.Address.GetAddressAsync(addressDTO.Id) ?? throw new ArgumentNullException($"That address {addressDTO.Id} was not found.");
 
@@ -49,7 +50,7 @@ namespace Notebook.Application.Services.Implementation.Services
             await _repositoryManager.SaveAsync();
         }
 
-        public Task<Address> GetAddressAsync(Guid addressId)
+        public Task<Address> GetAddressByIdAsync(Guid addressId)
         {
             return _repositoryManager.Address.GetAddressAsync(addressId);
         }
@@ -59,40 +60,42 @@ namespace Notebook.Application.Services.Implementation.Services
             return await _repositoryManager.Address.GetAddressesAsync(addressParameters);
         }
 
-        public async Task<Address> GetAddressByFields(Guid? contactId, AddressType? addressType, string? country, string? region, string? city, string? street, int? buildingNumber)
+        public async Task<IEnumerable<GetAddressResponse>> GetAddressByFieldsAsync(GetAddressRequest addressRequest)
         {
             var query = _repositoryManager.Address.GetAll();
 
-            if(contactId != null)
+            if(addressRequest.PersonId != null)
             {
-                query = query.Where(a => a.PersonId == contactId);
+                query = query.Where(a => a.PersonId == addressRequest.PersonId);
             }
-            if(addressType != null)
+            if(addressRequest.AddressType != null)
             {
-                query = query.Where(a => a.AddressType == addressType);
+                query = query.Where(a => a.AddressType == addressRequest.AddressType);
             }
-            if(country != null)
+            if(addressRequest.Country != null)
             {
-                query = query.Where(a => a.Country == country);
+                query = query.Where(a => a.Country == addressRequest.Country);
             }
-            if(region != null)
+            if(addressRequest.Region != null)
             {
-                query = query.Where(a => a.Region == region);
+                query = query.Where(a => a.Region == addressRequest.Region);
             }
-            if(city != null)
+            if(addressRequest.City != null)
             {
-                query = query.Where(a => a.City == city);
+                query = query.Where(a => a.City == addressRequest.City);
             }
-            if(street != null)
+            if(addressRequest.Street != null)
             {
-                query = query.Where(a => a.City == city);
+                query = query.Where(a => a.Street == addressRequest.Street);
             }
-            if(buildingNumber != null)
+            if(addressRequest.BuildingNumber != null)
             {
-                query = query.Where(a => a.BuildingNumber == buildingNumber);
+                query = query.Where(a => a.BuildingNumber == addressRequest.BuildingNumber);
             }
 
-            return await _repositoryManager.Address.GetAddressByFieldsAsync(query);
+            var addresses = await query.ToListAsync();
+
+            return _mapper.Map<IEnumerable<GetAddressResponse>>(addresses);
         }
     }
 }

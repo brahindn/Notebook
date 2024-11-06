@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Notebook.Application.Services.Contracts.Services;
 using Notebook.Domain.Entities;
 using Notebook.Domain.Requests;

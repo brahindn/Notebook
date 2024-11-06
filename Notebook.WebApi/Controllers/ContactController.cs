@@ -3,6 +3,7 @@ using Notebook.Application.Services.Contracts;
 using Notebook.Shared.RequestFeatures;
 using Notebook.WebApi.RabbitMQ;
 using Notebook.Domain.Requests;
+using AutoMapper;
 
 namespace Notebook.WebApi.Controllers
 {
@@ -13,12 +14,14 @@ namespace Notebook.WebApi.Controllers
         private readonly IServiceManager _serviceManager;
         private readonly Serilog.ILogger _logger;
         private readonly MessageProducer _messageProducer;
+        private readonly IMapper _mapper;
 
-        public ContactController(IServiceManager serviceManager, Serilog.ILogger logger, MessageProducer messageProducer)
+        public ContactController(IServiceManager serviceManager, Serilog.ILogger logger, MessageProducer messageProducer, IMapper mapper)
         {
             _serviceManager = serviceManager;
             _logger = logger;
             _messageProducer = messageProducer;
+            _mapper = mapper;
         }
 
         [HttpPost("add")]
@@ -34,7 +37,7 @@ namespace Notebook.WebApi.Controllers
             return Task.FromResult<IActionResult>(Ok());
         }
 
-        [HttpPut("{update}")]
+        [HttpPut("update")]
         public Task<IActionResult> UpdateContact([FromBody] UpdateContactRequest contact)
         {
             var routingKey = "UpdateKey";

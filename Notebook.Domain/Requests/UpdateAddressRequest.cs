@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Notebook.Domain.Requests
 {
-    public record AddressForUpdateDTO
+    public record UpdateAddressRequest
     {
         public Guid Id { get; set; }
 

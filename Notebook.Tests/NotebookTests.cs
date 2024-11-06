@@ -234,7 +234,10 @@ namespace Notebook.Tests
             var newContactRequest = new UpdateContactRequest()
             {
                 FirstName = "TestNewFirstName",
-                LastName = "TestNewLastName"
+                LastName = "TestNewLastName",
+                PhoneNumber = "+380996064050",
+                Email = "test@gmail.com",
+                DateOfBirth = new DateTime(1994, 11, 26)
             };
 
             await _serviceManager.ContactService.UpdateContactAsync(getExistContact.ToList().First().Id, newContactRequest);
@@ -243,11 +246,47 @@ namespace Notebook.Tests
             {
                 Assert.AreEqual(1, context.Contacts.Count());
                 Assert.AreEqual("TestNewFirstName", context.Contacts.Single().FirstName);
+                Assert.AreEqual("TestNewLastName", context.Contacts.Single().LastName);
+                Assert.AreEqual("+380996064050", context.Contacts.Single().PhoneNumber);
+                Assert.AreEqual("test@gmail.com", context.Contacts.Single().Email);
+                Assert.AreEqual(newContactRequest.DateOfBirth, context.Contacts.Single().DateOfBirth);
             }
         }
 
         [TestMethod]
-        public async Task UpdateContactWithoutNewFields()
+        public async Task UpdateContactAFewFieldsAreEmpty()
+        {
+            await AddingTESTContactToDB();
+
+            var contactRequest = new GetContactRequest()
+            {
+                FirstName = "TestFN"
+            };
+
+            var getExistContact = await _serviceManager.ContactService.GetContactByFieldAsync(contactRequest);
+
+            var newContactRequest = new UpdateContactRequest()
+            {
+                FirstName = "TestNewFirstName",
+                LastName = "",
+                PhoneNumber = "",
+                Email = "test2@gmail.com"
+            };
+
+            await _serviceManager.ContactService.UpdateContactAsync(getExistContact.ToList().First().Id, newContactRequest);
+
+            using (var context = new RepositoryContext(_options))
+            {
+                Assert.AreEqual(1, context.Contacts.Count());
+                Assert.AreEqual("TestNewFirstName", context.Contacts.Single().FirstName);
+                Assert.AreEqual("", context.Contacts.Single().LastName);
+                Assert.AreEqual("", context.Contacts.Single().PhoneNumber);
+                Assert.AreEqual("test2@gmail.com", context.Contacts.Single().Email);
+            }
+        }
+
+        [TestMethod] //If all fields are empty Contact doesn't change
+        public async Task UpdateContactWithoutNewFields() 
         {
             await AddingTESTContactToDB();
 
@@ -270,12 +309,12 @@ namespace Notebook.Tests
                 {
                     Assert.AreEqual(1, context.Contacts.Count());
                     Assert.AreEqual("TestFN", context.Contacts.Single().FirstName);
+                    Assert.AreEqual("TestLN", context.Contacts.Single().LastName);
+                    Assert.AreEqual("+380996064050", context.Contacts.Single().PhoneNumber);
+                    Assert.AreEqual("test@gmail.com", context.Contacts.Single().Email);
                 }
             }
         }
-
-
-
 
         private async Task AddingTESTContactToDB()
         {
@@ -286,6 +325,41 @@ namespace Notebook.Tests
                 PhoneNumber = "+380996064050",
                 Email = "test@gmail.com",
                 DateOfBirth = new DateTime(1994, 11, 26)
+            });
+        }
+
+        [TestMethod]
+        public async Task AddNewAddress()
+        {
+            await AddingTESTAddressToDB();
+
+            using (var context = new RepositoryContext(_options))
+            {
+                Assert.AreEqual(1, context.Addresses.Count());
+                Assert.AreEqual("Zhulianska", context.Addresses.Single().Street);
+            }
+        }
+
+        private async Task AddingTESTAddressToDB()
+        {
+            await AddingTESTContactToDB();
+
+            var getContactRequest = new GetContactRequest()
+            {
+                FirstName = "TestFN"
+            };
+
+            var contact = await _serviceManager.ContactService.GetContactByFieldAsync(getContactRequest);
+
+            await _serviceManager.AddressService.CreateAddressAsync(new CreateAddressRequest
+            {
+                AddressType = 0,
+                Country = "Ukraine",
+                Region = "Kyiv Oblast",
+                City = "Kyiv",
+                Street = "Zhulianska",
+                BuildingNumber = 1,
+                ContactId = contact.ToList().First().Id
             });
         }
     }
@@ -385,17 +459,7 @@ namespace Notebook.Tests
             }
         }*/
 
-        /*[TestMethod]
-        public async Task AddNewAddress()
-        {
-            await AddingTESTAddressToDB();
-
-            using (var context = new RepositoryContext(_options))
-            {
-                Assert.AreEqual(1, context.Addresses.Count());
-                Assert.AreEqual("Zhulianska", context.Addresses.Single().Street);
-            }
-        }*//*
+        /**//*
 
         [TestMethod]
         public async Task AddNewAddressWithoutAnyField()
@@ -445,25 +509,5 @@ namespace Notebook.Tests
 
         
 
-        *//*private async Task AddingTESTAddressToDB()
-        {
-            AddingTESTContactToDB();
-
-            var contact = await _serviceManager.ContactService.GetContactByFieldAsync(
-                firstName: "TestFN",
-                lastName: null,
-                phoneNumber: null,
-                email: null);
-
-            await _serviceManager.AddressService.CreateAddressAsync(new AddressForCreateDTO
-            {
-                AddressType = 0,
-                Country = "Ukraine",
-                Region = "Kyiv Oblast",
-                City = "Kyiv",
-                Street = "Zhulianska",
-                BuildingNumber = 1,
-                ContactId = contact.Id
-            });
-        }*//*
+        *//**//*
     }*/

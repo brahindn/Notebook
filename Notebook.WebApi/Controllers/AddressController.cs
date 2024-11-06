@@ -23,8 +23,8 @@ namespace Notebook.WebApi.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost]
-        public Task<IActionResult> AddAddress([FromBody] AddressForCreateDTO address)
+        [HttpPost("add")]
+        public Task<IActionResult> AddAddress([FromBody] CreateAddressRequest address)
         {
             var routingKey = "AddKey";
 
@@ -36,7 +36,7 @@ namespace Notebook.WebApi.Controllers
         }
 
         [HttpPut("{addressId}")]
-        public Task<IActionResult> UpdateAddress([FromBody] AddressForUpdateDTO address)
+        public Task<IActionResult> UpdateAddress([FromBody] UpdateAddressRequest address)
         {
             var routingKey = "UpdateKey";
 
@@ -50,7 +50,7 @@ namespace Notebook.WebApi.Controllers
         [HttpDelete("{addressId}")]
         public async Task<IActionResult> DeleteAddress(Guid addressId)
         {
-            var existAddress = await _serviceManager.AddressService.GetAddressAsync(addressId);
+            var existAddress = await _serviceManager.AddressService.GetAddressByIdAsync(addressId);
 
             var routingKey = "DeleteKey";
 
@@ -65,14 +65,14 @@ namespace Notebook.WebApi.Controllers
         public async Task<IActionResult> GetAddressById(Guid addressId)
         {
 
-            var address = await _serviceManager.AddressService.GetAddressAsync(addressId);
+            var address = await _serviceManager.AddressService.GetAddressByIdAsync(addressId);
 
             if(address == null)
             {
                 return NotFound();
             }
 
-            var addressDTO = _mapper.Map<AddressForCreateDTO>(address);
+            var addressDTO = _mapper.Map<CreateAddressRequest>(address);
 
             _logger.Information($"Address for contact {address.PersonId} has been got");
 
