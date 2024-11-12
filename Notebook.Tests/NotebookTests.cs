@@ -359,7 +359,7 @@ namespace Notebook.Tests
                 City = "Kyiv",
                 Street = "Zhulianska",
                 BuildingNumber = 1,
-                ContactId = contact.ToList().First().Id
+                PersonId = contact.ToList().First().Id
             });
         }
     }

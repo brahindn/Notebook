@@ -22,7 +22,14 @@ namespace Notebook.Application.Services.Implementation.Services
         }
 
         public async Task CreateAddressAsync(CreateAddressRequest createAddressRequest)
-        { 
+        {
+            var contact = await _repositoryManager.Contact.GetContactByIdAsync(createAddressRequest.PersonId);
+
+            if(contact == null)
+            {
+                throw new ArgumentNullException(nameof(createAddressRequest), "Contact not found");
+            }
+
             var address = _mapper.Map<Address>(createAddressRequest);
 
             _repositoryManager.Address.Create(address);

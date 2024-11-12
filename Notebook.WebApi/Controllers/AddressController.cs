@@ -30,7 +30,7 @@ namespace Notebook.WebApi.Controllers
 
             _messageProducer.SendMessage(address, routingKey);
 
-            _logger.Information($"New address for contact {address.ContactId} has been added successfully");
+            _logger.Information($"New address for contact {address.PersonId} has been added successfully");
 
             return Task.FromResult<IActionResult>(Ok());
         }
