@@ -9,7 +9,7 @@ using System.Text.Json;
 
 namespace Notebook.WebApi.RabbitMQ
 {
-    public class AddConsumer : IHostedService, IDisposable
+    public class AddContactConsumer : IHostedService, IDisposable
     {
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private IConnection _connection;
@@ -17,7 +17,7 @@ namespace Notebook.WebApi.RabbitMQ
         private string _queueName;
         private RabbitMqSettings _rabbitMqSettings;
 
-        public AddConsumer(IServiceScopeFactory serviceScopeFactory, RabbitMqSettings rabbitMqSettings)
+        public AddContactConsumer(IServiceScopeFactory serviceScopeFactory, RabbitMqSettings rabbitMqSettings)
         {
             _serviceScopeFactory = serviceScopeFactory;
             _rabbitMqSettings = rabbitMqSettings;
@@ -49,19 +49,14 @@ namespace Notebook.WebApi.RabbitMQ
                 var message = Encoding.UTF8.GetString(body);
 
                 var contact = JsonSerializer.Deserialize<CreateContactRequest>(message);
-                var address = JsonSerializer.Deserialize<CreateAddressRequest>(message);
 
                 using (var scope = _serviceScopeFactory.CreateScope())
                 {
                     var serviceManager = scope.ServiceProvider.GetRequiredService<IServiceManager>();
 
-                    if(contact.FirstName != null)
+                    if(contact != null)
                     {
                         await serviceManager.ContactService.CreateContactAsync(contact);
-                    }
-                    else
-                    {
-                        await serviceManager.AddressService.CreateAddressAsync(address);
                     }
                 }
             };

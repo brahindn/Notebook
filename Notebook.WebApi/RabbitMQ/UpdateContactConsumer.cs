@@ -1,15 +1,15 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client;
 using System.Text;
-using Microsoft.Extensions.Hosting;
 using System.Text.Json;
+using Notebook.Domain.Requests;
 using Notebook.Application.Services.Contracts;
-using Notebook.Domain.Entities;
 
 namespace Notebook.WebApi.RabbitMQ
 {
-    public class DeleteConsumer : IHostedService, IDisposable
+    public class UpdateContactConsumer : IHostedService, IDisposable
     {
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private IConnection _connection;
@@ -17,7 +17,7 @@ namespace Notebook.WebApi.RabbitMQ
         private string _queueName;
         private RabbitMqSettings _rabbitMqSettings;
 
-        public DeleteConsumer(IServiceScopeFactory serviceScopeFactory, RabbitMqSettings rabbitMqSettings)
+        public UpdateContactConsumer(IServiceScopeFactory serviceScopeFactory, RabbitMqSettings rabbitMqSettings)
         {
             _serviceScopeFactory = serviceScopeFactory;
             _rabbitMqSettings = rabbitMqSettings;
@@ -36,7 +36,7 @@ namespace Notebook.WebApi.RabbitMQ
 
             _channel.QueueBind(queue: _queueName,
                                exchange: "direct_actions",
-                               routingKey: "DeleteKey");
+                               routingKey: "UpdateKey");
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -48,21 +48,16 @@ namespace Notebook.WebApi.RabbitMQ
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
 
-                var contact = JsonSerializer.Deserialize<Contact>(message);
-                var address = JsonSerializer.Deserialize<Address>(message);
+                var contact = JsonSerializer.Deserialize<UpdateContactRequest>(message);
 
                 using (var scope = _serviceScopeFactory.CreateScope())
                 {
                     var serviceManager = scope.ServiceProvider.GetRequiredService<IServiceManager>();
 
-                    if(contact.FirstName != null)
+                    if(contact != null)
                     {
-                        await serviceManager.ContactService.DeleteContactAsync(contact);
+                        await serviceManager.ContactService.UpdateContactAsync(contact.Id, contact);
                     }
-                    else
-                    {
-                        await serviceManager.AddressService.DeleteAddressAsync(address);
-                    }   
                 }
             };
 

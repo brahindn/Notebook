@@ -26,9 +26,9 @@ var loggerConfiguration = new LoggerConfiguration()
 var rabbitSettings = new RabbitMqSettings();
 rabbitSettings.StringHostName = builder.Configuration.GetConnectionString("RabbitMQConnection");
 
-builder.Services.AddHostedService<AddConsumer>();
-builder.Services.AddHostedService<UpdateConsumer>();
-builder.Services.AddHostedService<DeleteConsumer>();
+builder.Services.AddHostedService<AddContactConsumer>();
+builder.Services.AddHostedService<UpdateContactConsumer>();
+builder.Services.AddHostedService<DeleteContactConsumer>();
 
 builder.Services.AddDbContext<RepositoryContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("sqlConnection")));
 builder.Services.AddSingleton<ILogger>(loggerConfiguration);
