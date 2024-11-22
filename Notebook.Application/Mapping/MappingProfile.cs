@@ -24,8 +24,7 @@ namespace Notebook.Application.Mapping
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
 
             CreateMap<CreateAddressRequest, Address>()
-                .ForMember(dest => dest.Person, opt => opt.Ignore())
-                .ForMember(dest => dest.PersonId, opt => opt.MapFrom(src => Guid.NewGuid()));
+                .ForMember(dest => dest.Contact, opt => opt.Ignore());
 
             CreateMap<Address, GetAddressResponse>();
         }

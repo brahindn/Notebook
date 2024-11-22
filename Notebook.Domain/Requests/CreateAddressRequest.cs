@@ -5,7 +5,7 @@ namespace Notebook.Domain.Requests
     public record CreateAddressRequest
     {
         [Required]
-        public Guid PersonId { get; set; }
+        public Guid ContactId { get; set; }
 
         [Required, EnumDataType(typeof(AddressType))]
         public AddressType AddressType { get; set; }

@@ -26,11 +26,11 @@ namespace Notebook.WebApi.Controllers
         [HttpPost("add")]
         public Task<IActionResult> AddAddress([FromBody] CreateAddressRequest address)
         {
-            var routingKey = "AddKey";
+            var routingKey = "AddAddressKey";
 
             _messageProducer.SendMessage(address, routingKey);
 
-            _logger.Information($"New address for contact {address.PersonId} has been added successfully");
+            _logger.Information($"New address for contact {address.ContactId} has been added successfully");
 
             return Task.FromResult<IActionResult>(Ok());
         }
@@ -38,7 +38,7 @@ namespace Notebook.WebApi.Controllers
         [HttpPut("{addressId}")]
         public Task<IActionResult> UpdateAddress([FromBody] UpdateAddressRequest address)
         {
-            var routingKey = "UpdateKey";
+            var routingKey = "UpdateAddressKey";
 
             _messageProducer.SendMessage(address, routingKey);
 
@@ -52,7 +52,7 @@ namespace Notebook.WebApi.Controllers
         {
             var existAddress = await _serviceManager.AddressService.GetAddressByIdAsync(addressId);
 
-            var routingKey = "DeleteKey";
+            var routingKey = "DeleteAddressKey";
 
             _messageProducer.SendMessage(existAddress, routingKey);
 
@@ -74,7 +74,7 @@ namespace Notebook.WebApi.Controllers
 
             var addressDTO = _mapper.Map<CreateAddressRequest>(address);
 
-            _logger.Information($"Address for contact {address.PersonId} has been got");
+            _logger.Information($"Address for contact {address.ContactId} has been got");
 
             return Ok(addressDTO);
         }

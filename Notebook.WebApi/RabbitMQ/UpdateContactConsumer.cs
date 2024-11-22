@@ -36,7 +36,7 @@ namespace Notebook.WebApi.RabbitMQ
 
             _channel.QueueBind(queue: _queueName,
                                exchange: "direct_actions",
-                               routingKey: "UpdateKey");
+                               routingKey: "UpdateContactKey");
         }
 
         public Task StartAsync(CancellationToken cancellationToken)

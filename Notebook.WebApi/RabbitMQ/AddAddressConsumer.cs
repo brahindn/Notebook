@@ -9,7 +9,7 @@ using System.Text.Json;
 
 namespace Notebook.WebApi.RabbitMQ
 {
-    public class AddContactConsumer : IHostedService, IDisposable
+    public class AddAddressConsumer : IHostedService, IDisposable
     {
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private IConnection _connection;
@@ -17,7 +17,7 @@ namespace Notebook.WebApi.RabbitMQ
         private string _queueName;
         private RabbitMqSettings _rabbitMqSettings;
 
-        public AddContactConsumer(IServiceScopeFactory serviceScopeFactory, RabbitMqSettings rabbitMqSettings)
+        public AddAddressConsumer(IServiceScopeFactory serviceScopeFactory, RabbitMqSettings rabbitMqSettings)
         {
             _serviceScopeFactory = serviceScopeFactory;
             _rabbitMqSettings = rabbitMqSettings;
@@ -35,8 +35,8 @@ namespace Notebook.WebApi.RabbitMQ
             _queueName = _channel.QueueDeclare().QueueName;
 
             _channel.QueueBind(queue: _queueName,
-                               exchange: "direct_actions",
-                               routingKey: "AddContactKey");
+                               exchange: "direct_actions", 
+                               routingKey: "AddAddressKey");
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -48,15 +48,15 @@ namespace Notebook.WebApi.RabbitMQ
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
 
-                var contact = JsonSerializer.Deserialize<CreateContactRequest>(message);
+                var address = JsonSerializer.Deserialize<CreateAddressRequest>(message);
 
                 using (var scope = _serviceScopeFactory.CreateScope())
                 {
                     var serviceManager = scope.ServiceProvider.GetRequiredService<IServiceManager>();
 
-                    if(contact != null)
+                    if (address != null)
                     {
-                        await serviceManager.ContactService.CreateContactAsync(contact);
+                        await serviceManager.AddressService.CreateAddressAsync(address);
                     }
                 }
             };
@@ -67,6 +67,7 @@ namespace Notebook.WebApi.RabbitMQ
 
             return Task.CompletedTask;
         }
+
         public Task StopAsync(CancellationToken cancellationToken)
         {
             _channel.Close();

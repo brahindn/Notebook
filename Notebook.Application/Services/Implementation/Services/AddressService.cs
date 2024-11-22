@@ -23,7 +23,7 @@ namespace Notebook.Application.Services.Implementation.Services
 
         public async Task CreateAddressAsync(CreateAddressRequest createAddressRequest)
         {
-            var contact = await _repositoryManager.Contact.GetContactByIdAsync(createAddressRequest.PersonId);
+            var contact = await _repositoryManager.Contact.GetContactByIdAsync(createAddressRequest.ContactId);
 
             if(contact == null)
             {
@@ -73,7 +73,7 @@ namespace Notebook.Application.Services.Implementation.Services
 
             if(addressRequest.PersonId != null)
             {
-                query = query.Where(a => a.PersonId == addressRequest.PersonId);
+                query = query.Where(a => a.ContactId == addressRequest.PersonId);
             }
             if(addressRequest.AddressType != null)
             {

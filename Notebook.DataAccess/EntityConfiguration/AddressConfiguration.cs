@@ -9,7 +9,7 @@ namespace Notebook.DataAccess.EntityConfiguration
         public void Configure(EntityTypeBuilder<Address> builder)
         {
 
-            builder.HasIndex(a => a.PersonId).IsUnique();
+            builder.HasIndex(a => a.ContactId).IsUnique();
 
             builder.Property(a => a.AddressType).IsRequired();
 

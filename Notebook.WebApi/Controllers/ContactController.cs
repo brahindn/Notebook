@@ -28,7 +28,7 @@ namespace Notebook.WebApi.Controllers
         public Task<IActionResult> AddContact([FromBody] CreateContactRequest contact)
         {
 
-            var routingKey = "AddKey";
+            var routingKey = "AddContactKey";
 
             _messageProducer.SendMessage(contact, routingKey);
 
@@ -40,7 +40,7 @@ namespace Notebook.WebApi.Controllers
         [HttpPut("update")]
         public Task<IActionResult> UpdateContact([FromBody] UpdateContactRequest contact)
         {
-            var routingKey = "UpdateKey";
+            var routingKey = "UpdateContactKey";
 
             _messageProducer.SendMessage(contact, routingKey);
 
@@ -54,7 +54,7 @@ namespace Notebook.WebApi.Controllers
         {
             var existContact = await _serviceManager.ContactService.GetContactByIdAsync(contactId);
 
-            var routingKey = "DeleteKey";
+            var routingKey = "DeleteContactKey";
 
             _messageProducer.SendMessage(existContact, routingKey);
 

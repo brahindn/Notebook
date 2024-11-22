@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Notebook.Domain;
-using Notebook.Domain.Entities;
+﻿using Notebook.Domain;
 
 namespace Notebook.Application.Services
 {
