@@ -36,11 +36,11 @@ namespace Notebook.Application.Services.Implementation.Services
             await _repositoryManager.SaveAsync();
         }
 
-        public async Task UpdateAddressAsync(UpdateAddressRequest addressDTO)
+        public async Task UpdateAddressAsync(UpdateAddressRequest updateAddressRequest)
         {
-            var existAddress = await _repositoryManager.Address.GetAddressAsync(addressDTO.Id) ?? throw new ArgumentNullException($"That address {addressDTO.Id} was not found.");
+            var existAddress = await _repositoryManager.Address.GetAddressAsync(updateAddressRequest.Id) ?? throw new ArgumentNullException($"That address {updateAddressRequest.Id} was not found.");
 
-            _mapper.Map(addressDTO, existAddress);
+            _mapper.Map(updateAddressRequest, existAddress);
 
             _repositoryManager.Address.Update(existAddress);
             await _repositoryManager.SaveAsync();

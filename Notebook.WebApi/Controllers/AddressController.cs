@@ -35,7 +35,7 @@ namespace Notebook.WebApi.Controllers
             return Task.FromResult<IActionResult>(Ok());
         }
 
-        [HttpPut("{addressId}")]
+        [HttpPut("update")]
         public Task<IActionResult> UpdateAddress([FromBody] UpdateAddressRequest address)
         {
             var routingKey = "UpdateAddressKey";

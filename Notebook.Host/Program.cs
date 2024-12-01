@@ -30,6 +30,7 @@ builder.Services.AddHostedService<AddContactConsumer>();
 builder.Services.AddHostedService<UpdateContactConsumer>();
 builder.Services.AddHostedService<DeleteContactConsumer>();
 builder.Services.AddHostedService<AddAddressConsumer>();
+builder.Services.AddHostedService<UpdateAddressConsumer>();
 
 builder.Services.AddDbContext<RepositoryContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("sqlConnection")));
 builder.Services.AddSingleton<ILogger>(loggerConfiguration);

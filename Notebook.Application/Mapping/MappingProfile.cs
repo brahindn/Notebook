@@ -27,6 +27,9 @@ namespace Notebook.Application.Mapping
                 .ForMember(dest => dest.Contact, opt => opt.Ignore());
 
             CreateMap<Address, GetAddressResponse>();
+
+            CreateMap<UpdateAddressRequest, Address>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
         }
     }
 }
