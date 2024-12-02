@@ -31,9 +31,6 @@ namespace Notebook.Repositories.Implementation.Repositories
             return contacts;
         }
 
-        public Task<Contact> GetContactByAsyncAsync(Guid id)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }   

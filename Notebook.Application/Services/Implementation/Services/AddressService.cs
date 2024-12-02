@@ -38,7 +38,7 @@ namespace Notebook.Application.Services.Implementation.Services
 
         public async Task UpdateAddressAsync(UpdateAddressRequest updateAddressRequest)
         {
-            var existAddress = await _repositoryManager.Address.GetAddressAsync(updateAddressRequest.Id) ?? throw new ArgumentNullException($"That address {updateAddressRequest.Id} was not found.");
+            var existAddress = await _repositoryManager.Address.GetAddressByIdAsync(updateAddressRequest.Id) ?? throw new ArgumentNullException($"That address {updateAddressRequest.Id} was not found.");
 
             _mapper.Map(updateAddressRequest, existAddress);
 
@@ -59,7 +59,7 @@ namespace Notebook.Application.Services.Implementation.Services
 
         public Task<Address> GetAddressByIdAsync(Guid addressId)
         {
-            return _repositoryManager.Address.GetAddressAsync(addressId);
+            return _repositoryManager.Address.GetAddressByIdAsync(addressId);
         }
 
         public async Task<IEnumerable<Address>> GetAllAddressesAsync(AddressParameters addressParameters)

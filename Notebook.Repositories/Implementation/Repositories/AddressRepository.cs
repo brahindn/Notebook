@@ -14,7 +14,7 @@ namespace Notebook.Repositories.Implementation.Repositories
         {
         }
 
-        public async Task<Address> GetAddressAsync(Guid addressId)
+        public async Task<Address> GetAddressByIdAsync(Guid addressId)
         {
             return await FindByCondition(a => a.Id == addressId).SingleOrDefaultAsync();
         }
@@ -24,11 +24,9 @@ namespace Notebook.Repositories.Implementation.Repositories
             return await GetAll().Skip((addressParameters.PageNumber - 1) * addressParameters.PageSize).Take(addressParameters.PageSize).ToListAsync();
         }
 
-        public async Task<Address> GetAddressByFieldsAsync(IQueryable<Address> query)
+        public async Task<IEnumerable<Address>> GetAddressByFieldsAsync(IQueryable<Address> query)
         {
-            Expression<Func<Address, bool>> expression = a => query.Contains(a);
-
-            var address = await FindByCondition(expression).FirstOrDefaultAsync();
+            var address = await FindByCondition(e => e==query).ToListAsync();
 
             return address;
         }

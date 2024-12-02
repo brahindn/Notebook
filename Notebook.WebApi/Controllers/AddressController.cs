@@ -47,7 +47,7 @@ namespace Notebook.WebApi.Controllers
             return Task.FromResult<IActionResult>(Ok());
         }
 
-        [HttpDelete("{addressId}")]
+        [HttpDelete("delete")]
         public async Task<IActionResult> DeleteAddress(Guid addressId)
         {
             var existAddress = await _serviceManager.AddressService.GetAddressByIdAsync(addressId);

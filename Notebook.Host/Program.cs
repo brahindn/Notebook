@@ -9,7 +9,6 @@ using Notebook.Repositories.Implementation;
 using Notebook.WebApi.Controllers;
 using Notebook.WebApi.RabbitMQ;
 using Serilog;
-using System.Reflection.Metadata;
 using ILogger = Serilog.ILogger;
 
 
@@ -31,6 +30,7 @@ builder.Services.AddHostedService<UpdateContactConsumer>();
 builder.Services.AddHostedService<DeleteContactConsumer>();
 builder.Services.AddHostedService<AddAddressConsumer>();
 builder.Services.AddHostedService<UpdateAddressConsumer>();
+builder.Services.AddHostedService<DeleteAddressConsumer>();
 
 builder.Services.AddDbContext<RepositoryContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("sqlConnection")));
 builder.Services.AddSingleton<ILogger>(loggerConfiguration);

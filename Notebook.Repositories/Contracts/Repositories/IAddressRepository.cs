@@ -9,10 +9,10 @@ namespace Notebook.Repositories.Contracts.Repositories
         void Create(Address address);
         void Update(Address address);
         void Delete(Address address);
-        Task<Address> GetAddressAsync(Guid contactId);
-        Task <IEnumerable<Address>> GetAddressesAsync(AddressParameters addressParameters);
+        Task<Address> GetAddressByIdAsync(Guid id);
+        Task<IEnumerable<Address>> GetAddressByFieldsAsync(IQueryable<Address> addresses);
         IQueryable<Address> GetAll();
-        Task<Address> GetAddressByFieldsAsync(IQueryable<Address> addresses);
+        Task<IEnumerable<Address>> GetAddressesAsync(AddressParameters addressParameters);
 
     }
 }
