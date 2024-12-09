@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Notebook.Application.Services.Contracts.Services;
 using Notebook.Domain;
 using Notebook.Domain.Entities;
@@ -40,9 +41,19 @@ namespace Notebook.Application.Services.Implementation.Services
         {
             var existAddress = await _repositoryManager.Address.GetAddressByIdAsync(updateAddressRequest.Id) ?? throw new ArgumentNullException($"That address {updateAddressRequest.Id} was not found.");
 
-            _mapper.Map(updateAddressRequest, existAddress);
+            if (!updateAddressRequest.AddressType.HasValue &&
+               string.IsNullOrEmpty(updateAddressRequest.Country) &&
+               string.IsNullOrEmpty(updateAddressRequest.Region) &&
+               string.IsNullOrEmpty(updateAddressRequest.City) &&
+               string.IsNullOrEmpty(updateAddressRequest.Street) &&
+               !updateAddressRequest.BuildingNumber.HasValue)
+            {
+                throw new ArgumentException("At least one field must be provided.");
+            }
 
-            _repositoryManager.Address.Update(existAddress);
+            var updatedAddress = _mapper.Map(updateAddressRequest, existAddress);
+
+            _repositoryManager.Address.Update(updatedAddress);
             await _repositoryManager.SaveAsync();
         }
 

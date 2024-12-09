@@ -285,7 +285,7 @@ namespace Notebook.Tests
             }
         }
 
-        [TestMethod] //If all fields are empty Contact doesn't change
+        [TestMethod]
         public async Task UpdateContactWithoutNewFields() 
         {
             await AddingTESTContactToDB();
@@ -340,6 +340,119 @@ namespace Notebook.Tests
             }
         }
 
+        [TestMethod]
+        public async Task UpdateAddress()
+        {
+            await AddingTESTAddressToDB();
+
+            var addressRequest = new GetAddressRequest
+            {
+                Country = "Ukraine",
+                Region = "Kyiv Oblast",
+                City = "Kyiv"
+            };
+
+            var existAddress = await _serviceManager.AddressService.GetAddressByFieldsAsync(addressRequest);
+
+            var updateAddressRequest = new UpdateAddressRequest
+            {
+                Id = existAddress.First().Id,
+                AddressType = (Domain.AddressType?)1,
+                Country = "USA",
+                Region = "California",
+                City = "Los-Angeles",
+                Street = "Jack Black",
+                BuildingNumber = 100
+            };
+
+            await _serviceManager.AddressService.UpdateAddressAsync(updateAddressRequest);
+
+            using (var context = new RepositoryContext(_options))
+            {
+                Assert.AreEqual(1, context.Addresses.Count());
+                Assert.AreEqual("USA", context.Addresses.Single().Country);
+                Assert.AreEqual("California", context.Addresses.Single().Region);
+                Assert.AreEqual("Los-Angeles", context.Addresses.Single().City);
+                Assert.AreEqual("Jack Black", context.Addresses.Single().Street);
+            }
+        }
+
+        [TestMethod]
+        public async Task UpdateAddressAFewFieldsAreEmpty()
+        {
+            await AddingTESTAddressToDB();
+
+            var addressRequest = new GetAddressRequest
+            {
+                Country = "Ukraine",
+                Region = "Kyiv Oblast",
+                City = "Kyiv"
+            };
+
+            var existAddress = await _serviceManager.AddressService.GetAddressByFieldsAsync(addressRequest);
+
+            var updateAddressRequest = new UpdateAddressRequest
+            {
+                Id = existAddress.First().Id,
+                AddressType = (Domain.AddressType?)1,
+                Country = "",
+                Region = "",
+                City = "Los-Angeles",
+                Street = "",
+                BuildingNumber = 100
+            };
+
+            await _serviceManager.AddressService.UpdateAddressAsync(updateAddressRequest);
+
+            using (var context = new RepositoryContext(_options))
+            {
+                Assert.AreEqual(1, context.Addresses.Count());
+                Assert.AreEqual("", context.Addresses.Single().Country);
+                Assert.AreEqual("", context.Addresses.Single().Region);
+                Assert.AreEqual("Los-Angeles", context.Addresses.Single().City);
+                Assert.AreEqual("", context.Addresses.Single().Street);
+            }
+        }
+
+        [TestMethod]
+        public async Task UpdateAddressWithoutNewFields()
+        {
+            await AddingTESTAddressToDB();
+
+            var addressRequest = new GetAddressRequest
+            {
+                Country = "Ukraine",
+                Region = "Kyiv Oblast",
+                City = "Kyiv"
+            };
+
+            var existAddress = await _serviceManager.AddressService.GetAddressByFieldsAsync(addressRequest);
+
+            var updateAddressRequest = new UpdateAddressRequest()
+            {
+                Id = existAddress.First().Id
+            };
+
+            try
+            {
+                await _serviceManager.AddressService.UpdateAddressAsync(updateAddressRequest);
+            }
+            catch
+            {
+                using (var context = new RepositoryContext(_options))
+                {
+                    Assert.AreEqual(1, context.Addresses.Count());
+                    Assert.AreEqual("Ukraine", context.Addresses.Single().Country);
+                    Assert.AreEqual("Kyiv Oblast", context.Addresses.Single().Region);
+                    Assert.AreEqual("Kyiv", context.Addresses.Single().City);
+                    Assert.AreEqual("Zhulianska", context.Addresses.Single().Street);
+                }
+            }            
+        }
+
+
+
+
         private async Task AddingTESTAddressToDB()
         {
             await AddingTESTContactToDB();
@@ -365,55 +478,11 @@ namespace Notebook.Tests
     }
 }
 
-
-        /*
-        */
+        
+        
+   
 
         /*[TestMethod]
-        public async Task UpdateAddress()
-        {
-            await AddingTESTAddressToDB();
-
-            var address = await _serviceManager.AddressService.GetAddressByFields(
-                contactId: null,
-                addressType: null,
-                country: "Ukraine",
-                region: null,
-                city: "Kyiv",
-                street: null,
-                buildingNumber: 1);
-
-            await _serviceManager.AddressService.UpdateAddressAsync(new AddressForUpdateDTO
-            {
-                Id = address.Id,
-                AddressType = 0,
-                Country = null,
-                Region = null,
-                City = null,
-                Street = "NewStreet",
-                BuildingNumber = 100
-            });
-
-            using (var context = new RepositoryContext(_options))
-            {
-                Assert.AreEqual(1, context.Addresses.Count());
-                Assert.AreEqual("Ukraine", context.Addresses.Single().Country);
-                Assert.AreEqual("NewStreet", context.Addresses.Single().Street);
-            }
-        }
-*/
-
-        /**/
-
-        /**//*
-
-        
-
-        
-
-        
-
-        *//*[TestMethod]
         public async Task GetAllAddresses()
         {
             for (var i = 0; i < 3; i++)
