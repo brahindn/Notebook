@@ -48,15 +48,15 @@ namespace Notebook.WebApi.RabbitMQ
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
 
-                var contact = JsonSerializer.Deserialize<Contact>(message);
+                var address = JsonSerializer.Deserialize<Address>(message);
 
                 using (var scope = _serviceScopeFactory.CreateScope())
                 {
                     var serviceManager = scope.ServiceProvider.GetRequiredService<IServiceManager>();
 
-                    if (contact != null)
+                    if (address != null)
                     {
-                        await serviceManager.ContactService.DeleteContactAsync(contact);
+                        await serviceManager.AddressService.DeleteAddressAsync(address);
                     }
                 }
             };
