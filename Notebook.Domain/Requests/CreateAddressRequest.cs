@@ -8,21 +8,21 @@ namespace Notebook.Domain.Requests
         public Guid ContactId { get; set; }
 
         [Required, EnumDataType(typeof(AddressType))]
-        public AddressType AddressType { get; set; }
+        public AddressType AddressType { get; set; } = 0;
 
         [Required, StringLength(30, ErrorMessage = "Country Name length can't be more than 30.")]
-        public string Country { get; set; }
+        public string Country { get; set; } = string.Empty;
 
-        [StringLength(30, ErrorMessage = "Region Name length can't be more than 30.")]
-        public string? Region { get; set; }
+        [Required, StringLength(30, ErrorMessage = "Region Name length can't be more than 30.")]
+        public string Region { get; set; } = string.Empty;
 
         [Required, StringLength(30, ErrorMessage = "City Name length can't be more than 30.")]
-        public string City { get; set; }
+        public string City { get; set; } = string.Empty;
 
         [Required, StringLength(50, ErrorMessage = "Street Name length can't be more than 30.")]
-        public string Street { get; set; }
+        public string Street { get; set; } = string.Empty;
 
         [Required]
-        public int BuildingNumber { get; set; }
+        public int BuildingNumber { get; set; } = 0;
     }
 }

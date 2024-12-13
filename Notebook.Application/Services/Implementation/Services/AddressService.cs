@@ -24,7 +24,7 @@ namespace Notebook.Application.Services.Implementation.Services
 
         public async Task CreateAddressAsync(CreateAddressRequest createAddressRequest)
         {
-            var contact = await _repositoryManager.Contact.GetContactByIdAsync(createAddressRequest.ContactId);
+            var contact = await _repositoryManager.Contact.GetContactByIdAsync(createAddressRequest.ContactId) ?? throw new ArgumentNullException($"The address without any contact");
 
             if(contact == null)
             {

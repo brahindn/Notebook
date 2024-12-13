@@ -11,16 +11,15 @@ namespace Notebook.Domain.Requests
         public AddressType? AddressType { get; set; }
 
         [StringLength(30)]
-        public string? Country { get; set; }
+        public string? Country { get; set; } = string.Empty;
 
         [StringLength(30)]
-        public string? City { get; set; }
+        public string? City { get; set; } = string.Empty;
 
         [StringLength(30)]
-        public string? Region { get; set; }
-
+        public string? Region { get; set; } = string.Empty;
         [StringLength(50)]
-        public string? Street { get; set; }
-        public int? BuildingNumber { get; set; }
+        public string? Street { get; set; } = string.Empty;
+        public int? BuildingNumber { get; set; } = 0;
     }
 }

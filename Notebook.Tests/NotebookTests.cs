@@ -113,113 +113,6 @@ namespace Notebook.Tests
         }
 
         [TestMethod]
-        public async Task DeleteContact()
-        {
-            var contact = new Contact()
-            {
-                FirstName = "TestFN",
-                LastName = "TestLN",
-                PhoneNumber = "+380996064050",
-                Email = "test@gmail.com",
-                DateOfBirth = new DateTime(1994, 11, 26)
-            };
-
-            var deleteContact = await _serviceManager.ContactService.GetContactByIdAsync(contact.Id);
-
-            if(deleteContact != null)
-            {
-                await _serviceManager.ContactService.DeleteContactAsync(deleteContact);
-
-                using (var context = new RepositoryContext(_options))
-                {
-                    Assert.AreEqual(0, context.Contacts.Count());
-                }
-            }
-        }
-
-        [TestMethod]
-        public async Task DeleteContactNull()
-        {
-            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await _serviceManager.ContactService.DeleteContactAsync(null));
-        }
-
-        [TestMethod]
-        public async Task GetAllContacts()
-        {
-            var date = new DateTime(1994, 11, 26);
-
-            for (var i = 0; i < 3; i++)
-            {
-                await _serviceManager.ContactService.CreateContactAsync(new CreateContactRequest
-                {
-                    FirstName = $"TestFN{i}",
-                    LastName = $"TestLN{i}",
-                    PhoneNumber = $"+38099606405{i}",
-                    Email = $"test{i}@gmail.com",
-                    DateOfBirth = date
-                });
-            }
-
-            var contactParameters = new ContactParameters();
-            var allContacts = await _serviceManager.ContactService.GetAllContactsAsync(contactParameters);
-
-            using (var context = new RepositoryContext(_options))
-            {
-                Assert.AreEqual(3, context.Contacts.Count());
-            }
-        }
-
-        [TestMethod]
-        public async Task GetAllContactsThroughFields()
-        {
-            var date = new DateTime(1994, 11, 26);
-
-            await _serviceManager.ContactService.CreateContactAsync(
-                new CreateContactRequest
-                {
-                    FirstName = $"TestFN1",
-                    LastName = $"TestLN1",
-                    PhoneNumber = $"+380996064051",
-                    Email = $"test1@gmail.com",
-                    DateOfBirth = date
-                });
-
-            await _serviceManager.ContactService.CreateContactAsync(
-                new CreateContactRequest
-                {
-                    FirstName = $"TestFN1",
-                    LastName = $"TestLN2",
-                    PhoneNumber = $"+380996064052",
-                    Email = $"test2@gmail.com",
-                    DateOfBirth = date
-                });
-
-            await _serviceManager.ContactService.CreateContactAsync(
-                new CreateContactRequest
-                {
-                    FirstName = $"TestFN3",
-                    LastName = $"TestLN3",
-                    PhoneNumber = $"+380996064053",
-                    Email = $"test3@gmail.com",
-                    DateOfBirth = date
-                });
-
-
-            var contactRequest = new GetContactRequest();
-            contactRequest.FirstName = "TestFN1";
-
-            if (contactRequest != null)
-            {
-                var contact = await _serviceManager.ContactService.GetContactByFieldAsync(contactRequest);
-
-                using (var context = new RepositoryContext(_options))
-                {
-                    Assert.AreEqual(contact.Count(), 2);
-                }
-            }
-        }
-
-        [TestMethod]
         public async Task UpdateContact()
         {
             await AddingTESTContactToDB();
@@ -286,7 +179,7 @@ namespace Notebook.Tests
         }
 
         [TestMethod]
-        public async Task UpdateContactWithoutNewFields() 
+        public async Task UpdateContactWithoutNewFields()
         {
             await AddingTESTContactToDB();
 
@@ -316,16 +209,111 @@ namespace Notebook.Tests
             }
         }
 
-        private async Task AddingTESTContactToDB()
+        [TestMethod]
+        public async Task DeleteContact()
         {
-            await _serviceManager.ContactService.CreateContactAsync(new CreateContactRequest
+            var contact = new Contact()
             {
                 FirstName = "TestFN",
                 LastName = "TestLN",
                 PhoneNumber = "+380996064050",
                 Email = "test@gmail.com",
                 DateOfBirth = new DateTime(1994, 11, 26)
-            });
+            };
+
+            var deleteContact = await _serviceManager.ContactService.GetContactByIdAsync(contact.Id);
+
+            if(deleteContact != null)
+            {
+                await _serviceManager.ContactService.DeleteContactAsync(deleteContact);
+
+                using (var context = new RepositoryContext(_options))
+                {
+                    Assert.AreEqual(0, context.Contacts.Count());
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task DeleteContactNull()
+        {
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await _serviceManager.ContactService.DeleteContactAsync(null));
+        }
+
+        [TestMethod]
+        public async Task GetAllContacts()
+        {
+            var date = new DateTime(1994, 11, 26);
+
+            for (var i = 0; i < 3; i++)
+            {
+                await _serviceManager.ContactService.CreateContactAsync(new CreateContactRequest
+                {
+                    FirstName = $"TestFN{i}",
+                    LastName = $"TestLN{i}",
+                    PhoneNumber = $"+38099606405{i}",
+                    Email = $"test{i}@gmail.com",
+                    DateOfBirth = date
+                });
+            }
+
+            var contactParameters = new ContactParameters();
+            var allContacts = await _serviceManager.ContactService.GetAllContactsAsync(contactParameters);
+
+            using (var context = new RepositoryContext(_options))
+            {
+                Assert.AreEqual(3, context.Contacts.Count());
+            }
+        }
+
+        [TestMethod]
+        public async Task GetAllContactsByFields()
+        {
+            var date = new DateTime(1994, 11, 26);
+
+            await _serviceManager.ContactService.CreateContactAsync(
+                new CreateContactRequest
+                {
+                    FirstName = $"TestFN1",
+                    LastName = $"TestLN1",
+                    PhoneNumber = $"+380996064051",
+                    Email = $"test1@gmail.com",
+                    DateOfBirth = date
+                });
+
+            await _serviceManager.ContactService.CreateContactAsync(
+                new CreateContactRequest
+                {
+                    FirstName = $"TestFN1",
+                    LastName = $"TestLN2",
+                    PhoneNumber = $"+380996064052",
+                    Email = $"test2@gmail.com",
+                    DateOfBirth = date
+                });
+
+            await _serviceManager.ContactService.CreateContactAsync(
+                new CreateContactRequest
+                {
+                    FirstName = $"TestFN3",
+                    LastName = $"TestLN3",
+                    PhoneNumber = $"+380996064053",
+                    Email = $"test3@gmail.com",
+                    DateOfBirth = date
+                });
+
+
+            var contactRequest = new GetContactRequest();
+            contactRequest.FirstName = "TestFN1";
+
+            if (contactRequest != null)
+            {
+                var contact = await _serviceManager.ContactService.GetContactByFieldAsync(contactRequest);
+
+                using (var context = new RepositoryContext(_options))
+                {
+                    Assert.AreEqual(contact.Count(), 2);
+                }
+            }
         }
 
         [TestMethod]
@@ -484,6 +472,24 @@ namespace Notebook.Tests
             await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await _serviceManager.ContactService.DeleteContactAsync(null));
         }
 
+
+
+
+
+
+
+        private async Task AddingTESTContactToDB()
+        {
+            await _serviceManager.ContactService.CreateContactAsync(new CreateContactRequest
+            {
+                FirstName = "TestFN",
+                LastName = "TestLN",
+                PhoneNumber = "+380996064050",
+                Email = "test@gmail.com",
+                DateOfBirth = new DateTime(1994, 11, 26)
+            });
+        }
+
         private async Task AddingTESTAddressToDB()
         {
             await AddingTESTContactToDB();
@@ -560,32 +566,6 @@ namespace Notebook.Tests
         }*/
 
         /**//*
-
-        [TestMethod]
-        public async Task AddNewAddressWithoutAnyField()
-        {
-            await Assert.ThrowsExceptionAsync<ArgumentException>(async () =>
-            {
-                await _serviceManager.AddressService.CreateAddressAsync(new AddressForCreateDTO
-                {
-                    AddressType = 0,
-                    Country = "Ukraine",
-                    Region = "Kyiv Oblast",
-                    City = "Kyiv",
-                    Street = "Zhulianska",
-                    BuildingNumber = 1,
-                    ContactId = Guid.Empty
-                });
-            });
-        }
-
-        *//**//*
-
-        [TestMethod]
-        public async Task DeleteAddressNull()
-        {
-            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await _serviceManager.AddressService.DeleteAddressAsync(null));
-        }
 
         
 
