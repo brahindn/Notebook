@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Notebook.Domain;
 using Notebook.Domain.Entities;
 using Notebook.Domain.Requests;
 using Notebook.Domain.Responses;
@@ -7,7 +8,7 @@ namespace Notebook.Application.Mapping
 {
     public class MappingProfile : Profile
     {
-        public MappingProfile() 
+        public MappingProfile()
         {
             CreateMap<CreateContactRequest, Contact>();
 

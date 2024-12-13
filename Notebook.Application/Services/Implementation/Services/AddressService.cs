@@ -82,9 +82,9 @@ namespace Notebook.Application.Services.Implementation.Services
         {
             var query = _repositoryManager.Address.GetAll();
 
-            if(addressRequest.PersonId != null)
+            if(addressRequest.ContactId != null)
             {
-                query = query.Where(a => a.ContactId == addressRequest.PersonId);
+                query = query.Where(a => a.ContactId == addressRequest.ContactId);
             }
             if(addressRequest.AddressType != null)
             {

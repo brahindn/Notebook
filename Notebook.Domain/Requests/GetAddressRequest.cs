@@ -3,7 +3,7 @@
     public record GetAddressRequest
     {
         public Guid? Id { get; set; }
-        public Guid? PersonId { get; set; }
+        public Guid? ContactId { get; set; }
         public AddressType? AddressType { get; set; }
         public string? Country {  get; set; }
         public string? Region { get; set; }

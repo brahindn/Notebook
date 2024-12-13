@@ -450,8 +450,39 @@ namespace Notebook.Tests
             }            
         }
 
+        [TestMethod]
+        public async Task DeleteAddress()
+        {
+            await AddingTESTAddressToDB();
 
+            using(var context = new RepositoryContext(_options))
+            {
+                Assert.AreEqual(1, context.Addresses.Count());
+            }
 
+            var addressRequest = new GetAddressRequest
+            {
+                Country = "Ukraine",
+                BuildingNumber = 1
+            };
+
+            var existAddress = await _serviceManager.AddressService.GetAddressByFieldsAsync(addressRequest);
+            var addressResponse = existAddress.First();
+            var address = await _serviceManager.AddressService.GetAddressByIdAsync(addressResponse.Id);
+
+            await _serviceManager.AddressService.DeleteAddressAsync(address);
+
+            using (var context = new RepositoryContext(_options))
+            {
+                Assert.AreEqual(0, context.Addresses.Count());
+            }
+        }
+
+        [TestMethod]
+        public async Task DeleteAddressNull()
+        {
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await _serviceManager.ContactService.DeleteContactAsync(null));
+        }
 
         private async Task AddingTESTAddressToDB()
         {
@@ -548,27 +579,7 @@ namespace Notebook.Tests
             });
         }
 
-        *//*[TestMethod]
-        public async Task DeleteAddress()
-        {
-            await AddingTESTAddressToDB();
-
-            var address = await _serviceManager.AddressService.GetAddressByFields(
-                addressType: null,
-                country: "Ukraine",
-                region: null,
-                city: "Kyiv",
-                street: "Zhulianska",
-                buildingNumber: null,
-                contactId: null);
-
-            await _serviceManager.AddressService.DeleteAddressAsync(address);
-
-            using (var context = new RepositoryContext(_options))
-            {
-                Assert.AreEqual(0, context.Addresses.Count());
-            }
-        }*//*
+        *//**//*
 
         [TestMethod]
         public async Task DeleteAddressNull()
