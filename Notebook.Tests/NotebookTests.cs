@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Notebook.Application.Mapping;
 using Notebook.Application.Services.Implementation;
 using Notebook.DataAccess;
+using Notebook.Domain;
 using Notebook.Domain.Entities;
 using Notebook.Domain.Requests;
 using Notebook.Domain.Responses;
@@ -345,7 +346,7 @@ namespace Notebook.Tests
             var updateAddressRequest = new UpdateAddressRequest
             {
                 Id = existAddress.First().Id,
-                AddressType = (Domain.AddressType?)1,
+                AddressType = (AddressType?)1,
                 Country = "USA",
                 Region = "California",
                 City = "Los-Angeles",
@@ -382,7 +383,7 @@ namespace Notebook.Tests
             var updateAddressRequest = new UpdateAddressRequest
             {
                 Id = existAddress.First().Id,
-                AddressType = (Domain.AddressType?)1,
+                AddressType = (AddressType?)1,
                 Country = "",
                 Region = "",
                 City = "Los-Angeles",
@@ -472,7 +473,46 @@ namespace Notebook.Tests
             await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await _serviceManager.ContactService.DeleteContactAsync(null));
         }
 
+        [TestMethod]
+        public async Task GetAllAddresses()
+        {
+            var date = new DateTime(1994, 11, 26);
 
+            for (var i = 0; i < 3; i++)
+            {
+                await _serviceManager.ContactService.CreateContactAsync(new CreateContactRequest
+                {
+                    FirstName = $"TestFN{i}",
+                    LastName = $"TestLN{i}",
+                    PhoneNumber = $"+38099606405{i}",
+                    Email = $"test{i}@gmail.com",
+                    DateOfBirth = date
+                });
+            }
+
+            var contactParameter = new ContactParameters();
+            var contacts = await _serviceManager.ContactService.GetAllContactsAsync(contactParameter);
+            var contactsList = contacts.ToList();
+
+            for (var i = 0; i < 3; i++)
+            {
+                await _serviceManager.AddressService.CreateAddressAsync(new CreateAddressRequest
+                {
+                    AddressType = (AddressType)1,
+                    Country = $"TestFN{i}",
+                    Region = $"TestLN{i}",
+                    City = $"+38099606405{i}",
+                    Street = $"test{i}@gmail.com",
+                    BuildingNumber = i + 1,
+                    ContactId = contactsList[i].Id
+                });
+            }
+
+            using (var context = new RepositoryContext(_options))
+            {
+                Assert.AreEqual(3, context.Addresses.Count());
+            }
+        }
 
 
 
@@ -519,51 +559,7 @@ namespace Notebook.Tests
         
    
 
-        /*[TestMethod]
-        public async Task GetAllAddresses()
-        {
-            for (var i = 0; i < 3; i++)
-            {
-                await _serviceManager.ContactService.CreateContactAsync(new ContactForCreateDTO
-                {
-                    FirstName = $"TestFN{i}",
-                    LastName = $"TestLN{i}",
-                    PhoneNumber = $"+38099606405{i}",
-                    Email = $"test{i}@gmail.com",
-                    DateOfBirth = new DateTime(1994, 11, 26)
-                });
-            }
-
-            Contact[] contacts = new Contact[3];
-
-            for (var i = 0; i < contacts.Length; i++)
-            {
-                contacts[i] = await _serviceManager.ContactService.GetContactByFieldAsync(
-                firstName: $"TestFN{i}",
-                lastName: null,
-                phoneNumber: null,
-                email: null);
-            }
-
-            for (var i = 0; i < contacts.Length; i++)
-            {
-                await _serviceManager.AddressService.CreateAddressAsync(new AddressForCreateDTO
-                {
-                    AddressType = 0,
-                    Country = "Ukraine",
-                    Region = "Kyiv Oblast",
-                    City = "Kyiv",
-                    Street = "Zhulianska",
-                    BuildingNumber = i + 1,
-                    ContactId = contacts[i].Id
-                });
-            }
-
-            using (var context = new RepositoryContext(_options))
-            {
-                Assert.AreEqual(3, context.Addresses.Count());
-            }
-        }*/
+        /**/
 
         /**//*
 
