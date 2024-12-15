@@ -514,9 +514,27 @@ namespace Notebook.Tests
             }
         }
 
+        [TestMethod]
+        public async Task GetAddressByFields()
+        {
+            await AddingTESTAddressToDB();
 
+            var addressRequered = new GetAddressRequest()
+            {
+                Country = "Ukraine",
+                City = "Kyiv"
+            };
 
+            var existAddress = await _serviceManager.AddressService.GetAddressByFieldsAsync(addressRequered);
 
+            if (existAddress != null)
+            {
+                using(var context = new RepositoryContext(_options))
+                {
+                    Assert.AreEqual(1, existAddress.Count());
+                }
+            }
+        }
 
         private async Task AddingTESTContactToDB()
         {
@@ -554,16 +572,3 @@ namespace Notebook.Tests
         }
     }
 }
-
-        
-        
-   
-
-        /**/
-
-        /**//*
-
-        
-
-        *//**//*
-    }*/
