@@ -1,0 +1,220 @@
+﻿@page "/contacts/updateContactForm"
+
+@using Notebook.Domain.Requests
+@using Notebook.Domain.Responses
+@inject NavigationManager NavigationManager
+@inject HttpClient httpClient
+
+@rendermode InteractiveServer
+
+<MudStack Justify="Justify.Center">
+    <MudItem xs="12" sm="7">
+        <MudPaper Class="pa-4">
+            <MudForm @ref="_mudForm" @bind-IsValid="_isValid" Model="@_updateContactRequest" @bind-Errors="@_errors">
+                <MudTextField Label="Contact Id" @bind-Value="_contactId"
+                Required="true" RequiredError="Contact Id is required!"
+                Validation="@(new Action<IEnumerable<string>())" />
+                <MudTextField Label="First Name" @bind-Value="_updateContactRequest.FirstName" For="@(() => _updateContactRequest.FirstName)"
+                Required="true" RequiredError="First name is required!"
+                Validation="@(new Func<string, IEnumerable<string>>(FirstNameVerification))" />
+                <MudTextField Label="Last Name" @bind-Value="_updateContactRequest.LastName" For="@(() => _updateContactRequest.LastName)"
+                Required="true" RequiredError="Last name is required!"
+                Validation="@(new Func<string, IEnumerable<string>>(LastNameVerification))" />
+                <MudTextField Label="Phone number" @bind-Value="_updateContactRequest.PhoneNumber" For="@(() => _updateContactRequest.PhoneNumber)"
+                Required="true" RequiredError="Phone number is required!"
+                Validation="@(new Func<string, IEnumerable<string>>(PhoneNumberVerification))"
+                OnBlur="@(async () => await PhoneNumberDuplicateVerification(_updateContactRequest.PhoneNumber))" />
+                <MudTextField Label="Email" @bind-Value="_updateContactRequest.Email" For="@(() => _updateContactRequest.Email)"
+                Required="false"
+                Validation="@(new Func<string, IEnumerable<string>>(EmailVerification))" />
+                <MudDatePicker Label="Date of Birth" @bind-Date="_updateContactRequest.DateOfBirth" PickerVariant="PickerVariant.Dialog" />
+            </MudForm>
+        </MudPaper>
+        <MudPaper Class="pa-4 mt-4">
+            <div style="display:flex; justify-content: space-between;"> 
+                <MudButton Variant="Variant.Filled" Color="Color.Dark" DropShadow="false" OnClick="@(() => IdContactVerification(_contactId))">Find Contact</MudButton>
+                <div style="display:flex">
+                    <MudButton Variant="Variant.Filled" Disabled="@(!_isValid)" Color="Color.Surface" DropShadow="false" OnClick="@(() => _mudForm!.Validate())">Validate</MudButton>
+                    <div style="margin-left: 1rem;" />
+                    <MudButton Variant="Variant.Filled" Disabled="@(!_isValid)" Color="Color.Primary" DropShadow="false" OnClick="@(() => UpdateContact())">Add</MudButton>
+                    <div style="margin-left: 1rem;" />
+                    <MudButton Variant="Variant.Filled" Color="Color.Secondary" DropShadow="false" OnClick="@(() => Back())">Cancel</MudButton>
+                </div>
+            </div>
+        </MudPaper>
+    </MudItem>
+</MudStack>
+
+
+
+@code
+{
+    private MudForm? _mudForm;
+    private bool _uniquePhoneNumber;
+    private UpdateContactRequest _updateContactRequest = new UpdateContactRequest();
+    private Guid _contactId;
+    private bool _isValid;
+    private string[] _errors = { };
+    private Uri? _getContactUri;
+    private Uri? _updateContactUri;
+
+    private List<UpdateContactRequest> _recentContacts = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        const string getContactControllerUri = "/api/contacts/getById";
+        _getContactUri = new Uri(httpClient.BaseAddress!, getContactControllerUri);
+    }
+
+    private async Task IdContactVerification(Guid contactId)
+    {
+        if(contactId == null)
+        {
+            IdErrors();
+            return;
+        }
+
+        var parameterUrl = $"{_getContactUri}?contactId={contactId}";
+        var response = await httpClient.GetAsync(parameterUrl);
+
+        if(response.StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            var responseContact = await response.Content.ReadFromJsonAsync<GetContactResponse>();
+
+            _isValid = true;
+
+            _updateContactRequest = new UpdateContactRequest
+            {
+                FirstName = responseContact!.FirstName,
+                LastName = responseContact!.LastName,
+                Email = responseContact.Email,
+                PhoneNumber = responseContact.PhoneNumber,
+                DateOfBirth = responseContact.DateOfBirth,
+                Id = responseContact.Id
+            };
+        }
+    }
+
+    private IEnumerable<string> IdErrors()
+    {
+        yield return "Contact Id is null!";
+        yield break;
+    }
+
+    private async Task CheckContact()
+    {
+
+    }
+
+    private async Task Back()
+    {
+        if (_isValid)
+        {
+            await _mudForm!.ResetAsync();
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/contacts");
+        }
+    }
+
+    private async Task UpdateContact()
+    {
+        var response = await httpClient.PostAsJsonAsync(_updateContactUri, _updateContactRequest);
+
+        if (response.IsSuccessStatusCode)
+        {
+            _recentContacts.Add(_updateContactRequest);
+            _updateContactRequest = new UpdateContactRequest();
+        }
+    }
+
+    private IEnumerable<string> FirstNameVerification(string firstNameFromField)
+    {
+        if (string.IsNullOrWhiteSpace(firstNameFromField))
+        {
+            yield return "First Name is required!";
+            yield break;
+        }
+        if (firstNameFromField.Length > 30)
+        {
+            yield return "First Name must not contain more than 30 letters";
+        }
+        if (!char.IsUpper(firstNameFromField[0]))
+        {
+            yield return "First Name must start with a capital letter";
+        }
+    }
+
+    private IEnumerable<string> LastNameVerification(string lastNameFromField)
+    {
+        if (string.IsNullOrWhiteSpace(lastNameFromField))
+        {
+            yield return "Last Name is required!";
+            yield break;
+        }
+        if (lastNameFromField.Length > 30)
+        {
+            yield return "Last Name must not contain more than 30 letters";
+        }
+        if (!char.IsUpper(lastNameFromField[0]))
+        {
+            yield return "Last Name must start with a capital letter";
+        }
+    }
+
+    private IEnumerable<string> PhoneNumberVerification(string phoneNumberFromField)
+    {
+        if (string.IsNullOrWhiteSpace(phoneNumberFromField))
+        {
+            yield return "Phone number is required!";
+            yield break;
+        }
+        if (!System.Text.RegularExpressions.Regex.IsMatch(phoneNumberFromField, @"^\d+$"))
+        {
+            yield return "Phone number must contain only numbers";
+            yield break;
+        }
+        if (phoneNumberFromField.Length > 13)
+        {
+            yield return "Phone number must not contain more than 13 characters";
+        }
+        if (_uniquePhoneNumber == false)
+        {
+            yield return "Phone number must be unique";
+        }
+    }
+
+    private async Task PhoneNumberDuplicateVerification(string phoneNumberFromField)
+    {
+        var parameterUrl = $"{_getContactUri}?phoneNumber={phoneNumberFromField}";
+        var response = await httpClient.GetAsync(parameterUrl);
+
+        if (response.StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            _uniquePhoneNumber = false;
+
+            return;
+        }
+
+        _uniquePhoneNumber = true;
+    }
+
+    private IEnumerable<string> EmailVerification(string emailFromField)
+    {
+        if (string.IsNullOrWhiteSpace(emailFromField))
+        {
+            yield return "Email number is required!";
+            yield break;
+        }
+        if (emailFromField.Length > 256)
+        {
+            yield return "Email number must not contain more than 256 characters";
+        }
+        if (!System.Text.RegularExpressions.Regex.IsMatch(emailFromField, @"^[A-Za-z0-9._-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"))
+        {
+            yield return "Email must be in the format: example@gmail.com";
+            yield break;
+        }
+    }
+}

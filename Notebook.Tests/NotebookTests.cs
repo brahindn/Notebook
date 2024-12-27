@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Amazon.SecurityToken.Model.Internal.MarshallTransformations;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Notebook.Application.Mapping;
 using Notebook.Application.Services.Implementation;
@@ -313,6 +314,56 @@ namespace Notebook.Tests
                 using (var context = new RepositoryContext(_options))
                 {
                     Assert.AreEqual(contact.Count(), 2);
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task GetContactByPhoneNumber()
+        {
+            var date = new DateTime(1994, 11, 26);
+
+            await _serviceManager.ContactService.CreateContactAsync(
+                new CreateContactRequest
+                {
+                    FirstName = $"TestFN1",
+                    LastName = $"TestLN1",
+                    PhoneNumber = $"0996064051",
+                    Email = $"test1@gmail.com",
+                    DateOfBirth = date
+                });
+
+            await _serviceManager.ContactService.CreateContactAsync(
+                new CreateContactRequest
+                {
+                    FirstName = $"TestFN1",
+                    LastName = $"TestLN2",
+                    PhoneNumber = $"0996064052",
+                    Email = $"test2@gmail.com",
+                    DateOfBirth = date
+                });
+
+            await _serviceManager.ContactService.CreateContactAsync(
+                new CreateContactRequest
+                {
+                    FirstName = $"TestFN3",
+                    LastName = $"TestLN3",
+                    PhoneNumber = $"0996064053",
+                    Email = $"test3@gmail.com",
+                    DateOfBirth = date
+                });
+
+
+            var contactRequest = new GetContactRequest();
+            contactRequest.PhoneNumber = "0996064052";
+
+            if (contactRequest != null)
+            {
+                var contact = await _serviceManager.ContactService.GetContactByFieldAsync(contactRequest);
+
+                using (var context = new RepositoryContext(_options))
+                {
+                    Assert.AreEqual(contact.Count(), 1);
                 }
             }
         }

@@ -11,18 +11,18 @@
         <MudPaper Class="pa-4">
             <MudForm @ref="_mudForm" @bind-IsValid="_isValid" Model="@_newContact" @bind-Errors="@_errors">
                 <MudTextField Label="First Name" @bind-Value="_newContact.FirstName" For="@(() => _newContact.FirstName)"
-                    Required="true" RequiredError="First name is required!"
-                              Validation="@(new Func<string, IEnumerable<string>>(FirstNameVerification))"/>
+                Required="true" RequiredError="First name is required!"
+                Validation="@(new Func<string, IEnumerable<string>>(FirstNameVerification))"/>
                 <MudTextField Label="Last Name" @bind-Value="_newContact.LastName" For="@(() => _newContact.LastName)"
-                    Required="true" RequiredError="Last name is required!"
-                              Validation="@(new Func<string, IEnumerable<string>>(LastNameVerification))"/>
+                Required="true" RequiredError="Last name is required!"
+                Validation="@(new Func<string, IEnumerable<string>>(LastNameVerification))"/>
                 <MudTextField Label="Phone number" @bind-Value="_newContact.PhoneNumber" For="@(() => _newContact.PhoneNumber)"
-                    Required="true" RequiredError="Phone number is required!"
-                              Validation="@(new Func<string, IEnumerable<string>>(PhoneNumberVerification))"
-                                  OnBlur="@(async () => await PhoneNumberDuplicateVerification(_newContact.PhoneNumber))"/>
+                Required="true" RequiredError="Phone number is required!"
+                Validation="@(new Func<string, IEnumerable<string>>(PhoneNumberVerification))"
+                OnBlur="@(async () => await PhoneNumberDuplicateVerification(_newContact.PhoneNumber))"/>
                 <MudTextField Label="Email" @bind-Value="_newContact.Email" For="@(() => _newContact.Email)"
-                    Required="false"
-                    Validation="@(new Func<string, IEnumerable<string>>(EmailVerification))"/>
+                Required="false"
+                Validation="@(new Func<string, IEnumerable<string>>(EmailVerification))"/>
                 <MudDatePicker Label="Date of Birth" @bind-Date="_newContact.DateOfBirth" PickerVariant="PickerVariant.Dialog"/>
             </MudForm>
         </MudPaper>
@@ -65,6 +65,7 @@
     private bool _uniquePhoneNumber;
     private string[] _errors = { };
     private CreateContactRequest _newContact = new CreateContactRequest();
+    private GetContactRequest _getContact = new GetContactRequest();
     private Uri? _addContactUri;
     private Uri? _getContactUri;
 
@@ -75,7 +76,7 @@
         const string addContactControllerUri = "/api/contacts/add";
         _addContactUri = new Uri(httpClient.BaseAddress!, addContactControllerUri);
 
-        const string getContactControllerUri = "/api/contacts/getByPhoneNumber";
+        const string getContactControllerUri = "/api/contacts/getByFields";
         _getContactUri = new Uri(httpClient.BaseAddress!, getContactControllerUri);
     }
 

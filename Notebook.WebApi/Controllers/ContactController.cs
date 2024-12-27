@@ -80,7 +80,7 @@ namespace Notebook.WebApi.Controllers
             return Ok(contactDTO);
         }
 
-        [HttpPost("contactsThroughFields")]
+        [HttpPost("getByFields")]
         public async Task<IActionResult> GetContactsByFields([FromBody]GetContactRequest contactRequest)
         {
             if (contactRequest == null)
