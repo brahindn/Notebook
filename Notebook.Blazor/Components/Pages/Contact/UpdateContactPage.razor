@@ -2,6 +2,9 @@
 
 @using Notebook.Domain.Requests
 @using Notebook.Domain.Responses
+@using System.Text.RegularExpressions
+@using System.ComponentModel.DataAnnotations
+@using System.Text.Json
 @inject NavigationManager NavigationManager
 @inject HttpClient httpClient
 
@@ -10,36 +13,45 @@
 <MudStack Justify="Justify.Center">
     <MudItem xs="12" sm="7">
         <MudPaper Class="pa-4">
-            <MudForm @ref="_mudForm" @bind-IsValid="_isValid" Model="@_updateContactRequest" @bind-Errors="@_errors">
-                <MudTextField Label="Contact Id" @bind-Value="_contactId"
+            <MudForm @ref="_form" @bind-IsValid="_isValid" Model="@_updateContactRequest" @bind-Errors="@_errors">
+
+                <MudTextField Label="Contact Id" @bind-Value="_updateContactRequest.Id" For="@(() => _updateContactRequest.Id)"
                 Required="true" RequiredError="Contact Id is required!"
-                Validation="@(new Action<IEnumerable<string>())" />
+                Class="@(_existingId ? "green-border" : "")"/>
+
+                <style>.green-border{border: 2px solid green}</style>
+
                 <MudTextField Label="First Name" @bind-Value="_updateContactRequest.FirstName" For="@(() => _updateContactRequest.FirstName)"
-                Required="true" RequiredError="First name is required!"
+                Required="true" RequiredError="First name is required!" Disabled="!_existingId"
                 Validation="@(new Func<string, IEnumerable<string>>(FirstNameVerification))" />
+
                 <MudTextField Label="Last Name" @bind-Value="_updateContactRequest.LastName" For="@(() => _updateContactRequest.LastName)"
-                Required="true" RequiredError="Last name is required!"
+                Required="true" RequiredError="Last name is required!" Disabled="!_existingId"
                 Validation="@(new Func<string, IEnumerable<string>>(LastNameVerification))" />
+
                 <MudTextField Label="Phone number" @bind-Value="_updateContactRequest.PhoneNumber" For="@(() => _updateContactRequest.PhoneNumber)"
-                Required="true" RequiredError="Phone number is required!"
+                Required="true" RequiredError="Phone number is required!" Disabled="!_existingId"
                 Validation="@(new Func<string, IEnumerable<string>>(PhoneNumberVerification))"
                 OnBlur="@(async () => await PhoneNumberDuplicateVerification(_updateContactRequest.PhoneNumber))" />
+
                 <MudTextField Label="Email" @bind-Value="_updateContactRequest.Email" For="@(() => _updateContactRequest.Email)"
-                Required="false"
+                Required="false" Disabled="!_existingId"
                 Validation="@(new Func<string, IEnumerable<string>>(EmailVerification))" />
-                <MudDatePicker Label="Date of Birth" @bind-Date="_updateContactRequest.DateOfBirth" PickerVariant="PickerVariant.Dialog" />
+
+                <MudDatePicker Label="Date of Birth" Disabled="!_existingId" @bind-Date="_updateContactRequest.DateOfBirth" PickerVariant="PickerVariant.Dialog" />
             </MudForm>
         </MudPaper>
+
         <MudPaper Class="pa-4 mt-4">
             <div style="display:flex; justify-content: space-between;"> 
-                <MudButton Variant="Variant.Filled" Color="Color.Dark" DropShadow="false" OnClick="@(() => IdContactVerification(_contactId))">Find Contact</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Dark" DropShadow="false" OnClick="@(() => CheckContactInDatabase(_updateContactRequest.Id))">Find Contact</MudButton>
                 <div style="display:flex">
-                    <MudButton Variant="Variant.Filled" Disabled="@(!_isValid)" Color="Color.Surface" DropShadow="false" OnClick="@(() => _mudForm!.Validate())">Validate</MudButton>
+                    <MudButton Variant="Variant.Filled" Disabled="@(!_isValid)" Color="Color.Surface" DropShadow="false" OnClick="@(() => _form.Validate())">Validate</MudButton>
                     <div style="margin-left: 1rem;" />
                     <MudButton Variant="Variant.Filled" Disabled="@(!_isValid)" Color="Color.Primary" DropShadow="false" OnClick="@(() => UpdateContact())">Add</MudButton>
                     <div style="margin-left: 1rem;" />
                     <MudButton Variant="Variant.Filled" Color="Color.Secondary" DropShadow="false" OnClick="@(() => Back())">Cancel</MudButton>
-                </div>
+                </div>    
             </div>
         </MudPaper>
     </MudItem>
@@ -49,10 +61,11 @@
 
 @code
 {
-    private MudForm? _mudForm;
-    private bool _uniquePhoneNumber;
+    private MudForm _form = new MudForm();
+    private MudIcon _icon = new MudIcon();
     private UpdateContactRequest _updateContactRequest = new UpdateContactRequest();
-    private Guid _contactId;
+    private bool _uniquePhoneNumber;
+    private bool _existingId = false;
     private bool _isValid;
     private string[] _errors = { };
     private Uri? _getContactUri;
@@ -62,55 +75,54 @@
 
     protected override async Task OnInitializedAsync()
     {
-        const string getContactControllerUri = "/api/contacts/getById";
-        _getContactUri = new Uri(httpClient.BaseAddress!, getContactControllerUri);
+        await Task.Run(() => InitialUri());
+
+        void InitialUri()
+        {
+            const string getContactControllerUri = "/api/contacts/getById";
+            _getContactUri = new Uri(httpClient.BaseAddress!, getContactControllerUri);
+
+            const string updateContactControllerUri ="/api/contacts/update";
+            _updateContactUri = new Uri(httpClient.BaseAddress!, updateContactControllerUri);
+        }
     }
 
-    private async Task IdContactVerification(Guid contactId)
+    private async Task CheckContactInDatabase(Guid contactId)
     {
-        if(contactId == null)
-        {
-            IdErrors();
-            return;
-        }
-
         var parameterUrl = $"{_getContactUri}?contactId={contactId}";
         var response = await httpClient.GetAsync(parameterUrl);
 
         if(response.StatusCode == System.Net.HttpStatusCode.OK)
         {
-            var responseContact = await response.Content.ReadFromJsonAsync<GetContactResponse>();
+            _existingId = true;
 
-            _isValid = true;
-
-            _updateContactRequest = new UpdateContactRequest
+            try
             {
-                FirstName = responseContact!.FirstName,
-                LastName = responseContact!.LastName,
-                Email = responseContact.Email,
-                PhoneNumber = responseContact.PhoneNumber,
-                DateOfBirth = responseContact.DateOfBirth,
-                Id = responseContact.Id
-            };
+                var responseContact = await response.Content.ReadAsStringAsync();
+                var contact = JsonSerializer.Deserialize<GetContactResponse>(responseContact);
+
+                _updateContactRequest.FirstName = contact!.FirstName;
+                _updateContactRequest.LastName = contact.LastName;
+                _updateContactRequest.PhoneNumber = contact.PhoneNumber;
+                _updateContactRequest.Email = contact.Email;
+                _updateContactRequest.DateOfBirth = contact.DateOfBirth;
+            }
+            catch
+            {
+                throw new ArgumentNullException();
+            }
+
+            return;
         }
-    }
 
-    private IEnumerable<string> IdErrors()
-    {
-        yield return "Contact Id is null!";
-        yield break;
-    }
-
-    private async Task CheckContact()
-    {
-
+        _existingId = false;
     }
 
     private async Task Back()
     {
         if (_isValid)
         {
-            await _mudForm!.ResetAsync();
+            await _form!.ResetAsync();
         }
         else
         {

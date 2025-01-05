@@ -73,11 +73,16 @@
 
     protected override async Task OnInitializedAsync()
     {
-        const string addContactControllerUri = "/api/contacts/add";
-        _addContactUri = new Uri(httpClient.BaseAddress!, addContactControllerUri);
+        await Task.Run(() => InitialUri());
 
-        const string getContactControllerUri = "/api/contacts/getByFields";
-        _getContactUri = new Uri(httpClient.BaseAddress!, getContactControllerUri);
+        void InitialUri()
+        {
+                const string addContactControllerUri = "/api/contacts/add";
+                _addContactUri = new Uri(httpClient.BaseAddress!, addContactControllerUri);
+
+                const string getContactControllerUri = "/api/contacts/getByFields";
+                _getContactUri = new Uri(httpClient.BaseAddress!, getContactControllerUri);
+        }
     }
 
     private async Task Back()   

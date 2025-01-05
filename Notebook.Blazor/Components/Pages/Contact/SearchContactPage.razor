@@ -11,30 +11,30 @@
 @rendermode InteractiveServer
 
 <MudPaper Height="400px" Width="100%">
-        <MudStack Justify="Justify.FlexStart" Row="true">
-            <MudPaper Class="pa-4" Style="width:50%; height:400px">
-                <MudStack Row="true">
-                    <MudSwitch Class="pa-1" @bind-Value="_searchAllContacts">
-                            @if (!_searchAllContacts)
-                            {
-                                _disabledSearchButton = false;
-                                <MudText>Switch to searching through fields</MudText>
-                            }
-                            else
-                            {
-                                _disabledSearchButton = true;
-                                <MudText>Switch to searching all contacts</MudText>
-                            }
-                    </MudSwitch>
+    <MudStack Justify="Justify.FlexStart" Row="true">
+        <MudPaper Class="pa-4" Style="width:50%; height:400px">
+            <MudStack Row="true">
+                <MudSwitch Class="pa-1" @bind-Value="_searchAllContacts">
+                    @if (!_searchAllContacts)
+                    {
+                        _disabledSearchButton = false;
+                        <MudText>Switch to searching through fields</MudText>
+                    }
+                    else
+                    {
+                        _disabledSearchButton = true;
+                        <MudText>Switch to searching all contacts</MudText>
+                    }
+                </MudSwitch>
 
-                    <MudSpacer/>
+                <MudSpacer/>
 
-                    <MudButton Disabled="@_disabledSearchButton" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => SearchAllContacts())">SEARCH</MudButton>
+                <MudButton Disabled="@_disabledSearchButton" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => SearchAllContacts())">SEARCH</MudButton>
 
-                </MudStack>
-            </MudPaper>
+            </MudStack>
+        </MudPaper>
 
-            <MudPaper Style="height:400px; width:50%">
+        <MudPaper Style="height:400px; width:50%">
 
             @if (_searchAllContacts)
             {
@@ -53,34 +53,32 @@
                     </MudPaper>
                 </MudStack>
             }
-            </MudPaper>
-        </MudStack>
+        </MudPaper>
+    </MudStack>
 </MudPaper>
 
 
 
-    <MudItem Class="mr-4 mt-1">
-        
-
-        @if(_showTable)
-        {
-            <MudTable Items="@_allContacts">
-                <HeaderContent>
-                    <MudTh>Id</MudTh>
-                    <MudTh>First Name</MudTh>
-                    <MudTh>Last Name</MudTh>
-                    <MudTh>Phone Number</MudTh>
-                    <MudTh>Email</MudTh>
-                </HeaderContent>
-                <RowTemplate>
-                    <MudTd DataLabel="First Name">@context.FirstName</MudTd>
-                    <MudTd DataLabel="Last Name">@context.LastName</MudTd>
-                    <MudTd DataLabel="Phone Number">@context.PhoneNumber</MudTd>
-                    <MudTd DataLabel="Email">@context.Email</MudTd>
-                </RowTemplate>
-            </MudTable>
-        }
-    </MudItem>
+<MudItem Class="mr-4 mt-1">
+    @if(_showTable)
+    {
+        <MudTable Items="@_allContacts">
+            <HeaderContent>
+                <MudTh>Id</MudTh>
+                <MudTh>First Name</MudTh>
+                <MudTh>Last Name</MudTh>
+                <MudTh>Phone Number</MudTh>
+                <MudTh>Email</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="First Name">@context.FirstName</MudTd>
+                <MudTd DataLabel="Last Name">@context.LastName</MudTd>
+                <MudTd DataLabel="Phone Number">@context.PhoneNumber</MudTd>
+                <MudTd DataLabel="Email">@context.Email</MudTd>
+            </RowTemplate>
+        </MudTable>
+    }
+</MudItem>
 
 @code
 {
@@ -95,10 +93,16 @@
 
     protected override async Task OnInitializedAsync()
     {
-        const string allContactControllerUri = "/api/contacts/allContacts";
-        const string allContactsFieldsControllerUri = "/api/contacts/contactsThroughFields";
-        _getAllContactsUri = new Uri(httpClient.BaseAddress!, allContactControllerUri);
-        _getAllContactsFieldsUri = new Uri(httpClient.BaseAddress!, allContactsFieldsControllerUri);
+        await Task.Run(() => InitialUri());
+
+        void InitialUri()
+        {
+            const string allContactControllerUri = "/api/contacts/allContacts";
+            _getAllContactsUri = new Uri(httpClient.BaseAddress!, allContactControllerUri);
+
+            const string allContactsFieldsControllerUri = "/api/contacts/contactsThroughFields";
+            _getAllContactsFieldsUri = new Uri(httpClient.BaseAddress!, allContactsFieldsControllerUri);
+        }
     }
 
     private async Task SearchAllContacts()
