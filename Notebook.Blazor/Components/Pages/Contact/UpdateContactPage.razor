@@ -13,7 +13,7 @@
 <MudStack Justify="Justify.Center">
     <MudItem xs="12" sm="7">
         <MudPaper Class="pa-4">
-            <MudForm @ref="_form" @bind-IsValid="_isValid" Model="@_updateContactRequest" @bind-Errors="@_errors">
+            <MudForm @ref="_form" @bind-IsValid="_isValid" Model="@_updateContactRequest" @bind-Errors="@_errors" Class="@(_updateIsSuccesed ? "green-border" : "")">
 
                 <MudTextField Label="Contact Id" @bind-Value="_updateContactRequest.Id" For="@(() => _updateContactRequest.Id)"
                 Required="true" RequiredError="Contact Id is required!"
@@ -39,14 +39,16 @@
                 Validation="@(new Func<string, IEnumerable<string>>(EmailVerification))" />
 
                 <MudDatePicker Label="Date of Birth" Disabled="!_existingId" @bind-Date="_updateContactRequest.DateOfBirth" PickerVariant="PickerVariant.Dialog" />
+
             </MudForm>
+
         </MudPaper>
 
         <MudPaper Class="pa-4 mt-4">
             <div style="display:flex; justify-content: space-between;"> 
                 <MudButton Variant="Variant.Filled" Color="Color.Dark" DropShadow="false" OnClick="@(() => CheckContactInDatabase(_updateContactRequest.Id))">Find Contact</MudButton>
                 <div style="display:flex">
-                    <MudButton Variant="Variant.Filled" Disabled="@(!_isValid)" Color="Color.Surface" DropShadow="false" OnClick="@(() => _form.Validate())">Validate</MudButton>
+                    <MudButton Variant="Variant.Filled" Disabled="@(!_existingId)" Color="Color.Surface" DropShadow="false" OnClick="@(() => _form.Validate())">Validate</MudButton>
                     <div style="margin-left: 1rem;" />
                     <MudButton Variant="Variant.Filled" Disabled="@(!_isValid)" Color="Color.Primary" DropShadow="false" OnClick="@(() => UpdateContact())">Add</MudButton>
                     <div style="margin-left: 1rem;" />
@@ -62,11 +64,11 @@
 @code
 {
     private MudForm _form = new MudForm();
-    private MudIcon _icon = new MudIcon();
     private UpdateContactRequest _updateContactRequest = new UpdateContactRequest();
     private bool _uniquePhoneNumber;
     private bool _existingId = false;
     private bool _isValid;
+    private bool _updateIsSuccesed = false;
     private string[] _errors = { };
     private Uri? _getContactUri;
     private Uri? _updateContactUri;
@@ -99,13 +101,21 @@
             try
             {
                 var responseContact = await response.Content.ReadAsStringAsync();
-                var contact = JsonSerializer.Deserialize<GetContactResponse>(responseContact);
+                var contact = JsonSerializer.Deserialize<UpdateContactRequest>(responseContact);
 
-                _updateContactRequest.FirstName = contact!.FirstName;
-                _updateContactRequest.LastName = contact.LastName;
-                _updateContactRequest.PhoneNumber = contact.PhoneNumber;
-                _updateContactRequest.Email = contact.Email;
-                _updateContactRequest.DateOfBirth = contact.DateOfBirth;
+                if(contact != null)
+                {
+                    _updateContactRequest.FirstName = contact!.FirstName;
+                    _updateContactRequest.LastName = contact!.LastName;
+                    _updateContactRequest.PhoneNumber = contact.PhoneNumber;
+                    _updateContactRequest.Email = contact.Email;
+                    _updateContactRequest.DateOfBirth = contact.DateOfBirth;
+                }
+                else
+                {
+                    throw new ArgumentNullException(nameof(contact), "Fuck!");
+                }
+
             }
             catch
             {
@@ -132,12 +142,22 @@
 
     private async Task UpdateContact()
     {
-        var response = await httpClient.PostAsJsonAsync(_updateContactUri, _updateContactRequest);
-
-        if (response.IsSuccessStatusCode)
+        try
         {
-            _recentContacts.Add(_updateContactRequest);
-            _updateContactRequest = new UpdateContactRequest();
+            var response = await httpClient.PutAsJsonAsync(_updateContactUri, _updateContactRequest);
+
+            if (response.IsSuccessStatusCode)
+            {
+                _updateIsSuccesed = true;
+            }
+            else
+            {
+                _updateIsSuccesed = false;
+            }
+        }
+        catch
+        {
+            throw new ArgumentNullException("Update is wrong!");
         }
     }
 
