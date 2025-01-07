@@ -13,13 +13,13 @@
 <MudStack Justify="Justify.Center">
     <MudItem xs="12" sm="7">
         <MudPaper Class="pa-4">
-            <MudForm @ref="_form" @bind-IsValid="_isValid" Model="@_updateContactRequest" @bind-Errors="@_errors" Class="@(_updateIsSuccesed ? "green-border" : "")">
+            <MudForm @ref="_form" @bind-IsValid="_isValid" Model="@_updateContactRequest" @bind-Errors="@_errors">
 
                 <MudTextField Label="Contact Id" @bind-Value="_updateContactRequest.Id" For="@(() => _updateContactRequest.Id)"
                 Required="true" RequiredError="Contact Id is required!"
                 Class="@(_existingId ? "green-border" : "")"/>
 
-                <style>.green-border{border: 2px solid green}</style>
+                <style>.green-border{border: 2px solid green; transition: border-color 5s;}</style>
 
                 <MudTextField Label="First Name" @bind-Value="_updateContactRequest.FirstName" For="@(() => _updateContactRequest.FirstName)"
                 Required="true" RequiredError="First name is required!" Disabled="!_existingId"
@@ -31,8 +31,7 @@
 
                 <MudTextField Label="Phone number" @bind-Value="_updateContactRequest.PhoneNumber" For="@(() => _updateContactRequest.PhoneNumber)"
                 Required="true" RequiredError="Phone number is required!" Disabled="!_existingId"
-                Validation="@(new Func<string, IEnumerable<string>>(PhoneNumberVerification))"
-                OnBlur="@(async () => await PhoneNumberDuplicateVerification(_updateContactRequest.PhoneNumber))" />
+                Validation="@(new Func<string, IEnumerable<string>>(PhoneNumberVerification))"/>
 
                 <MudTextField Label="Email" @bind-Value="_updateContactRequest.Email" For="@(() => _updateContactRequest.Email)"
                 Required="false" Disabled="!_existingId"
@@ -59,13 +58,30 @@
     </MudItem>
 </MudStack>
 
-
+<MudTable Items="@_recentContacts">
+    <ToolBarContent>
+        <MudText>Recently updated contacts</MudText>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>First Name</MudTh>
+        <MudTh>Last Name</MudTh>
+        <MudTh>Phone number</MudTh>
+        <MudTh>Email</MudTh>
+        <MudTh>Date of Birth</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="First Name">@context.FirstName</MudTd>
+        <MudTd DataLabel="Last Name">@context.LastName</MudTd>
+        <MudTd DataLabel="Phone number">@context.PhoneNumber</MudTd>
+        <MudTd DataLabel="Email">@context.Email</MudTd>
+        <MudTd DataLabel="Data of Birth">@context.DateOfBirth</MudTd>
+    </RowTemplate>
+</MudTable>
 
 @code
 {
     private MudForm _form = new MudForm();
     private UpdateContactRequest _updateContactRequest = new UpdateContactRequest();
-    private bool _uniquePhoneNumber;
     private bool _existingId = false;
     private bool _isValid;
     private bool _updateIsSuccesed = false;
@@ -91,6 +107,8 @@
 
     private async Task CheckContactInDatabase(Guid contactId)
     {
+        _existingId = false;
+
         var parameterUrl = $"{_getContactUri}?contactId={contactId}";
         var response = await httpClient.GetAsync(parameterUrl);
 
@@ -124,6 +142,14 @@
 
             return;
         }
+        else
+        {
+            _updateContactRequest.FirstName = "unknow";
+            _updateContactRequest.LastName = "unknow";
+            _updateContactRequest.PhoneNumber = "unknow";
+            _updateContactRequest.Email = "unknow";
+            _updateContactRequest.DateOfBirth = null;
+        }
 
         _existingId = false;
     }
@@ -149,6 +175,9 @@
             if (response.IsSuccessStatusCode)
             {
                 _updateIsSuccesed = true;
+
+                _recentContacts.Add(_updateContactRequest);
+                _updateContactRequest = new UpdateContactRequest();
             }
             else
             {
@@ -211,25 +240,6 @@
         {
             yield return "Phone number must not contain more than 13 characters";
         }
-        if (_uniquePhoneNumber == false)
-        {
-            yield return "Phone number must be unique";
-        }
-    }
-
-    private async Task PhoneNumberDuplicateVerification(string phoneNumberFromField)
-    {
-        var parameterUrl = $"{_getContactUri}?phoneNumber={phoneNumberFromField}";
-        var response = await httpClient.GetAsync(parameterUrl);
-
-        if (response.StatusCode == System.Net.HttpStatusCode.OK)
-        {
-            _uniquePhoneNumber = false;
-
-            return;
-        }
-
-        _uniquePhoneNumber = true;
     }
 
     private IEnumerable<string> EmailVerification(string emailFromField)
