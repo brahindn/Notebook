@@ -1,5 +1,6 @@
 ﻿@page "/addresses/addAddressForm"
 @using Notebook.Domain.Requests
+@using System.Globalization
 
 @inject NavigationManager NavigationManager
 @inject HttpClient httpClient
@@ -13,11 +14,11 @@
                 <MudTextField Label="Contact Id" @bind-Value="_newAddress.ContactId" For="@(() => _newAddress.ContactId)"
                 Required="true"/>
 
-                <MudSelect @bind-Value="_enumValue" HelperText="Enum" MultiSelection="false" Label="Select address type"
+                <MudSelect @bind-Value="enumValue" HelperText="Enum" Label="Select address type"
                 Required="true">
-                    @foreach (AddressType addressType in Enum.GetValues(typeof(AddressType)))
+                    @foreach(AddressType item in Enum.GetValues(typeof(AddressType)))
                     {
-                        <MudSelectItem Value="@addressType">@addressType</MudSelectItem>
+                        <MudSelectItem Value="@item">@item</MudSelectItem>
                     }
                 </MudSelect>
 
@@ -80,7 +81,7 @@
     private MudForm _form = new MudForm();
     private bool _isValid = false;
     private string[] _errors = { };
-    private AddressType _enumValue { get; set; } = AddressType.Business;
+    private AddressType enumValue { get; set; }
     public enum AddressType { Personal, Business }
     private CreateAddressRequest _newAddress = new CreateAddressRequest();
     private List<CreateAddressRequest> _recentAddresses = new List<CreateAddressRequest>();
