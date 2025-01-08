@@ -1,9 +1,169 @@
-﻿@page "/contacts/deleteContact"
+﻿@page "/contacts/deleteContactForm"
 
-@using Notebook.Domain.Entities
 @using Notebook.Domain.Requests 
+@using Notebook.Domain.Responses
 @using Notebook.Shared.RequestFeatures
+@using System.Text.Json
 
 @inject NavigationManager NavigationManager
 @inject HttpClient httpClient
+
 @rendermode InteractiveServer
+
+<MudStack Justify="Justify.Center">
+    <MudItem xs="12" sm="7">
+        <MudPaper Class="pa-4">
+            <MudForm @ref="_form" @bind-IsValid="_isValid" Model="@_gotContact" @bind-Errors="@_errors">
+
+                <MudTextField Label="Contact Id" @bind-Value="_gotContact.Id" For="@(() => _gotContact.Id)"
+                Required="true" RequiredError="Contact Id is required!"
+                Class="@(_existingId ? "green-border" : "")"/>
+
+                <style>
+                    .green-border {
+                    border: 2px solid green
+                    }</style>
+
+            </MudForm>
+
+        </MudPaper>
+
+        <MudPaper Class="pa-4 mt-4">
+            <div style="display:flex; justify-content: space-between;"> 
+                <MudButton Variant="Variant.Filled" Color="Color.Dark" DropShadow="false" OnClick="@(() => CheckContactInDatabase(_gotContact.Id))">Find Contact</MudButton>
+                <div style="display:flex">
+                    <MudButton Variant="Variant.Filled" Disabled="@(!_isValid)" Color="Color.Primary" DropShadow="false" OnClick="@(() => DeleteContact(_gotContact.Id))">Delete</MudButton>
+                    <div style="margin-left: 1rem;" />
+                    <MudButton Variant="Variant.Filled" Color="Color.Secondary" DropShadow="false" OnClick="@(() => Back())">Cancel</MudButton>
+                </div>    
+            </div>
+        </MudPaper>
+    </MudItem>
+</MudStack>
+
+<MudTable Items="@_deletedContacts">
+    <ToolBarContent>
+        <MudText>Recently deleted contacts</MudText>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>First Name</MudTh>
+        <MudTh>Last Name</MudTh>
+        <MudTh>Phone number</MudTh>
+        <MudTh>Email</MudTh>
+        <MudTh>Date of Birth</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="First Name">@context.FirstName</MudTd>
+        <MudTd DataLabel="Last Name">@context.LastName</MudTd>
+        <MudTd DataLabel="Phone number">@context.PhoneNumber</MudTd>
+        <MudTd DataLabel="Email">@context.Email</MudTd>
+        <MudTd DataLabel="Data of Birth">@context.DateOfBirth</MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code
+{
+    private MudForm _form = new MudForm();
+    private Guid _contactId;
+    private bool _existingId = false;
+    private bool _deletingIsSuccesed = false;
+    private bool _isValid;
+    private string[] _errors = { };
+    private Uri? _getContactUri;
+    private Uri? _deleteContactUri;
+    private GetContactResponse _gotContact = new GetContactResponse();
+    private List<GetContactResponse> _deletedContacts = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Run(() => InitialUri());
+
+        void InitialUri()
+        {
+            const string getContactControllerUri = "/api/contacts/getById";
+            _getContactUri = new Uri(httpClient.BaseAddress!, getContactControllerUri);
+
+            const string deleteContactControllerUri = "api/contacts/delete";
+            _deleteContactUri = new Uri(httpClient!.BaseAddress!, deleteContactControllerUri);
+        }
+    }
+
+    private async Task Back()
+    {
+        if(_isValid)
+        {
+            await _form!.ResetAsync();
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/contacts");
+        }
+    }
+
+    private async Task CheckContactInDatabase(Guid contactId)
+    {
+        _existingId = false;
+
+        var parameterUrl = $"{_getContactUri}?contactId={contactId}";
+        var response = await httpClient.GetAsync(parameterUrl);
+
+        if (response.StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            _existingId = true;
+
+            try
+            {
+                var responseContact = await response.Content.ReadAsStringAsync();
+                var contact = JsonSerializer.Deserialize<UpdateContactRequest>(responseContact);
+
+                if (contact != null)
+                {
+                    _gotContact.FirstName = contact!.FirstName;
+                    _gotContact.LastName = contact!.LastName;
+                    _gotContact.PhoneNumber = contact.PhoneNumber;
+                    _gotContact.Email = contact.Email;
+                    _gotContact.DateOfBirth = contact.DateOfBirth;
+                }
+                else
+                {
+                    throw new ArgumentNullException(nameof(contact), "Something went wrong!");
+                }
+
+            }
+            catch
+            {
+                throw new ArgumentNullException();
+            }
+
+            return;
+        }
+
+        _existingId = false;
+    }
+
+    private async Task DeleteContact(Guid contactId)
+    {
+        try
+        {
+            var deleteUri = $"{_deleteContactUri}?contactId={contactId}";
+            var response = await httpClient.DeleteAsync(deleteUri);
+
+            if(response.IsSuccessStatusCode)
+            {
+                _deletingIsSuccesed = true;
+
+                _deletedContacts.Add(_gotContact);
+                _gotContact = new GetContactResponse();
+
+            }
+            else
+            {
+                _deletingIsSuccesed = false;
+            }
+        }
+        catch
+        {
+            throw new ArgumentNullException("Deleting is wrong!");
+        }
+    }
+}

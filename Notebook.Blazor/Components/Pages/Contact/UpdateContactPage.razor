@@ -5,6 +5,7 @@
 @using System.Text.RegularExpressions
 @using System.ComponentModel.DataAnnotations
 @using System.Text.Json
+
 @inject NavigationManager NavigationManager
 @inject HttpClient httpClient
 
@@ -19,7 +20,7 @@
                 Required="true" RequiredError="Contact Id is required!"
                 Class="@(_existingId ? "green-border" : "")"/>
 
-                <style>.green-border{border: 2px solid green; transition: border-color 5s;}</style>
+                <style>.green-border{border: 2px solid green;}</style>
 
                 <MudTextField Label="First Name" @bind-Value="_updateContactRequest.FirstName" For="@(() => _updateContactRequest.FirstName)"
                 Required="true" RequiredError="First name is required!" Disabled="!_existingId"
@@ -88,7 +89,6 @@
     private string[] _errors = { };
     private Uri? _getContactUri;
     private Uri? _updateContactUri;
-
     private List<UpdateContactRequest> _recentContacts = new();
 
     protected override async Task OnInitializedAsync()
@@ -131,7 +131,7 @@
                 }
                 else
                 {
-                    throw new ArgumentNullException(nameof(contact), "Fuck!");
+                    throw new ArgumentNullException(nameof(contact), "Something went wrong!");
                 }
 
             }
@@ -186,7 +186,7 @@
         }
         catch
         {
-            throw new ArgumentNullException("Update is wrong!");
+            throw new ArgumentNullException("Updating is wrong!");
         }
     }
 
