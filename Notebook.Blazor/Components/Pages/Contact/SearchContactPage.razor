@@ -29,7 +29,7 @@
 
                 <MudSpacer/>
 
-                <MudButton Disabled="@_disabledSearchButton" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => SearchAllContacts())">SEARCH</MudButton>
+                <MudButton Disabled="@_disabledSearchButton" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => SearchAllContacts())">Search all</MudButton>
 
             </MudStack>
         </MudPaper>
@@ -71,6 +71,7 @@
                 <MudTh>Email</MudTh>
             </HeaderContent>
             <RowTemplate>
+                <MudTd DataLabel="Id">@context.Id</MudTd>
                 <MudTd DataLabel="First Name">@context.FirstName</MudTd>
                 <MudTd DataLabel="Last Name">@context.LastName</MudTd>
                 <MudTd DataLabel="Phone Number">@context.PhoneNumber</MudTd>
@@ -102,6 +103,9 @@
 
             const string allContactsFieldsControllerUri = "/api/contacts/contactsThroughFields";
             _getAllContactsFieldsUri = new Uri(httpClient.BaseAddress!, allContactsFieldsControllerUri);
+
+            const string getContactControllerUri = "api/contacts/getByFields";
+            _getAllContactsFieldsUri = new Uri(httpClient.BaseAddress!, getContactControllerUri);
         }
     }
 
@@ -114,7 +118,7 @@
         {
             _allContacts = await response.Content.ReadFromJsonAsync<List<GetContactResponse>>();
 
-            if (_allContacts.Any())
+            if (_allContacts != null && _allContacts.Any())
             {
                 _showTable = true;
             }
