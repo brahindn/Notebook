@@ -1,0 +1,228 @@
+﻿@page "/addresses/addAddressForm"
+@using Notebook.Domain.Requests
+
+@inject NavigationManager NavigationManager
+@inject HttpClient httpClient
+
+@rendermode InteractiveServer
+
+<MudStack Justify="Justify.Center">
+    <MudItem xs="12" sm="7">
+        <MudPaper Class="pa-4">
+            <MudForm @ref="_form" @bind-IsValid="_isValid" Model="@_newAddress" @bind-Errors="@_errors">
+                <MudTextField Label="Contact Id" @bind-Value="_newAddress.ContactId" For="@(() => _newAddress.ContactId)"
+                Required="true"/>
+
+                <MudSelect @bind-Value="_enumValue" HelperText="Enum" MultiSelection="false" Label="Select address type"
+                Required="true">
+                    @foreach (AddressType addressType in Enum.GetValues(typeof(AddressType)))
+                    {
+                        <MudSelectItem Value="@addressType">@addressType</MudSelectItem>
+                    }
+                </MudSelect>
+
+                <MudTextField Label="Country" @bind-Value="_newAddress.Country" For="@(() => _newAddress.Country)"
+                Required="true"/>
+
+                <MudTextField Label="Region" @bind-Value="_newAddress.Region" For="@(() => _newAddress.Region)"
+                Required="true"/>
+
+                <MudTextField Label="City" @bind-Value="_newAddress.City" For="@(() => _newAddress.City)"
+                Required="true"/>
+
+                <MudTextField Label="Street" @bind-Value="_newAddress.Street" For="@(() => _newAddress.Street)"
+                Required="true"/>
+
+                <MudTextField Label="Building number" @bind-Value="_newAddress.BuildingNumber" For="@(() => _newAddress.BuildingNumber)"
+                Required="true" />
+            </MudForm>
+        </MudPaper>
+        <MudPaper Class="pa-4 mt-4">
+            <div style="display:flex; justify-content: flex-end;">
+                <MudButton Variant="Variant.Filled" Color="Color.Surface" DropShadow="false" OnClick="@(() => _form!.Validate())">Validate</MudButton>
+                <div style="margin-left: 1rem;" />
+                <MudButton Variant="Variant.Filled" Disabled="@(!_isValid)" Color="Color.Primary" DropShadow="false" OnClick="@(() => AddAddress())">Add</MudButton>
+                <div style="margin-left: 1rem;" />
+                <MudButton Variant="Variant.Filled" Color="Color.Secondary" DropShadow="false" OnClick="@(() => Back())">Cancel</MudButton>
+            </div>
+        </MudPaper>
+    </MudItem>
+</MudStack>
+
+<MudTable Items="@_recentAddresses">
+    <ToolBarContent>
+        <MudText>Recently added contacts</MudText>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Contact Id</MudTh>
+        <MudTh>Address Type</MudTh>
+        <MudTh>Country</MudTh>
+        <MudTh>Region</MudTh>
+        <MudTh>City</MudTh>
+        <MudTh>Street</MudTh>
+        <MudTh>Building number</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="First Name">@context.ContactId</MudTd>
+        <MudTd DataLabel="Last Name">@context.AddressType</MudTd>
+        <MudTd DataLabel="Phone number">@context.Country</MudTd>
+        <MudTd DataLabel="Email">@context.Region</MudTd>
+        <MudTd DataLabel="Data of Birth">@context.City</MudTd>
+        <MudTd DataLabel="Data of Birth">@context.Street</MudTd>
+        <MudTd DataLabel="Data of Birth">@context.BuildingNumber</MudTd>
+    </RowTemplate>
+</MudTable>
+
+
+
+@code
+{
+    private MudForm _form = new MudForm();
+    private bool _isValid = false;
+    private string[] _errors = { };
+    private AddressType _enumValue { get; set; } = AddressType.Business;
+    public enum AddressType { Personal, Business }
+    private CreateAddressRequest _newAddress = new CreateAddressRequest();
+    private List<CreateAddressRequest> _recentAddresses = new List<CreateAddressRequest>();
+    private Uri? _addAddressUri;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Run(() => InitialUri());
+
+        void InitialUri()
+        {
+            const string _addAddressControllerUri = "api/addresses/add";
+            _addAddressUri = new Uri(httpClient.BaseAddress!, _addAddressControllerUri);
+        }
+    }
+
+    private async Task AddAddress()
+    {
+        try
+        {
+            var response = await httpClient.PostAsJsonAsync(_addAddressUri, _newAddress);
+
+            if(response.IsSuccessStatusCode)
+            {
+                _recentAddresses.Add(_newAddress);
+                _newAddress = new CreateAddressRequest();
+            }
+        }
+        catch
+        {
+            throw new Exception("Something went wrong");
+        }
+        
+    }
+
+    private async Task Back()
+    {
+        if(_isValid)
+        {
+            await _form.ResetAsync();
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/addresses");
+        }
+    }
+
+    private IEnumerable<string> AddressTypeVerification(AddressType? addressType)
+    {
+        if(addressType == null)
+        {
+            yield return "AddressType is requred!";
+            yield break;
+        }
+        if(addressType != AddressType.Personal || addressType != AddressType.Business)
+        {
+            yield return "AddressType must be Personal or Business";
+            yield break;
+        }
+    }
+
+    private IEnumerable<string> CountryVerification(string country)
+    {
+        if (string.IsNullOrWhiteSpace(country))
+        {
+            yield return "Country is requred!";
+            yield break;
+        }
+        if (country.Length > 30)
+        {
+            yield return "Country length can't be more than 30!";
+            yield break;
+        }
+        if (!char.IsUpper(country[0]))
+        {
+            yield return "Country must start with a capital letter";
+        }
+    }
+
+    private IEnumerable<string> RegionVerification(string region)
+    {
+        if (string.IsNullOrWhiteSpace(region))
+        {
+            yield return "Region is requred!";
+            yield break;
+        }
+        if (region.Length > 30)
+        {
+            yield return "Region length can't be more than 30!";
+            yield break;
+        }
+        if (!char.IsUpper(region[0]))
+        {
+            yield return "Region must start with a capital letter";
+        }
+    }
+
+    private IEnumerable<string> CityVerification(string city)
+    {
+        if (string.IsNullOrWhiteSpace(city))
+        {
+            yield return "City is requred!";
+            yield break;
+        }
+        if (city.Length > 30)
+        {
+            yield return "City length can't be more than 30!";
+            yield break;
+        }
+        if (!char.IsUpper(city[0]))
+        {
+            yield return "City must start with a capital letter";
+            yield break;
+        }
+    }
+
+    private IEnumerable<string> StreetVerification(string street)
+    {
+        if (string.IsNullOrWhiteSpace(street))
+        {
+            yield return "Street is requred!";
+            yield break;
+        }
+        if (street.Length > 50)
+        {
+            yield return "Street length can't be more than 50!";
+            yield break;
+        }
+        if (!char.IsUpper(street[0]))
+        {
+            yield return "Street must start with a capital letter";
+            yield break;
+        }
+    }
+
+    private IEnumerable<string> BuildingNumberVerification(int? buildingBumber)
+    {
+        if (buildingBumber < 1 || buildingBumber == null)
+        {
+            yield return "Bulding number is requred!";
+            yield break;
+        }
+    }
+
+}

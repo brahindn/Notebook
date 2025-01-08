@@ -1,0 +1,16 @@
+﻿@page "/addresses"
+@inherits LayoutComponentBase
+
+<h1 style="text-align:center">Address options</h1>
+
+<MudGrid Justify="Justify.SpaceAround">
+    <MudItem>
+        <MudButton Href="/addresses/addAddressForm" Variant="Variant.Outlined" Style="align-items:center">Add address</MudButton>
+        <MudButton Variant="Variant.Outlined" Color="Color.Surface">Update address</MudButton>
+        <MudButton Variant="Variant.Outlined" Color="Color.Error">Delete address</MudButton>
+    </MudItem>
+
+    <MudItem>
+        <MudButton Variant="Variant.Outlined" Color="Color.Warning">Search addresses</MudButton>
+    </MudItem>
+</MudGrid>
