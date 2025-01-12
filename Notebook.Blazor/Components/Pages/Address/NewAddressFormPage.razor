@@ -1,4 +1,5 @@
 ﻿@page "/addresses/addAddressForm"
+@using Notebook.Domain
 @using Notebook.Domain.Requests
 @using System.Globalization
 
@@ -14,13 +15,10 @@
                 <MudTextField Label="Contact Id" @bind-Value="_newAddress.ContactId" For="@(() => _newAddress.ContactId)"
                 Required="true"/>
 
-                <MudSelect @bind-Value="enumValue" HelperText="Enum" Label="Select address type"
-                Required="true">
-                    @foreach(AddressType item in Enum.GetValues(typeof(AddressType)))
-                    {
-                        <MudSelectItem Value="@item">@item</MudSelectItem>
-                    }
-                </MudSelect>
+                <MudRadioGroup T="AddressType" @bind-Value="SelectedAddressType">
+                    <MudRadio T="AddressType" Value="AddressType.Business">Business</MudRadio>
+                    <MudRadio T="AddressType" Value="AddressType.Personal">Personal</MudRadio>
+                </MudRadioGroup>
 
                 <MudTextField Label="Country" @bind-Value="_newAddress.Country" For="@(() => _newAddress.Country)"
                 Required="true"/>
@@ -64,13 +62,13 @@
         <MudTh>Building number</MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="First Name">@context.ContactId</MudTd>
-        <MudTd DataLabel="Last Name">@context.AddressType</MudTd>
-        <MudTd DataLabel="Phone number">@context.Country</MudTd>
-        <MudTd DataLabel="Email">@context.Region</MudTd>
-        <MudTd DataLabel="Data of Birth">@context.City</MudTd>
-        <MudTd DataLabel="Data of Birth">@context.Street</MudTd>
-        <MudTd DataLabel="Data of Birth">@context.BuildingNumber</MudTd>
+        <MudTd DataLabel="Contact Id">@context.ContactId</MudTd>
+        <MudTd DataLabel="Address Type">@context.AddressType</MudTd>
+        <MudTd DataLabel="Country">@context.Country</MudTd>
+        <MudTd DataLabel="Region">@context.Region</MudTd>
+        <MudTd DataLabel="City">@context.City</MudTd>
+        <MudTd DataLabel="Street">@context.Street</MudTd>
+        <MudTd DataLabel="Building Number">@context.BuildingNumber</MudTd>
     </RowTemplate>
 </MudTable>
 
@@ -81,8 +79,7 @@
     private MudForm _form = new MudForm();
     private bool _isValid = false;
     private string[] _errors = { };
-    private AddressType enumValue { get; set; }
-    public enum AddressType { Personal, Business }
+    private AddressType SelectedAddressType { get; set; }
     private CreateAddressRequest _newAddress = new CreateAddressRequest();
     private List<CreateAddressRequest> _recentAddresses = new List<CreateAddressRequest>();
     private Uri? _addAddressUri;
@@ -102,6 +99,7 @@
     {
         try
         {
+            _newAddress.AddressType = SelectedAddressType;
             var response = await httpClient.PostAsJsonAsync(_addAddressUri, _newAddress);
 
             if(response.IsSuccessStatusCode)
@@ -126,20 +124,6 @@
         else
         {
             NavigationManager.NavigateTo("/addresses");
-        }
-    }
-
-    private IEnumerable<string> AddressTypeVerification(AddressType? addressType)
-    {
-        if(addressType == null)
-        {
-            yield return "AddressType is requred!";
-            yield break;
-        }
-        if(addressType != AddressType.Personal || addressType != AddressType.Business)
-        {
-            yield return "AddressType must be Personal or Business";
-            yield break;
         }
     }
 

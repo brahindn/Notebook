@@ -8,7 +8,7 @@ namespace Notebook.Domain.Requests
         public Guid ContactId { get; set; }
 
         [Required, EnumDataType(typeof(AddressType))]
-        public AddressType AddressType { get; set; } = 0;
+        public AddressType AddressType { get; set; }
 
         [Required, StringLength(30, ErrorMessage = "Country Name length can't be more than 30.")]
         public string Country { get; set; } = string.Empty;
