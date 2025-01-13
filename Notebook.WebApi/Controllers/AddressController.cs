@@ -79,7 +79,22 @@ namespace Notebook.WebApi.Controllers
             return Ok(addressDTO);
         }
 
-        [HttpGet]
+        [HttpGet("getByFields")]
+        public async Task<IActionResult> GetAddressByFields([FromBody]GetAddressRequest getAddressRequest)
+        {
+            if(getAddressRequest == null)
+            {
+                return BadRequest();
+            }
+
+            var allAddresses = await _serviceManager.AddressService.GetAddressByFieldsAsync(getAddressRequest);
+
+            _logger.Information("Necessery addresses received");
+
+            return Ok(allAddresses);
+        }
+
+        [HttpGet("allAddresses")]
         public async Task<IActionResult> GetAllAddresses([FromQuery] AddressParameters addressParameters)
         {
             var addresses = await _serviceManager.AddressService.GetAllAddressesAsync(addressParameters);

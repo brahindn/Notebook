@@ -102,9 +102,6 @@
             const string allContactControllerUri = "/api/contacts/allContacts";
             _getAllContactsUri = new Uri(httpClient.BaseAddress!, allContactControllerUri);
 
-            const string allContactsFieldsControllerUri = "/api/contacts/contactsThroughFields";
-            _getAllContactsFieldsUri = new Uri(httpClient.BaseAddress!, allContactsFieldsControllerUri);
-
             const string getContactControllerUri = "api/contacts/getByFields";
             _getAllContactsFieldsUri = new Uri(httpClient.BaseAddress!, getContactControllerUri);
         }
@@ -132,20 +129,27 @@
 
     private async Task SearchContactsThroughFields(GetContactRequest contactRequest)
     {
-        var response = await httpClient.PostAsJsonAsync(_getAllContactsFieldsUri, contactRequest);
-
-        if(response.IsSuccessStatusCode)
+        try
         {
-            _allContacts = await response.Content.ReadFromJsonAsync<List<GetContactResponse>>();
+            var response = await httpClient.PostAsJsonAsync(_getAllContactsFieldsUri, contactRequest);
 
-            if(_allContacts.Any())
+            if (response.IsSuccessStatusCode)
             {
-                _showTable = true;
+                _allContacts = await response.Content.ReadFromJsonAsync<List<GetContactResponse>>();
+
+                if (_allContacts.Any())
+                {
+                    _showTable = true;
+                }
+                else
+                {
+                    _allContacts = new List<GetContactResponse>();
+                }
             }
-            else
-            {
-                _allContacts = new List<GetContactResponse>();
-            }
+        }
+        catch
+        {
+            throw new ArgumentException();
         }
     }
 }
