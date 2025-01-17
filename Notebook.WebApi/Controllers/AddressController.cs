@@ -79,7 +79,7 @@ namespace Notebook.WebApi.Controllers
             return Ok(addressDTO);
         }
 
-        [HttpGet("getByFields")]
+        [HttpPost("getByFields")]
         public async Task<IActionResult> GetAddressByFields([FromBody]GetAddressRequest getAddressRequest)
         {
             if(getAddressRequest == null)
