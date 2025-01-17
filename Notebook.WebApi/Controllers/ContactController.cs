@@ -14,12 +14,14 @@ namespace Notebook.WebApi.Controllers
         private readonly IServiceManager _serviceManager;
         private readonly Serilog.ILogger _logger;
         private readonly MessageProducer _messageProducer;
+        private readonly IMapper _mapper;
 
-        public ContactController(IServiceManager serviceManager, Serilog.ILogger logger, MessageProducer messageProducer)
+        public ContactController(IServiceManager serviceManager, Serilog.ILogger logger, MessageProducer messageProducer, IMapper mapper)
         {
             _serviceManager = serviceManager;
             _logger = logger;
             _messageProducer = messageProducer;
+            _mapper = mapper;
         }
 
         [HttpPost("add")]
@@ -71,11 +73,11 @@ namespace Notebook.WebApi.Controllers
                 return NotFound();
             }
 
-            var contactDTO = contact;
+            var updateContactRequest = _mapper.Map<UpdateContactRequest>(contact);
 
-            _logger.Information($"Contact {contactDTO.Id} has been got");
+            _logger.Information($"Contact {updateContactRequest.Id} has been got");
 
-            return Ok(contactDTO);
+            return Ok(updateContactRequest);
         }
 
         [HttpPost("getByFields")]

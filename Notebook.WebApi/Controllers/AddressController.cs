@@ -42,7 +42,7 @@ namespace Notebook.WebApi.Controllers
 
             _messageProducer.SendMessage(address, routingKey);
 
-            _logger.Information($"Updated address: {address.Id}");
+            _logger.Information($"Address: {address.Id} has been updated successfully");
 
             return Task.FromResult<IActionResult>(Ok());
         }
@@ -61,10 +61,9 @@ namespace Notebook.WebApi.Controllers
             return Ok();
         }
 
-        [HttpGet("{addressId}")]
+        [HttpGet("getById")]
         public async Task<IActionResult> GetAddressById(Guid addressId)
         {
-
             var address = await _serviceManager.AddressService.GetAddressByIdAsync(addressId);
 
             if(address == null)
@@ -72,11 +71,11 @@ namespace Notebook.WebApi.Controllers
                 return NotFound();
             }
 
-            var addressDTO = _mapper.Map<CreateAddressRequest>(address);
+            var updateAddressRequest = _mapper.Map<UpdateAddressRequest>(address);
 
             _logger.Information($"Address for contact {address.ContactId} has been got");
 
-            return Ok(addressDTO);
+            return Ok(updateAddressRequest);
         }
 
         [HttpPost("getByFields")]

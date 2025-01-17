@@ -20,7 +20,7 @@
                 Required="true" RequiredError="Contact Id is required!"
                 Class="@(_existingId ? "green-border" : "")"/>
 
-                <style>.green-border{border: 2px solid green;}</style>
+                <style>.green-border {border: 2px solid green;} </style>
 
                 <MudTextField Label="First Name" @bind-Value="_updateContactRequest.FirstName" For="@(() => _updateContactRequest.FirstName)"
                 Required="true" RequiredError="First name is required!" Disabled="!_existingId"
@@ -41,7 +41,6 @@
                 <MudDatePicker Label="Date of Birth" Disabled="!_existingId" @bind-Date="_updateContactRequest.DateOfBirth" PickerVariant="PickerVariant.Dialog" />
 
             </MudForm>
-
         </MudPaper>
 
         <MudPaper Class="pa-4 mt-4">
@@ -50,7 +49,7 @@
                 <div style="display:flex">
                     <MudButton Variant="Variant.Filled" Disabled="@(!_existingId)" Color="Color.Surface" DropShadow="false" OnClick="@(() => _form.Validate())">Validate</MudButton>
                     <div style="margin-left: 1rem;" />
-                    <MudButton Variant="Variant.Filled" Disabled="@(!_isValid)" Color="Color.Primary" DropShadow="false" OnClick="@(() => UpdateContact())">Add</MudButton>
+                    <MudButton Variant="Variant.Filled" Disabled="@(!_isValid)" Color="Color.Primary" DropShadow="false" OnClick="@(() => UpdateContact())">Update</MudButton>
                     <div style="margin-left: 1rem;" />
                     <MudButton Variant="Variant.Filled" Color="Color.Secondary" DropShadow="false" OnClick="@(() => Back())">Cancel</MudButton>
                 </div>    
@@ -84,12 +83,12 @@
     private MudForm _form = new MudForm();
     private UpdateContactRequest _updateContactRequest = new UpdateContactRequest();
     private bool _existingId = false;
-    private bool _isValid;
-    private bool _updateIsSuccesed = false;
+    private bool _isValid = false;
+    private bool _updateIsSuccessed = false;
     private string[] _errors = { };
     private Uri? _getContactUri;
     private Uri? _updateContactUri;
-    private List<UpdateContactRequest> _recentContacts = new();
+    private List<UpdateContactRequest> _recentContacts = new List<UpdateContactRequest>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -114,33 +113,26 @@
 
         if(response.StatusCode == System.Net.HttpStatusCode.OK)
         {
-            _existingId = true;
-
             try
             {
                 var responseContact = await response.Content.ReadAsStringAsync();
                 var contact = JsonSerializer.Deserialize<UpdateContactRequest>(responseContact);
 
-                if(contact != null)
+                if(contact != null) 
                 {
+                    _existingId = true;
+
                     _updateContactRequest.FirstName = contact!.FirstName;
                     _updateContactRequest.LastName = contact!.LastName;
                     _updateContactRequest.PhoneNumber = contact.PhoneNumber;
                     _updateContactRequest.Email = contact.Email;
                     _updateContactRequest.DateOfBirth = contact.DateOfBirth;
                 }
-                else
-                {
-                    throw new ArgumentNullException(nameof(contact), "Something went wrong!");
-                }
-
             }
             catch
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("Something went wrong");
             }
-
-            return;
         }
         else
         {
@@ -149,9 +141,9 @@
             _updateContactRequest.PhoneNumber = "unknow";
             _updateContactRequest.Email = "unknow";
             _updateContactRequest.DateOfBirth = null;
-        }
 
-        _existingId = false;
+            _existingId = false;
+        }
     }
 
     private async Task Back()
@@ -174,14 +166,16 @@
 
             if (response.IsSuccessStatusCode)
             {
-                _updateIsSuccesed = true;
+                _updateIsSuccessed = true;
 
                 _recentContacts.Add(_updateContactRequest);
                 _updateContactRequest = new UpdateContactRequest();
+
+                _existingId = false;
             }
             else
             {
-                _updateIsSuccesed = false;
+                _updateIsSuccessed = false;
             }
         }
         catch

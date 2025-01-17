@@ -12,6 +12,7 @@
     <MudItem xs="12" sm="7">
         <MudPaper Class="pa-4">
             <MudForm @ref="_form" @bind-IsValid="_isValid" Model="@_newAddress" @bind-Errors="@_errors">
+
                 <MudTextField Label="Contact Id" @bind-Value="_newAddress.ContactId" For="@(() => _newAddress.ContactId)"
                 Required="true"/>
 
@@ -21,19 +22,25 @@
                 </MudRadioGroup>
 
                 <MudTextField Label="Country" @bind-Value="_newAddress.Country" For="@(() => _newAddress.Country)"
-                Required="true"/>
+                Required="true"
+                Validation="@(new Func<string, IEnumerable<string>>(CountryVerification))"/>
 
                 <MudTextField Label="Region" @bind-Value="_newAddress.Region" For="@(() => _newAddress.Region)"
-                Required="true"/>
+                Required="true"
+                Validation="@(new Func<string, IEnumerable<string>>(RegionVerification))" />
 
                 <MudTextField Label="City" @bind-Value="_newAddress.City" For="@(() => _newAddress.City)"
-                Required="true"/>
+                Required="true"
+                Validation="@(new Func<string, IEnumerable<string>>(CityVerification))" />
 
                 <MudTextField Label="Street" @bind-Value="_newAddress.Street" For="@(() => _newAddress.Street)"
-                Required="true"/>
+                Required="true"
+                Validation="@(new Func<string, IEnumerable<string>>(StreetVerification))" />
 
                 <MudTextField Label="Building number" @bind-Value="_newAddress.BuildingNumber" For="@(() => _newAddress.BuildingNumber)"
-                Required="true" />
+                Required="true"
+                Validation="@(new Func<int?, IEnumerable<string>>(BuildingNumberVerification))" />
+
             </MudForm>
         </MudPaper>
         <MudPaper Class="pa-4 mt-4">
@@ -203,9 +210,14 @@
 
     private IEnumerable<string> BuildingNumberVerification(int? buildingBumber)
     {
-        if (buildingBumber < 1 || buildingBumber == null)
+        if (buildingBumber == null)
         {
-            yield return "Bulding number is requred!";
+            yield return "Building number is required";
+            yield break;
+        }
+        if (buildingBumber < 1)
+        {
+            yield return "Cannot be <1";
             yield break;
         }
     }

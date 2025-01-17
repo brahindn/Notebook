@@ -2,6 +2,7 @@
 @using Notebook.Domain
 @using Notebook.Domain.Requests
 @using System.Globalization
+@using System.Text.Json
 
 @inject NavigationManager NavigationManager
 @inject HttpClient httpClient
@@ -11,38 +12,52 @@
 <MudStack Justify="Justify.Center">
     <MudItem xs="12" sm="7">
         <MudPaper Class="pa-4">
-            <MudForm @ref="_form" @bind-IsValid="_isValid" Model="@_newAddress" @bind-Errors="@_errors">
-                <MudTextField Label="Contact Id" @bind-Value="_newAddress.ContactId" For="@(() => _newAddress.ContactId)"
-                              Required="true" />
+            <MudForm @ref="_form" @bind-IsValid="_isValid" Model="@_updateAddressRequest" @bind-Errors="@_errors">
 
-                <MudRadioGroup T="AddressType" @bind-Value="SelectedAddressType">
-                    <MudRadio T="AddressType" Value="AddressType.Business">Business</MudRadio>
-                    <MudRadio T="AddressType" Value="AddressType.Personal">Personal</MudRadio>
+                <MudTextField Label="Address Id" @bind-Value="_updateAddressRequest.Id" For="@(() => _updateAddressRequest.Id)"
+                Required="true" RequiredError="Address Id is required!" 
+                Class="@(_existingId ? "green-border" : "")"/>
+
+                <style>.green-border {border: 2px solid green;} </style>
+
+                <MudRadioGroup T="AddressType?" @bind-Value="_updateAddressRequest.AddressType" Disabled="!_existingId">
+                    <MudRadio T="AddressType?" Value="AddressType.Business">Business</MudRadio>
+                    <MudRadio T="AddressType?" Value="AddressType.Personal">Personal</MudRadio>
                 </MudRadioGroup>
 
-                <MudTextField Label="Country" @bind-Value="_newAddress.Country" For="@(() => _newAddress.Country)"
-                              Required="true" />
+                <MudTextField Label="Country" @bind-Value="_updateAddressRequest.Country" For="@(() => _updateAddressRequest.Country)"
+                Required="true" Disabled="!_existingId"
+                Validation="@(new Func<string, IEnumerable<string>>(CountryVerification))"/>
 
-                <MudTextField Label="Region" @bind-Value="_newAddress.Region" For="@(() => _newAddress.Region)"
-                              Required="true" />
+                <MudTextField Label="Region" @bind-Value="_updateAddressRequest.Region" For="@(() => _updateAddressRequest.Region)"
+                Required="true" Disabled="!_existingId"
+                Validation="@(new Func<string, IEnumerable<string>>(RegionVerification))"/>
 
-                <MudTextField Label="City" @bind-Value="_newAddress.City" For="@(() => _newAddress.City)"
-                              Required="true" />
+                <MudTextField Label="City" @bind-Value="_updateAddressRequest.City" For="@(() => _updateAddressRequest.City)"
+                Required="true" Disabled="!_existingId"
+                Validation="@(new Func<string, IEnumerable<string>>(CityVerification))"/>
 
-                <MudTextField Label="Street" @bind-Value="_newAddress.Street" For="@(() => _newAddress.Street)"
-                              Required="true" />
+                <MudTextField Label="Street" @bind-Value="_updateAddressRequest.Street" For="@(() => _updateAddressRequest.Street)"
+                Required="true" Disabled="!_existingId"
+                Validation="@(new Func<string, IEnumerable<string>>(StreetVerification))"/>
 
-                <MudTextField Label="Building number" @bind-Value="_newAddress.BuildingNumber" For="@(() => _newAddress.BuildingNumber)"
-                              Required="true" />
+                <MudTextField Label="Building number" @bind-Value="_updateAddressRequest.BuildingNumber" For="@(() => _updateAddressRequest.BuildingNumber)"
+                Required="true" Disabled="!_existingId"
+                Validation="@(new Func<int?, IEnumerable<string>>(BuildingNumberVerification))"/>
+
             </MudForm>
         </MudPaper>
+
         <MudPaper Class="pa-4 mt-4">
-            <div style="display:flex; justify-content: flex-end;">
-                <MudButton Variant="Variant.Filled" Color="Color.Surface" DropShadow="false" OnClick="@(() => _form!.Validate())">Validate</MudButton>
-                <div style="margin-left: 1rem;" />
-                <MudButton Variant="Variant.Filled" Disabled="@(!_isValid)" Color="Color.Primary" DropShadow="false" OnClick="@(() => AddAddress())">Add</MudButton>
-                <div style="margin-left: 1rem;" />
-                <MudButton Variant="Variant.Filled" Color="Color.Secondary" DropShadow="false" OnClick="@(() => Back())">Cancel</MudButton>
+            <div style="display:flex; justify-content: space-between;">
+                <MudButton Variant="Variant.Filled" Color="Color.Dark" DropShadow="false" OnClick="@(() => CheckAddressInDatabase(_updateAddressRequest.Id))">Find Contact</MudButton>
+                <div style="display:flex">
+                    <MudButton Variant="Variant.Filled" Disabled="@(!_existingId)" Color="Color.Surface" DropShadow="false" OnClick="@(() => _form!.Validate())">Validate</MudButton>
+                    <div style="margin-left: 1rem;" />
+                    <MudButton Variant="Variant.Filled" Disabled="@(!_isValid)" Color="Color.Primary" DropShadow="false" OnClick="@(() => UpdateChanges())">Update</MudButton>
+                    <div style="margin-left: 1rem;" />
+                    <MudButton Variant="Variant.Filled" Color="Color.Secondary" DropShadow="false" OnClick="@(() => Back())">Cancel</MudButton>
+                </div>
             </div>
         </MudPaper>
     </MudItem>
@@ -50,10 +65,9 @@
 
 <MudTable Items="@_recentAddresses">
     <ToolBarContent>
-        <MudText>Recently added contacts</MudText>
+        <MudText>Recently updated addresses</MudText>
     </ToolBarContent>
     <HeaderContent>
-        <MudTh>Contact Id</MudTh>
         <MudTh>Address Type</MudTh>
         <MudTh>Country</MudTh>
         <MudTh>Region</MudTh>
@@ -62,7 +76,6 @@
         <MudTh>Building number</MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="Contact Id">@context.ContactId</MudTd>
         <MudTd DataLabel="Address Type">@context.AddressType</MudTd>
         <MudTd DataLabel="Country">@context.Country</MudTd>
         <MudTd DataLabel="Region">@context.Region</MudTd>
@@ -77,12 +90,14 @@
 @code
 {
     private MudForm _form = new MudForm();
-    private bool _isValid = false;
+    private UpdateAddressRequest _updateAddressRequest = new UpdateAddressRequest();
     private string[] _errors = { };
-    private AddressType SelectedAddressType { get; set; }
-    private CreateAddressRequest _newAddress = new CreateAddressRequest();
-    private List<CreateAddressRequest> _recentAddresses = new List<CreateAddressRequest>();
-    private Uri? _addAddressUri;
+    private bool _isValid;
+    private bool _existingId = false;
+    private bool _updateIsSuccessed = false;
+    private Uri? _getAddressUri;
+    private Uri? _updateAddressUri;
+    private List<UpdateAddressRequest> _recentAddresses = new List<UpdateAddressRequest>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -90,29 +105,82 @@
 
         void InitialUri()
         {
-            const string _addAddressControllerUri = "api/addresses/add";
-            _addAddressUri = new Uri(httpClient.BaseAddress!, _addAddressControllerUri);
+            const string getAddressControllerUri = "/api/addresses/getById";
+            _getAddressUri = new Uri(httpClient.BaseAddress!, getAddressControllerUri);
+
+            const string updateAddressControllerUri = "/api/addresses/update";
+            _updateAddressUri = new Uri(httpClient.BaseAddress!, updateAddressControllerUri);
         }
     }
 
-    private async Task AddAddress()
+    private async Task UpdateChanges()
     {
         try
         {
-            _newAddress.AddressType = SelectedAddressType;
-            var response = await httpClient.PostAsJsonAsync(_addAddressUri, _newAddress);
+            var response = await httpClient.PutAsJsonAsync(_updateAddressUri, _updateAddressRequest);
 
             if (response.IsSuccessStatusCode)
             {
-                _recentAddresses.Add(_newAddress);
-                _newAddress = new CreateAddressRequest();
+                _updateIsSuccessed = true;
+
+                _recentAddresses.Add(_updateAddressRequest);
+                _updateAddressRequest = new UpdateAddressRequest();
+
+                _existingId = false;
+            }
+            else
+            {
+                _updateIsSuccessed = false;
             }
         }
         catch
         {
-            throw new Exception("Something went wrong");
+            throw new ArgumentNullException("Updating is wrong!");
         }
+    }
 
+    private async Task CheckAddressInDatabase(Guid addressId)
+    {
+        _existingId = false;
+
+        var parameterUrl = $"{_getAddressUri}?addressId={addressId}";
+        var response = await httpClient.GetAsync(parameterUrl);
+
+        if(response.StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            try
+            {
+                var responseAddress = await response.Content.ReadAsStringAsync();
+                var address = JsonSerializer.Deserialize<UpdateAddressRequest>(responseAddress);
+
+                if(address != null)
+                {
+                    _existingId = true;
+
+                    _updateAddressRequest.AddressType = address.AddressType;
+                    _updateAddressRequest.Country = address.Country;
+                    _updateAddressRequest.Region = address.Region;
+                    _updateAddressRequest.City = address.City;
+                    _updateAddressRequest.Street = address.Street;
+                    _updateAddressRequest.BuildingNumber = address.BuildingNumber;
+                }
+            }
+            catch
+            {
+                throw new ArgumentNullException("Something went wrong");
+            }
+        }
+        else
+        {
+            _updateAddressRequest.AddressType = null;
+            _updateAddressRequest.Country = "uknown";
+            _updateAddressRequest.Region = "uknown";
+            _updateAddressRequest.City = "uknown";
+            _updateAddressRequest.Street = "uknown";
+            _updateAddressRequest.BuildingNumber = 0;
+
+            _existingId = false;
+        }
     }
 
     private async Task Back()
@@ -203,9 +271,14 @@
 
     private IEnumerable<string> BuildingNumberVerification(int? buildingBumber)
     {
-        if (buildingBumber < 1 || buildingBumber == null)
+        if (buildingBumber == null)
         {
-            yield return "Bulding number is requred!";
+            yield return "Building number is required";
+            yield break;
+        }
+        if (buildingBumber < 1)
+        {
+            yield return "Cannot be <1";
             yield break;
         }
     }

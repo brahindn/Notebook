@@ -24,12 +24,18 @@ namespace Notebook.Application.Mapping
             CreateMap<UpdateContactRequest, Contact>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
 
+            CreateMap<Contact, UpdateContactRequest>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+
             CreateMap<CreateAddressRequest, Address>()
                 .ForMember(dest => dest.Contact, opt => opt.Ignore());
 
             CreateMap<Address, GetAddressResponse>();
 
             CreateMap<UpdateAddressRequest, Address>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+
+            CreateMap<Address, UpdateAddressRequest>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
         }
     }
