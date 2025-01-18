@@ -4,6 +4,7 @@ using Notebook.Shared.RequestFeatures;
 using Notebook.WebApi.RabbitMQ;
 using Notebook.Domain.Requests;
 using AutoMapper;
+using Notebook.Domain.Responses;
 
 namespace Notebook.WebApi.Controllers
 {
@@ -71,11 +72,11 @@ namespace Notebook.WebApi.Controllers
                 return NotFound();
             }
 
-            var updateAddressRequest = _mapper.Map<UpdateAddressRequest>(address);
+            var gotAddressResponse = _mapper.Map<GetAddressResponse>(address);
 
-            _logger.Information($"Address for contact {address.ContactId} has been got");
+            _logger.Information($"Address for contact {address.Id} has been got");
 
-            return Ok(updateAddressRequest);
+            return Ok(gotAddressResponse);
         }
 
         [HttpPost("getByFields")]

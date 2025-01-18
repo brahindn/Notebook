@@ -19,13 +19,9 @@
                 Required="true" RequiredError="Contact Id is required!"
                 Class="@(_existingId ? "green-border" : "")"/>
 
-                <style>
-                    .green-border {
-                    border: 2px solid green
-                    }</style>
+                <style>.green-border {border: 2px solid green}</style>
 
             </MudForm>
-
         </MudPaper>
 
         <MudPaper Class="pa-4 mt-4">
@@ -83,7 +79,7 @@
             const string getContactControllerUri = "/api/contacts/getById";
             _getContactUri = new Uri(httpClient.BaseAddress!, getContactControllerUri);
 
-            const string deleteContactControllerUri = "api/contacts/delete";
+            const string deleteContactControllerUri = "/api/contacts/delete";
             _deleteContactUri = new Uri(httpClient!.BaseAddress!, deleteContactControllerUri);
         }
     }
@@ -114,7 +110,7 @@
             try
             {
                 var responseContact = await response.Content.ReadAsStringAsync();
-                var contact = JsonSerializer.Deserialize<UpdateContactRequest>(responseContact);
+                var contact = JsonSerializer.Deserialize<GetContactResponse>(responseContact);
 
                 if (contact != null)
                 {
