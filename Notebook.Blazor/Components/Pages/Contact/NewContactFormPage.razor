@@ -28,9 +28,7 @@
         </MudPaper>
         <MudPaper Class="pa-4 mt-4">
             <div style="display:flex; justify-content: flex-end;">
-                <MudButton Variant="Variant.Filled" Color="Color.Surface" DropShadow="false" OnClick="@(() => _mudForm!.Validate())">Validate</MudButton>
-                <div style="margin-left: 1rem;" />
-                <MudButton Variant="Variant.Filled" Disabled="@(!_isValid)" Color="Color.Primary" DropShadow="false" OnClick="@(() => AddContact())">Add</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" DropShadow="false" OnClick="@(() => AddContact())">Add</MudButton>
                 <div style="margin-left: 1rem;"/>
                 <MudButton Variant="Variant.Filled" Color="Color.Secondary" DropShadow="false" OnClick="@(() => Back())">Cancel</MudButton>
             </div>
@@ -77,11 +75,11 @@
 
         void InitialUri()
         {
-                const string addContactControllerUri = "/api/contacts/add";
-                _addContactUri = new Uri(httpClient.BaseAddress!, addContactControllerUri);
+            const string addContactControllerUri = "/api/contacts/add";
+            _addContactUri = new Uri(httpClient.BaseAddress!, addContactControllerUri);
 
-                const string getContactControllerUri = "/api/contacts/getByFields";
-                _getContactUri = new Uri(httpClient.BaseAddress!, getContactControllerUri);
+            const string getContactControllerUri = "/api/contacts/getByFields";
+            _getContactUri = new Uri(httpClient.BaseAddress!, getContactControllerUri);
         }
     }
 
@@ -99,6 +97,13 @@
 
     private async Task AddContact()
     {
+        await _mudForm!.Validate();
+
+        if(!_isValid)
+        {
+            return;
+        }
+
         var response = await httpClient.PostAsJsonAsync(_addContactUri, _newContact);
 
         if (response.IsSuccessStatusCode)

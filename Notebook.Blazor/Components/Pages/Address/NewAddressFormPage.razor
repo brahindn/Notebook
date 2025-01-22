@@ -45,9 +45,7 @@
         </MudPaper>
         <MudPaper Class="pa-4 mt-4">
             <div style="display:flex; justify-content: flex-end;">
-                <MudButton Variant="Variant.Filled" Color="Color.Surface" DropShadow="false" OnClick="@(() => _form!.Validate())">Validate</MudButton>
-                <div style="margin-left: 1rem;" />
-                <MudButton Variant="Variant.Filled" Disabled="@(!_isValid)" Color="Color.Primary" DropShadow="false" OnClick="@(() => AddAddress())">Add</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" DropShadow="false" OnClick="@(() => AddAddress())">Add</MudButton>
                 <div style="margin-left: 1rem;" />
                 <MudButton Variant="Variant.Filled" Color="Color.Secondary" DropShadow="false" OnClick="@(() => Back())">Cancel</MudButton>
             </div>
@@ -104,6 +102,13 @@
 
     private async Task AddAddress()
     {
+        await _form.Validate();
+
+        if(!_isValid)
+        {
+            return;
+        }
+
         try
         {
             _newAddress.AddressType = SelectedAddressType;
