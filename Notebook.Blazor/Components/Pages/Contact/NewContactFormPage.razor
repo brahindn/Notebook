@@ -13,16 +13,20 @@
                 <MudTextField Label="First Name" @bind-Value="_newContact.FirstName" For="@(() => _newContact.FirstName)"
                 Required="true" RequiredError="First name is required!"
                 Validation="@(new Func<string, IEnumerable<string>>(FirstNameVerification))"/>
+
                 <MudTextField Label="Last Name" @bind-Value="_newContact.LastName" For="@(() => _newContact.LastName)"
                 Required="true" RequiredError="Last name is required!"
                 Validation="@(new Func<string, IEnumerable<string>>(LastNameVerification))"/>
+
                 <MudTextField Label="Phone number" @bind-Value="_newContact.PhoneNumber" For="@(() => _newContact.PhoneNumber)"
-                Required="true" RequiredError="Phone number is required!"
+                Required="true" RequiredError="Phone number is required!" T="string"
                 Validation="@(new Func<string, IEnumerable<string>>(PhoneNumberVerification))"
-                OnBlur="@(async () => await PhoneNumberDuplicateVerification(_newContact.PhoneNumber))"/>
+                Immediate="true" OnBlur="(async() => await PhoneNumberDuplicateVerification(_newContact.PhoneNumber))" />
+
                 <MudTextField Label="Email" @bind-Value="_newContact.Email" For="@(() => _newContact.Email)"
-                Required="false"
-                Validation="@(new Func<string, IEnumerable<string>>(EmailVerification))"/>
+                Validation="@(new Func<string, IEnumerable<string>>(EmailVerification))" T="string"
+                Immediate="true" OnBlur="@(async() => await EmailDuplicateVerification(_newContact.Email))"/>
+
                 <MudDatePicker Label="Date of Birth" @bind-Date="_newContact.DateOfBirth" PickerVariant="PickerVariant.Dialog"/>
             </MudForm>
         </MudPaper>
@@ -61,6 +65,7 @@
     private MudForm? _mudForm;
     private bool _isValid;
     private bool _uniquePhoneNumber;
+    private bool _uniqueEmail;
     private string[] _errors = { };
     private CreateContactRequest _newContact = new CreateContactRequest();
     private GetContactRequest _getContact = new GetContactRequest();
@@ -113,75 +118,60 @@
         }
     }
 
-    private IEnumerable<string> FirstNameVerification(string firstNameFromField)
+    private IEnumerable<string> FirstNameVerification(string firstName)
     {
-        if(string.IsNullOrWhiteSpace(firstNameFromField))
+        if (string.IsNullOrWhiteSpace(firstName))
         {
             yield return "First Name is required!";
             yield break;
         }
-        if(firstNameFromField.Length > 30)
+        if (firstName.Length > 30)
         {
             yield return "First Name must not contain more than 30 letters";
         }
-        if(!char.IsUpper(firstNameFromField[0]))
+        if (!char.IsUpper(firstName[0]))
         {
             yield return "First Name must start with a capital letter";
         }
     }
 
-    private IEnumerable<string> LastNameVerification(string lastNameFromField)
+    private IEnumerable<string> LastNameVerification(string lastName)
     {
-        if (string.IsNullOrWhiteSpace(lastNameFromField))
+        if (string.IsNullOrWhiteSpace(lastName))
         {
             yield return "Last Name is required!";
             yield break;
         }
-        if (lastNameFromField.Length > 30)
+        if (lastName.Length > 30)
         {
             yield return "Last Name must not contain more than 30 letters";
         }
-        if (!char.IsUpper(lastNameFromField[0]))
+        if (!char.IsUpper(lastName[0]))
         {
             yield return "Last Name must start with a capital letter";
         }
     }
 
-    private IEnumerable<string> PhoneNumberVerification(string phoneNumberFromField)
+    private IEnumerable<string> PhoneNumberVerification(string phoneNumber)
     {
-        if (string.IsNullOrWhiteSpace(phoneNumberFromField))
+        if (string.IsNullOrWhiteSpace(phoneNumber))
         {
             yield return "Phone number is required!";
             yield break;
         }
-        if (!System.Text.RegularExpressions.Regex.IsMatch(phoneNumberFromField, @"^\d+$"))
+        if (!System.Text.RegularExpressions.Regex.IsMatch(phoneNumber, @"^\d+$"))
         {
             yield return "Phone number must contain only numbers";
             yield break;
         }
-        if (phoneNumberFromField.Length > 13)
+        if (phoneNumber.Length > 13)
         {
             yield return "Phone number must not contain more than 13 characters";
         }
-        if(_uniquePhoneNumber == false)
+        if (_uniquePhoneNumber == false)
         {
             yield return "Phone number must be unique";
         }
-    }
-
-    private async Task PhoneNumberDuplicateVerification(string phoneNumberFromField)
-    {
-        var parameterUrl = $"{_getContactUri}?phoneNumber={phoneNumberFromField}";
-        var response = await httpClient.GetAsync(parameterUrl);
-
-        if(response.StatusCode == System.Net.HttpStatusCode.OK)
-        {
-            _uniquePhoneNumber = false;
-
-            return;
-        }
-
-        _uniquePhoneNumber = true;
     }
 
     private IEnumerable<string> EmailVerification(string emailFromField)
@@ -199,6 +189,42 @@
         {
             yield return "Email must be in the format: example@gmail.com";
             yield break;
+        }
+        if(_uniqueEmail == false)
+        {
+            yield return "Email must be unique";
+        }
+    }
+
+    private async Task<bool> EmailDuplicateVerification(string email)
+    {
+        var parameterUrl = $"{_getContactUri}?email={email}";
+        var response = await httpClient.GetAsync(parameterUrl);
+
+        if(response.IsSuccessStatusCode)
+        {
+            _uniqueEmail = false;
+            return false;
+        }
+        else
+        {
+            _uniqueEmail = true;
+            return true;
+        }
+    }
+
+    private async Task PhoneNumberDuplicateVerification(string phoneNumber)
+    {
+        var parameterUrl = $"{_getContactUri}?phoneNumber={phoneNumber}";
+        var response = await httpClient.GetAsync(parameterUrl);
+
+        if (response.IsSuccessStatusCode)
+        {
+            _uniquePhoneNumber = false;
+        }
+        else
+        {
+            _uniquePhoneNumber = true;
         }
     }
 }

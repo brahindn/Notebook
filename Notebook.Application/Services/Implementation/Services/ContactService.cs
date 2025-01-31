@@ -22,6 +22,20 @@ namespace Notebook.Application.Services.Implementation.Services
 
         public async Task CreateContactAsync(CreateContactRequest createContactRequest)
         {
+            var emailContais = await CheckEmailDuplicate(createContactRequest);
+
+            if(emailContais == true)
+            {
+                return;
+            }
+
+            var phoneContains = await CheckPhoneNumberDuplicate(createContactRequest);
+
+            if(phoneContains == true)
+            {
+                return;
+            }
+
             var contact = _mapper.Map<Contact>(createContactRequest);
 
             _repositoryManager.Contact.Create(contact);
@@ -97,6 +111,40 @@ namespace Notebook.Application.Services.Implementation.Services
             var contacts = await query.ToListAsync();
 
             return _mapper.Map<IEnumerable<GetContactResponse>>(contacts);
+        }
+
+        private async Task<bool> CheckEmailDuplicate(CreateContactRequest contact)
+        {
+            var contactRequest = new GetContactRequest
+            {
+                Email = contact.Email
+            };
+
+            var anyContacts = await GetContactByFieldAsync(contactRequest);
+
+            if (anyContacts.Any())
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private async Task<bool> CheckPhoneNumberDuplicate(CreateContactRequest contact)
+        {
+            var contactRequest = new GetContactRequest
+            {
+                PhoneNumber = contact.PhoneNumber
+            };
+
+            var anyContacts = await GetContactByFieldAsync(contactRequest);
+
+            if (anyContacts.Any())
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
