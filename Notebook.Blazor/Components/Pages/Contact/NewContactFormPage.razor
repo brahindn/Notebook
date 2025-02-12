@@ -1,5 +1,6 @@
 ﻿@page "/contacts/addContactForm"
 
+@using Newtonsoft.Json
 @using Notebook.Domain.Requests
 @inject NavigationManager NavigationManager
 @inject HttpClient httpClient
@@ -20,12 +21,10 @@
 
                 <MudTextField Label="Phone number" @bind-Value="_newContact.PhoneNumber" For="@(() => _newContact.PhoneNumber)"
                 Required="true" RequiredError="Phone number is required!" T="string"
-                Validation="@(new Func<string, IEnumerable<string>>(PhoneNumberVerification))"
-                Immediate="true" OnBlur="(async() => await PhoneNumberDuplicateVerification(_newContact.PhoneNumber))" />
+                Validation="@(new Func<string, IEnumerable<string>>(PhoneNumberVerification))"/>
 
                 <MudTextField Label="Email" @bind-Value="_newContact.Email" For="@(() => _newContact.Email)"
-                Validation="@(new Func<string, IEnumerable<string>>(EmailVerification))" T="string"
-                Immediate="true" OnBlur="@(async() => await EmailDuplicateVerification(_newContact.Email))"/>
+                Validation="@(new Func<string, IEnumerable<string>>(EmailVerification))" T="string"/>
 
                 <MudDatePicker Label="Date of Birth" @bind-Date="_newContact.DateOfBirth" PickerVariant="PickerVariant.Dialog"/>
             </MudForm>
@@ -68,7 +67,6 @@
     private bool _uniqueEmail;
     private string[] _errors = { };
     private CreateContactRequest _newContact = new CreateContactRequest();
-    private GetContactRequest _getContact = new GetContactRequest();
     private Uri? _addContactUri;
     private Uri? _getContactUri;
 
@@ -102,10 +100,22 @@
 
     private async Task AddContact()
     {
+        
+
+        await EmailDuplicateVerification(_newContact.Email);
+        await PhoneNumberDuplicateVerification(_newContact.PhoneNumber);
+
         await _mudForm!.Validate();
 
         if(!_isValid)
         {
+            return;
+        }
+        else if(_uniqueEmail == false || _uniquePhoneNumber == false)
+        {
+            EmailVerification(_newContact.Email);
+            PhoneNumberVerification(_newContact.PhoneNumber);
+
             return;
         }
 
@@ -196,35 +206,54 @@
         }
     }
 
-    private async Task<bool> EmailDuplicateVerification(string email)
+
+    private async Task EmailDuplicateVerification(string email)
     {
-        var parameterUrl = $"{_getContactUri}?email={email}";
-        var response = await httpClient.GetAsync(parameterUrl);
+        var contact = new GetContactRequest()
+        {
+            Email = _newContact.Email
+        };
+
+        var response = await httpClient.PostAsJsonAsync(_getContactUri, contact);
 
         if(response.IsSuccessStatusCode)
         {
-            _uniqueEmail = false;
-            return false;
-        }
-        else
-        {
-            _uniqueEmail = true;
-            return true;
+            var content = await response.Content.ReadAsStringAsync();
+            var contacts = JsonConvert.DeserializeObject<List<GetContactRequest>>(content);
+
+            if(contacts == null || !contacts.Any())
+            {
+                _uniqueEmail = true;
+            }
+            else
+            {
+                _uniqueEmail = false;
+            }
         }
     }
 
     private async Task PhoneNumberDuplicateVerification(string phoneNumber)
     {
-        var parameterUrl = $"{_getContactUri}?phoneNumber={phoneNumber}";
-        var response = await httpClient.GetAsync(parameterUrl);
+        var contact = new GetContactRequest()
+        {
+            PhoneNumber = _newContact.PhoneNumber
+        };
+
+        var response = await httpClient.PostAsJsonAsync(_getContactUri, contact);
 
         if (response.IsSuccessStatusCode)
         {
-            _uniquePhoneNumber = false;
-        }
-        else
-        {
-            _uniquePhoneNumber = true;
+            var content = await response.Content.ReadAsStringAsync();
+            var contacts = JsonConvert.DeserializeObject<List<GetContactRequest>>(content);
+
+            if (contacts == null || !contacts.Any())
+            {
+                _uniquePhoneNumber = true;
+            }
+            else
+            {
+                _uniquePhoneNumber = false;
+            }
         }
     }
 }

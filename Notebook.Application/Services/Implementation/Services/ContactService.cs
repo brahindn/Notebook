@@ -22,16 +22,16 @@ namespace Notebook.Application.Services.Implementation.Services
 
         public async Task CreateContactAsync(CreateContactRequest createContactRequest)
         {
-            var emailContais = await CheckEmailDuplicate(createContactRequest);
+            var emaiIslUniqiue = await EmailIsUnique(createContactRequest);
 
-            if(emailContais == true)
+            if(emaiIslUniqiue == false)
             {
                 return;
             }
 
-            var phoneContains = await CheckPhoneNumberDuplicate(createContactRequest);
+            var phoneIsUnique = await PhoneNumberIsUnique(createContactRequest);
 
-            if(phoneContains == true)
+            if(phoneIsUnique == false)
             {
                 return;
             }
@@ -113,7 +113,7 @@ namespace Notebook.Application.Services.Implementation.Services
             return _mapper.Map<IEnumerable<GetContactResponse>>(contacts);
         }
 
-        private async Task<bool> CheckEmailDuplicate(CreateContactRequest contact)
+        private async Task<bool> EmailIsUnique(CreateContactRequest contact)
         {
             var contactRequest = new GetContactRequest
             {
@@ -124,13 +124,13 @@ namespace Notebook.Application.Services.Implementation.Services
 
             if (anyContacts.Any())
             {
-                return true;
+                return false;
             }
 
-            return false;
+            return true;
         }
 
-        private async Task<bool> CheckPhoneNumberDuplicate(CreateContactRequest contact)
+        private async Task<bool> PhoneNumberIsUnique(CreateContactRequest contact)
         {
             var contactRequest = new GetContactRequest
             {
@@ -141,10 +141,10 @@ namespace Notebook.Application.Services.Implementation.Services
 
             if (anyContacts.Any())
             {
-                return true;
+                return false;
             }
 
-            return false;
+            return true;
         }
     }
 }
