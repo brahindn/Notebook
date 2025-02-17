@@ -1,0 +1,19 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "Notebook.Host\\Notebook.Host.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "Notebook.Tests\\Notebook.Tests.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "Notebook.Blazor\\Notebook.Blazor.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

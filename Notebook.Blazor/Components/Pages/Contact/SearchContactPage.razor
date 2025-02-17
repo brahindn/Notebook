@@ -58,29 +58,20 @@
     </MudStack>
 </MudPaper>
 
+@if (_showTable)
+{
+    <MudText Typo="Typo.h6">Number of contacts: @_allContacts?.Count()</MudText>
 
-
-<MudItem Class="mr-4 mt-1">
-    @if(_showTable)
-    {
-        <MudTable Items="@_allContacts">
-            <HeaderContent>
-                <MudTh>Id</MudTh>
-                <MudTh>First Name</MudTh>
-                <MudTh>Last Name</MudTh>
-                <MudTh>Phone Number</MudTh>
-                <MudTh>Email</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd DataLabel="Id">@context.Id</MudTd>
-                <MudTd DataLabel="First Name">@context.FirstName</MudTd>
-                <MudTd DataLabel="Last Name">@context.LastName</MudTd>
-                <MudTd DataLabel="Phone Number">@context.PhoneNumber</MudTd>
-                <MudTd DataLabel="Email">@context.Email</MudTd>
-            </RowTemplate>
-        </MudTable>
-    }
-</MudItem>
+    <MudDataGrid Items="@_allContacts!.Take(4)" ReadOnly="false" EditMode="DataGridEditMode.Cell" EditTrigger="DataGridEditTrigger.OnRowClick">
+        <Columns>
+            <PropertyColumn Property="contact => contact.FirstName" Title="First Name" />
+            <PropertyColumn Property="contact => contact.LastName" Title="Last Name" />
+            <PropertyColumn Property="contact => contact.PhoneNumber" Title="Phone Number" />
+            <PropertyColumn Property="contact => contact.Email" Title="Email" />
+            <PropertyColumn Property="contact => contact.DateOfBirth" Title="Date of Birth" />
+        </Columns>
+    </MudDataGrid>
+}
 
 @code
 {
