@@ -11,6 +11,8 @@
 
 @rendermode InteractiveServer
 
+<MudPopoverProvider/>
+
 <MudPaper Height="400px" Width="100%">
     <MudStack Justify="Justify.FlexStart" Row="true">
         <MudPaper Class="pa-4" Style="width:50%; height:400px">
@@ -18,11 +20,13 @@
                 <MudSwitch Class="pa-1" @bind-Value="_searchAllContacts">
                     @if (!_searchAllContacts)
                     {
+                        _readOnly = true;
                         _disabledSearchButton = false;
                         <MudText>Switch to searching through fields</MudText>
                     }
                     else
                     {
+                        _readOnly = false;
                         _disabledSearchButton = true;
                         <MudText>Switch to searching all contacts</MudText>
                     }
@@ -30,7 +34,7 @@
 
                 <MudSpacer/>
 
-                <MudButton Disabled="@_disabledSearchButton" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => SearchAllContacts())">Search all</MudButton>
+                <MudButton Disabled="@_disabledSearchButton" Variant="Variant.Filled" Color="Color.Primary" OnClick="@SearchAllContacts">Search all</MudButton>
 
             </MudStack>
         </MudPaper>
@@ -62,13 +66,20 @@
 {
     <MudText Typo="Typo.h6">Number of contacts: @_allContacts?.Count()</MudText>
 
-    <MudDataGrid Items="@_allContacts!.Take(4)" ReadOnly="false" EditMode="DataGridEditMode.Cell" EditTrigger="DataGridEditTrigger.OnRowClick">
+    <MudDataGrid Items="@_allContacts" Dense="true" ReadOnly="@_readOnly" EditMode="@(_readOnly ? DataGridEditMode.Cell : null)"
+    EditTrigger="@DataGridEditTrigger.OnRowClick">
         <Columns>
-            <PropertyColumn Property="contact => contact.FirstName" Title="First Name" />
+            <PropertyColumn Property="contact => contact.FirstName" Title="First Name"/>
             <PropertyColumn Property="contact => contact.LastName" Title="Last Name" />
-            <PropertyColumn Property="contact => contact.PhoneNumber" Title="Phone Number" />
+            <PropertyColumn Property="contact => contact.PhoneNumber" Title="Phone Number"/>
             <PropertyColumn Property="contact => contact.Email" Title="Email" />
             <PropertyColumn Property="contact => contact.DateOfBirth" Title="Date of Birth" />
+
+            <TemplateColumn Hidden="@_readOnly">
+                <CellTemplate>
+                    <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="@context.Actions.StartEditingItemAsync" />
+                </CellTemplate>
+            </TemplateColumn>
         </Columns>
     </MudDataGrid>
 }
@@ -83,6 +94,8 @@
     private Uri? _getAllContactsFieldsUri;
     private IEnumerable<GetContactResponse>? _allContacts = new List<GetContactResponse>();
     private GetContactRequest _getContactRequest = new GetContactRequest();
+
+    private bool _readOnly;
 
     protected override async Task OnInitializedAsync()
     {
