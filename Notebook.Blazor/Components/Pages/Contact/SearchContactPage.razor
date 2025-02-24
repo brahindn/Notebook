@@ -8,10 +8,12 @@
 
 @inject NavigationManager NavigationManager
 @inject HttpClient httpClient
+@inject IDialogService DialogService
 
 @rendermode InteractiveServer
 
 <MudPopoverProvider/>
+<MudDialogProvider/>
 
 <MudPaper Height="400px" Width="100%">
     <MudStack Justify="Justify.FlexStart" Row="true">
@@ -80,6 +82,12 @@
                     <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="@context.Actions.StartEditingItemAsync" />
                 </CellTemplate>
             </TemplateColumn>
+
+            <TemplateColumn Hidden="@_readOnly">
+                <CellTemplate>
+                    <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="@(() => DeleteContact(context.Item.Id))">Delete</MudButton>
+                </CellTemplate>
+            </TemplateColumn>
         </Columns>
     </MudDataGrid>
 }
@@ -92,6 +100,7 @@
     private bool _showTable;
     private Uri? _getAllContactsUri;
     private Uri? _getAllContactsFieldsUri;
+    private Uri? _deleteContactUri;
     private IEnumerable<GetContactResponse>? _allContacts = new List<GetContactResponse>();
     private GetContactRequest _getContactRequest = new GetContactRequest();
 
@@ -103,11 +112,14 @@
 
         void InitialUri()
         {
-            const string allContactControllerUri = "/api/contacts/allContacts";
+            const string allContactControllerUri = "api/contacts/allContacts";
             _getAllContactsUri = new Uri(httpClient.BaseAddress!, allContactControllerUri);
 
             const string getContactControllerUri = "api/contacts/getByFields";
             _getAllContactsFieldsUri = new Uri(httpClient.BaseAddress!, getContactControllerUri);
+
+            const string deleteContactControllerUri = "api/contacts/delete";
+            _deleteContactUri = new Uri(httpClient.BaseAddress!, deleteContactControllerUri);
         }
     }
 
@@ -154,6 +166,27 @@
         catch
         {
             throw new ArgumentException();
+        }
+    }
+
+    private async Task DeleteContact(Guid contactId)
+    {
+        try
+        {
+            bool? result = await DialogService.ShowMessageBox("Contact will be deleted", "Do you want that?");
+
+            if (result == true)
+            {
+
+                var deleteUri = $"{_deleteContactUri}?contactId={contactId}";
+                var response = await httpClient.DeleteAsync(deleteUri);
+
+
+            }
+        }
+        catch
+        {
+            new Exception();
         }
     }
 }
