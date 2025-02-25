@@ -38,8 +38,4 @@
     <_ContentIncludedByDefault Remove="Components\Pages\DeleteContactPage.razor" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="Components\Pages\Contact\DeleteContactPage.razor" />
-  </ItemGroup>
-
 </Project>

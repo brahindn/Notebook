@@ -177,11 +177,13 @@
 
             if (result == true)
             {
-
                 var deleteUri = $"{_deleteContactUri}?contactId={contactId}";
                 var response = await httpClient.DeleteAsync(deleteUri);
 
-
+                if(response.IsSuccessStatusCode)
+                {
+                    _allContacts = _allContacts!.Where(c => c.Id != contactId).ToList();
+                }
             }
         }
         catch
