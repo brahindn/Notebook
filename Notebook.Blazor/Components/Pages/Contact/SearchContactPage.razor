@@ -68,8 +68,8 @@
 {
     <MudText Typo="Typo.h6">Number of contacts: @_allContacts?.Count()</MudText>
 
-    <MudDataGrid Items="@_allContacts" Dense="true" ReadOnly="@_readOnly" EditMode="@(_readOnly ? DataGridEditMode.Cell : null)"
-    EditTrigger="@DataGridEditTrigger.OnRowClick">
+    <MudDataGrid Items="@_allContacts" T="@GetContactResponse" Dense="true" ReadOnly="@_readOnly" EditMode="@(_readOnly ? DataGridEditMode.Cell : null)"
+    EditTrigger="@DataGridEditTrigger.OnRowClick" CommittedItemChanges="@UpdateContact">
         <Columns>
             <PropertyColumn Property="contact => contact.FirstName" Title="First Name"/>
             <PropertyColumn Property="contact => contact.LastName" Title="Last Name" />
@@ -101,6 +101,7 @@
     private Uri? _getAllContactsUri;
     private Uri? _getAllContactsFieldsUri;
     private Uri? _deleteContactUri;
+    private Uri? _updateContactUri;
     private IEnumerable<GetContactResponse>? _allContacts = new List<GetContactResponse>();
     private GetContactRequest _getContactRequest = new GetContactRequest();
 
@@ -120,6 +121,9 @@
 
             const string deleteContactControllerUri = "api/contacts/delete";
             _deleteContactUri = new Uri(httpClient.BaseAddress!, deleteContactControllerUri);
+
+            const string updateContactControllerUri = "api/contacts/update";
+            _updateContactUri = new Uri(httpClient.BaseAddress!, updateContactControllerUri);
         }
     }
 
@@ -189,6 +193,28 @@
         catch
         {
             new Exception();
+        }
+    }
+
+    private async Task UpdateContact(GetContactResponse contact)
+    {
+        var newContact = new UpdateContactRequest
+            {
+                Id = contact.Id,
+                FirstName = contact.FirstName,
+                LastName = contact.LastName,
+                PhoneNumber = contact.PhoneNumber,
+                Email = contact.Email,
+                DateOfBirth = contact.DateOfBirth
+            };
+
+        try
+        {
+            var response = await httpClient.PutAsJsonAsync(_updateContactUri, newContact);
+        }
+        catch
+        {
+            throw new ArgumentNullException("Updating is wrong!");
         }
     }
 }

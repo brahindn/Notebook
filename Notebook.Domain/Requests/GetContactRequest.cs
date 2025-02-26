@@ -7,5 +7,6 @@
         public string? LastName { get; set; } = string.Empty;
         public string? PhoneNumber { get; set; } = string.Empty;
         public string? Email { get; set; }
+        public DateTime? DateofBirth { get; set; }
     }
 }
