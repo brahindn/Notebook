@@ -24,12 +24,14 @@
                     {
                         _readOnly = true;
                         _disabledSearchButton = false;
+                        _allContacts = new List<GetContactResponse>();
                         <MudText>Switch to searching through fields</MudText>
                     }
                     else
                     {
                         _readOnly = false;
                         _disabledSearchButton = true;
+                        _allContacts = new List<GetContactResponse>();
                         <MudText>Switch to searching all contacts</MudText>
                     }
                 </MudSwitch>
@@ -149,6 +151,11 @@
 
     private async Task SearchContactsThroughFields(GetContactRequest contactRequest)
     {
+        if (string.IsNullOrEmpty(contactRequest.FirstName) && string.IsNullOrEmpty(contactRequest.LastName) && string.IsNullOrEmpty(contactRequest.PhoneNumber) && string.IsNullOrEmpty(contactRequest.Email))
+        {
+            return;
+        }
+
         try
         {
             var response = await httpClient.PostAsJsonAsync(_getAllContactsFieldsUri, contactRequest);

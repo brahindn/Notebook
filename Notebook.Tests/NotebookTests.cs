@@ -115,6 +115,24 @@ namespace Notebook.Tests
         }
 
         [TestMethod]
+        public async Task AddNewContactWhereDateOfBirthMoreToday()
+        {
+            await _serviceManager.ContactService.CreateContactAsync(new CreateContactRequest
+            {
+                FirstName = "TestFN",
+                LastName = "TestLN",
+                PhoneNumber = "+380996064050",
+                Email = null,
+                DateOfBirth = DateTime.MaxValue
+            });
+
+            using (var context = new RepositoryContext(_options))
+            {
+                Assert.AreEqual(0, context.Contacts.Count());
+            }
+        }
+
+        [TestMethod]
         public async Task UpdateContact()
         {
             await AddingTESTContactToDB();

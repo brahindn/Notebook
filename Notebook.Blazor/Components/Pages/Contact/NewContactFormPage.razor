@@ -26,7 +26,7 @@
                 <MudTextField Label="Email" @bind-Value="_newContact.Email" For="@(() => _newContact.Email)"
                 Validation="@(new Func<string, IEnumerable<string>>(EmailVerification))" T="string"/>
 
-                <MudDatePicker Label="Date of Birth" @bind-Date="_newContact.DateOfBirth" PickerVariant="PickerVariant.Dialog"/>
+                <MudDatePicker Label="Date of Birth" @bind-Date="_newContact.DateOfBirth" PickerVariant="PickerVariant.Dialog" MaxDate="DateTime.Today"/>
             </MudForm>
         </MudPaper>
         <MudPaper Class="pa-4 mt-4">

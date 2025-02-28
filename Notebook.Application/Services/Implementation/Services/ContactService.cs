@@ -36,6 +36,11 @@ namespace Notebook.Application.Services.Implementation.Services
                 return;
             }
 
+            if (createContactRequest.DateOfBirth > DateTime.Today)
+            {
+                return;
+            }
+
             var contact = _mapper.Map<Contact>(createContactRequest);
 
             _repositoryManager.Contact.Create(contact);
