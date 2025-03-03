@@ -2,19 +2,28 @@
 @using Notebook.Domain
 @using Notebook.Domain.Requests
 @using System.Globalization
+@using Notebook.Domain.Responses
 
 @inject NavigationManager NavigationManager
 @inject HttpClient httpClient
 
 @rendermode InteractiveServer
 
+<MudPopoverProvider/>
+
 <MudStack Justify="Justify.Center">
     <MudItem xs="12" sm="7">
         <MudPaper Class="pa-4">
             <MudForm @ref="_form" @bind-IsValid="_isValid" Model="@_newAddress" @bind-Errors="@_errors">
 
-                <MudTextField Label="Contact Id" @bind-Value="_newAddress.ContactId" For="@(() => _newAddress.ContactId)"
-                Required="true"/>
+                <MudSelect T="GetContactResponse" Label="Choose contact">
+                    @foreach(var contact in _allContacts)
+                    {
+                        <MudStack Row="true">
+                            <MudSelectItem  Value="@contact">@contact.LastName - @contact.Email</MudSelectItem>
+                        </MudStack>
+                    }
+                </MudSelect>
 
                 <MudRadioGroup T="AddressType" @bind-Value="SelectedAddressType">
                     <MudRadio T="AddressType" Value="AddressType.Business">Business</MudRadio>
@@ -87,7 +96,9 @@
     private AddressType SelectedAddressType { get; set; }
     private CreateAddressRequest _newAddress = new CreateAddressRequest();
     private List<CreateAddressRequest> _recentAddresses = new List<CreateAddressRequest>();
+    private IEnumerable<GetContactResponse> _allContacts = new List<GetContactResponse>();
     private Uri? _addAddressUri;
+    private Uri? _getAllContactsUri;
 
     protected override async Task OnInitializedAsync()
     {
@@ -97,7 +108,12 @@
         {
             const string _addAddressControllerUri = "api/addresses/add";
             _addAddressUri = new Uri(httpClient.BaseAddress!, _addAddressControllerUri);
+
+            const string _getAllContactsControllerUri = "api/contacts/allContacts";
+            _getAllContactsUri = new Uri(httpClient.BaseAddress!, _getAllContactsControllerUri);
         }
+
+        await SearchAllContacts();
     }
 
     private async Task AddAddress()
@@ -227,4 +243,18 @@
         }
     }
 
+    private async Task SearchAllContacts()
+    {
+        const int defaultPageNumber = 1;
+        var response = await httpClient.GetAsync($"{_getAllContactsUri}?PageNumber={defaultPageNumber}");
+
+        if (response.IsSuccessStatusCode)
+        {
+            _allContacts = await response.Content.ReadFromJsonAsync<List<GetContactResponse>>();
+        }
+        else
+        {
+            _allContacts = new List<GetContactResponse>();
+        }
+    }
 }
