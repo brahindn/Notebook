@@ -3,7 +3,6 @@ using Notebook.DataAccess;
 using Notebook.Domain.Entities;
 using Notebook.Repositories.Contracts.Repositories;
 using Notebook.Shared.RequestFeatures;
-using System.Linq.Expressions;
 
 namespace Notebook.Repositories.Implementation.Repositories
 {

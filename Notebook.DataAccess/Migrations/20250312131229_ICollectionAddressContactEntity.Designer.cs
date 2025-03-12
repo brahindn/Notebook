@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Notebook.DataAccess;
 
@@ -11,9 +12,11 @@ using Notebook.DataAccess;
 namespace Notebook.DataAccess.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20250312131229_ICollectionAddressContactEntity")]
+    partial class ICollectionAddressContactEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,7 +62,8 @@ namespace Notebook.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ContactId");
+                    b.HasIndex("ContactId")
+                        .IsUnique();
 
                     b.ToTable("Addresses");
                 });

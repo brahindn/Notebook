@@ -12,5 +12,7 @@ namespace Notebook.Domain.Entities
         public string PhoneNumber {  get; set; }
         public string? Email { get; set; }
         public DateTime? DateOfBirth { get; set; }
+
+        public ICollection<Address> Addresses { get; set; }
     }
 }
