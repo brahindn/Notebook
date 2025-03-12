@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Notebook.Application.Services.Contracts.Services;
-using Notebook.Domain;
 using Notebook.Domain.Entities;
 using Notebook.Domain.Requests;
 using Notebook.Domain.Responses;
@@ -26,15 +24,18 @@ namespace Notebook.Application.Services.Implementation.Services
         {
             var contact = await _repositoryManager.Contact.GetContactByIdAsync(createAddressRequest.ContactId) ?? throw new ArgumentNullException($"The address without any contact");
 
-            if(contact == null)
-            {
-                throw new ArgumentNullException(nameof(createAddressRequest), "Contact not found");
-            }
-
             var address = _mapper.Map<Address>(createAddressRequest);
 
-            _repositoryManager.Address.Create(address);
-            await _repositoryManager.SaveAsync();
+            try
+            {
+                _repositoryManager.Address.Create(address);
+                await _repositoryManager.SaveAsync();
+            }
+            catch(Exception ex)
+            {
+                throw new ApplicationException("An unexpected error occurred while creating new address", ex);
+            }
+            
         }
 
         public async Task UpdateAddressAsync(UpdateAddressRequest updateAddressRequest)

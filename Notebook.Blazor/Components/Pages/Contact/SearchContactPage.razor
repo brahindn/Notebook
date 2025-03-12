@@ -58,7 +58,7 @@
 
                         <MudSpacer/>
 
-                        <MudButton Style="mt-4 float: right" Variant="Variant.Filled" Color="Color.Dark" DropShadow="false" OnClick="@(() => SearchContactsThroughFields(_getContactRequest))">Search</MudButton>
+                        <MudButton Style="mt-4 float: right" Variant="Variant.Filled" Color="Color.Dark" DropShadow="false" OnClick="@(() => SearchContactsByFields(_getContactRequest))">Search</MudButton>
                     </MudPaper>
                 </MudStack>
             }
@@ -149,7 +149,7 @@
         }
     }
 
-    private async Task SearchContactsThroughFields(GetContactRequest contactRequest)
+    private async Task SearchContactsByFields(GetContactRequest contactRequest)
     {
         if (string.IsNullOrEmpty(contactRequest.FirstName) && string.IsNullOrEmpty(contactRequest.LastName) && string.IsNullOrEmpty(contactRequest.PhoneNumber) && string.IsNullOrEmpty(contactRequest.Email))
         {

@@ -9,8 +9,12 @@
 
 @inject NavigationManager NavigationManager
 @inject HttpClient httpClient
+@inject IDialogService DialogService
 
 @rendermode InteractiveServer
+
+<MudPopoverProvider/>
+<MudDialogProvider/>
 
 <MudPaper Height="400px" Width="100%">
     <MudStack Justify="Justify.FlexStart" Row="true">
@@ -19,19 +23,23 @@
                 <MudSwitch Class="pa-1" @bind-Value="_searchAllAddresses">
                     @if (!_searchAllAddresses)
                     {
+                        _readOnly = true;
                         _disabledSearchButton = false;
+                        _allAddresses = new List<GetAddressResponse>();
                         <MudText>Switch to searching through fields</MudText>
                     }
                     else
                     {
+                        _readOnly = false;
                         _disabledSearchButton = true;
+                        _allAddresses = new List<GetAddressResponse>();
                         <MudText>Switch to searching all addresses</MudText>
                     }
                 </MudSwitch>
 
                 <MudSpacer />
 
-                <MudButton Disabled="@_disabledSearchButton" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => SearchAllAddresses())">Search all</MudButton>
+                <MudButton Disabled="@_disabledSearchButton" Variant="Variant.Filled" Color="Color.Primary" OnClick="@SearchAllAddresses">Search all</MudButton>
 
             </MudStack>
         </MudPaper>
@@ -43,8 +51,7 @@
                 <MudStack Justify="Justify.FlexEnd">
                     <MudPaper Class="pa-4 border-solid border-2 mud-border-primary" Style="height:400px;">
                         <MudForm @ref="_form" Model="_getAddressRequest">
-                            <MudTextField T="Guid?" Label="Contact Id" @bind-Value="_getAddressRequest.ContactId" For="@(() => _getAddressRequest.ContactId)"/>
-
+                            
                             <MudRadioGroup T="AddressType" @bind-Value="SelectedAddressType">
                                 <MudRadio T="AddressType" Value="AddressType.Business">Business</MudRadio>
                                 <MudRadio T="AddressType" Value="AddressType.Personal">Personal</MudRadio>
@@ -69,32 +76,34 @@
 
 
 
-<MudItem Class="mr-4 mt-1">
-    @if (_showTable)
-    {
-        <MudTable Items="@_allAddresses">
-            <HeaderContent>
-                <MudTh>Id</MudTh>
-                <MudTh>Contact Id</MudTh>
-                <MudTh>Address Type</MudTh>
-                <MudTh>Country</MudTh>
-                <MudTh>Region</MudTh>
-                <MudTh>City</MudTh>
-                <MudTh>Street</MudTh>
-                <MudTh>Building Number</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd DataLabel="Id">@context.Id</MudTd>
-                <MudTd DataLabel="First Name">@context.ContactId</MudTd>
-                <MudTd DataLabel="Last Name">@context.Country</MudTd>
-                <MudTd DataLabel="Phone Number">@context.Region</MudTd>
-                <MudTd DataLabel="Email">@context.City</MudTd>
-                <MudTd DataLabel="Email">@context.Street</MudTd>
-                <MudTd DataLabel="Email">@context.BuildingNumber</MudTd>
-            </RowTemplate>
-        </MudTable>
-    }
-</MudItem>
+@if (_showTable)
+{
+    <MudText Typo="Typo.h6">Number of contacts: @_allAddresses?.Count()</MudText>
+
+    <MudDataGrid Items="@_allAddresses" T="@GetAddressResponse" Dense="true" ReadOnly="@_readOnly" EditMode="@(_readOnly ? DataGridEditMode.Cell : null)"
+    EditTrigger="@DataGridEditTrigger.OnRowClick" CommittedItemChanges="@UpdateAddress">
+        <Columns>
+            <PropertyColumn Property="address => address.AddressType" Title="Address Type" />
+            <PropertyColumn Property="address => address.Country" Title="Country" />
+            <PropertyColumn Property="address => address.Region" Title="Region" />
+            <PropertyColumn Property="address => address.City" Title="City" />
+            <PropertyColumn Property="address => address.Street" Title="Street" />
+            <PropertyColumn Property="address => address.BuildingNumber" Title="Building Number" />
+
+            <TemplateColumn Hidden="@_readOnly">
+                <CellTemplate>
+                    <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="@context.Actions.StartEditingItemAsync" />
+                </CellTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn Hidden="@_readOnly">
+                <CellTemplate>
+                    <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="@(() => DeleteAddress(context.Item.Id))">Delete</MudButton>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
+}
 
 @code
 {
@@ -105,8 +114,12 @@
     private AddressType SelectedAddressType { get; set; }
     private Uri? _getAllAddressesUri;
     private Uri? _getAddressesByFieldsUri;
+    private Uri? _deleteAddressUri;
+    private Uri? _updateAddressUri;
     private IEnumerable<GetAddressResponse>? _allAddresses = new List<GetAddressResponse>();
     private GetAddressRequest _getAddressRequest = new GetAddressRequest();
+
+    private bool _readOnly;
 
     protected override async Task OnInitializedAsync()
     {
@@ -119,6 +132,12 @@
 
             const string allAddressesControllerUri = "api/addresses/allAddresses";
             _getAllAddressesUri = new Uri(httpClient.BaseAddress!, allAddressesControllerUri);
+
+            const string deleteAddressControllerUri = "/api/addresses/delete";
+            _deleteAddressUri = new Uri(httpClient.BaseAddress!, deleteAddressControllerUri);
+
+            const string updateAddressControllerUri = "/api/addresses/update";
+            _updateAddressUri = new Uri(httpClient.BaseAddress!, updateAddressControllerUri);
         }
     }
 
@@ -168,6 +187,52 @@
         catch
         {
             throw new ArgumentException();
+        }
+    }
+
+    private async Task DeleteAddress(Guid addressId)
+    {
+        try
+        {
+            bool? result = await DialogService.ShowMessageBox("Address will be deleted", "Do you want that?");
+
+            if (result == true)
+            {
+                var deleteUri = $"{_deleteAddressUri}?addressId={addressId}";
+                var response = await httpClient.DeleteAsync(deleteUri);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    _allAddresses = _allAddresses!.Where(a => a.Id != addressId).ToList();
+                }
+            }
+        }
+        catch
+        {
+            new Exception();
+        }
+    }
+
+    private async Task UpdateAddress(GetAddressResponse address)
+    {
+        var newAddress = new UpdateAddressRequest
+            {
+                Id = address.Id,
+                AddressType = address.AddressType,
+                Country = address.Country,
+                Region = address.Region,
+                City = address.City,
+                Street = address.Street,
+                BuildingNumber = address.BuildingNumber
+            };
+
+        try
+        {
+            var response = await httpClient.PutAsJsonAsync(_updateAddressUri, newAddress);
+        }
+        catch
+        {
+            throw new ArgumentNullException("Updating is wrong!");
         }
     }
 }

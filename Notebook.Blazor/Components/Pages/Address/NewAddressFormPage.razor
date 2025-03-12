@@ -16,7 +16,7 @@
         <MudPaper Class="pa-4">
             <MudForm @ref="_form" @bind-IsValid="_isValid" Model="@_newAddress" @bind-Errors="@_errors">
 
-                <MudSelect T="GetContactResponse" Label="Choose contact">
+                <MudSelect T="GetContactResponse" Label="Choose contact" @bind-Value="SelectedContact" ToStringFunc="@convertFunc" Placeholder="Please Select">
                     @foreach(var contact in _allContacts)
                     {
                         <MudStack Row="true">
@@ -54,9 +54,9 @@
         </MudPaper>
         <MudPaper Class="pa-4 mt-4">
             <div style="display:flex; justify-content: flex-end;">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" DropShadow="false" OnClick="@(() => AddAddress())">Add</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" DropShadow="false" OnClick="@AddAddress">Add</MudButton>
                 <div style="margin-left: 1rem;" />
-                <MudButton Variant="Variant.Filled" Color="Color.Secondary" DropShadow="false" OnClick="@(() => Back())">Cancel</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Secondary" DropShadow="false" OnClick="@Back">Cancel</MudButton>
             </div>
         </MudPaper>
     </MudItem>
@@ -94,9 +94,11 @@
     private bool _isValid = false;
     private string[] _errors = { };
     private AddressType SelectedAddressType { get; set; }
+    private GetContactResponse SelectedContact { get; set; }
     private CreateAddressRequest _newAddress = new CreateAddressRequest();
     private List<CreateAddressRequest> _recentAddresses = new List<CreateAddressRequest>();
     private IEnumerable<GetContactResponse> _allContacts = new List<GetContactResponse>();
+    private Func<GetContactResponse, string> convertFunc = c => c?.LastName;
     private Uri? _addAddressUri;
     private Uri? _getAllContactsUri;
 
@@ -127,7 +129,14 @@
 
         try
         {
+            if(SelectedAddressType == null || SelectedContact.Id == null)
+            {
+                return;
+            }
+
             _newAddress.AddressType = SelectedAddressType;
+            _newAddress.ContactId = SelectedContact.Id;         
+
             var response = await httpClient.PostAsJsonAsync(_addAddressUri, _newAddress);
 
             if(response.IsSuccessStatusCode)

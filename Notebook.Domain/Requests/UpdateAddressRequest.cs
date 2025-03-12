@@ -1,5 +1,4 @@
-﻿using Notebook.Domain;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace Notebook.Domain.Requests
